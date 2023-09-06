@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:oag_camera/page/camera_application.dart';
 
@@ -11,9 +13,48 @@ void main() async {
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: CameraApplication(maxItems: 10),
-      ),
+      home: Example(),
     ),
   );
+}
+
+class Example extends StatefulWidget {
+  const Example({super.key});
+
+  @override
+  State<Example> createState() => _ExampleState();
+}
+
+class _ExampleState extends State<Example> {
+  final _cameraApplicationKey = GlobalKey<CameraApplicationState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          CameraApplication(
+            key: _cameraApplicationKey,
+            maxItems: 10,
+          ),
+          Align(
+            child: FloatingActionButton(
+              onPressed: () {
+                final state = _cameraApplicationKey.currentState;
+                if (state == null) return;
+
+                final items = state.getCameraItems();
+                var i = 0;
+
+                for (final item in items) {
+                  log("Item ${++i}: ${item.name}");
+                }
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
