@@ -64,6 +64,7 @@ class CameraApplicationState extends State<CameraApplication> {
     _cameraZoomBloc.close();
     _cameraRollBloc.close();
     _cameraSettingsBloc.close();
+
     super.dispose();
   }
 
@@ -204,13 +205,8 @@ class CameraApplicationState extends State<CameraApplication> {
 
     _cameraBlurBloc.add(const BlurScreenshotEvent());
 
-    final cameraControllerBloc = _cameraStateBloc;
-
-    final controller = cameraControllerBloc.state.controller;
-
-    if (controller == null) {
-      return;
-    }
+    final controller = _cameraStateBloc.state.controller;
+    if (controller == null) return;
 
     final isBack =
         controller.description.lensDirection == CameraLensDirection.back;
@@ -227,6 +223,6 @@ class CameraApplicationState extends State<CameraApplication> {
       );
     }
 
-    cameraControllerBloc.add(setLensDirection);
+    _cameraStateBloc.add(setLensDirection);
   }
 }
