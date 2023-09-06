@@ -126,21 +126,19 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
 
         return RepaintBoundary(
           key: context.read<CameraBlurBloc>().repaintBoundaryKey,
-          child: AnimatedSwitcher(
-            duration: widget.duration,
-            switchInCurve: widget.curve,
-            switchOutCurve: widget.curve,
-            child: child,
-          ),
+          child: Align(child: child),
         );
       },
     );
   }
 
-  void _updateCameraZoom(ScaleUpdateDetails details) => context
-      .read<CameraZoomBloc>()
-      .add(SetCameraZoomByScale(scale: details.scale));
+  void _updateCameraZoom(ScaleUpdateDetails details) {
+    context.read<CameraZoomBloc>().add(
+          SetCameraZoomByScale(scale: details.scale),
+        );
+  }
 
-  void _saveCameraZoom(ScaleEndDetails details) =>
-      context.read<CameraZoomBloc>().add(const SaveCameraZoom());
+  void _saveCameraZoom(ScaleEndDetails details) {
+    context.read<CameraZoomBloc>().add(const SaveCameraZoom());
+  }
 }

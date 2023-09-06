@@ -7,15 +7,10 @@ class CameraLivePreviewPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const imagePath = "packages/oag_camera/assets/images/"
-        "camera_status_not_ready.png";
-
     const message = "Camera not ready";
-
-    final messageStyle = Theme.of(context)
-        .textTheme
-        .headlineSmall
-        ?.copyWith(color: Colors.white);
+    final messageStyle = Theme.of(context).textTheme.headlineSmall;
+    const imagePath = "packages/oag_camera/lib/assets/images/"
+        "camera_status_not_ready.png";
 
     return SafeArea(
       child: LayoutBuilder(
@@ -43,7 +38,7 @@ class CameraLivePreviewPlaceholder extends StatelessWidget {
                     image: const AssetImage(imagePath),
                     color: messageStyle?.color?.withOpacity(.25),
                     fit: BoxFit.contain,
-                    filterQuality: FilterQuality.high,
+                    filterQuality: FilterQuality.medium,
                   ),
                 ),
               ),
