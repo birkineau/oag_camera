@@ -98,11 +98,24 @@ class CameraApplicationState extends State<CameraApplication> {
                 listener: (context, state) {
                   final switchToWideLens = state.current < threshold;
 
+                  final current =
+                      _cameraStateBloc.state.controller?.value.description;
+
+                  if (current == null) {
+                    return;
+                  }
+
+                  final CameraEvent event;
+
                   if (switchToWideLens) {
+                    event = SetCameraDescriptionEvent.before(current: current);
                     log("trigger wide lens camera: ${state.current}");
                   } else {
+                    event = SetCameraDescriptionEvent.after(current: current);
                     log("trigger normal camera: ${state.current}");
                   }
+
+                  _cameraStateBloc.add(event);
                 },
                 child: const CameraSettingsFocus(
                   cameraScreen: CameraScreen(),

@@ -13,16 +13,18 @@ import '../model/camera_item_type.dart';
 import '../model/camera_state.dart';
 import '../model/camera_status.dart';
 
+const _notReadyState = CameraState(
+  controller: null,
+  status: CameraStatus.notReady,
+  orientation: DeviceOrientation.portraitUp,
+);
+
 class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
-  static const _notReady = CameraState(
-    controller: null,
-    status: CameraStatus.notReady,
-    orientation: DeviceOrientation.portraitUp,
-  );
   CameraStateBloc()
       : _cameras = {},
-        super(_notReady) {
+        super(_notReadyState) {
     on<InitializeCameraEvent>(_initializeCamera);
+    on<SetCameraDescriptionEvent>(_setDescription);
     on<SetCameraLensDirectionEvent>(_setLensDirection);
     on<UpdateOrientationEvent>(_updateOrientation);
     on<DisposeCameraEvent>(_disposeCamera);
@@ -96,16 +98,6 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _setLensDirection(
-    SetCameraLensDirectionEvent event,
-    Emitter<CameraState> emit,
-  ) async {
-    await _initializeCamera(
-      InitializeCameraEvent(lensDirection: event.lensDirection),
-      emit,
-    );
-  }
-
   /// See [InitializeCameraEvent].
   Future<void> _initializeCamera(
     InitializeCameraEvent event,
@@ -154,6 +146,41 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
+  Future<void> _setDescription(
+    SetCameraDescriptionEvent event,
+    Emitter<CameraState> emit,
+  ) async {
+    final controller = state.controller;
+
+    if (controller == null) {
+      return Future.value();
+    }
+
+    final lensDirection =
+        event.lensDirection ?? controller.description.lensDirection;
+
+    final descriptions = _cameras[lensDirection];
+
+    if (descriptions == null || descriptions.isEmpty) {
+      return log(
+        "No camera descriptions found for '$lensDirection'.",
+        name: "$CameraStateBloc._setDescription",
+      );
+    }
+
+    return await controller.setDescription(event.selector(descriptions));
+  }
+
+  Future<void> _setLensDirection(
+    SetCameraLensDirectionEvent event,
+    Emitter<CameraState> emit,
+  ) async {
+    await _initializeCamera(
+      InitializeCameraEvent(lensDirection: event.lensDirection),
+      emit,
+    );
+  }
+
   void _updateOrientation(
     UpdateOrientationEvent event,
     Emitter<CameraState> emit,
@@ -172,7 +199,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     Emitter<CameraState> emit,
   ) async {
     state.dispose();
-    emit(_notReady);
+    emit(_notReadyState);
   }
 
   /// Updates the list of device cameras.
@@ -232,6 +259,37 @@ class InitializeCameraEvent extends CameraEvent {
   final ImageFormatGroup imageFormatGroup;
 }
 
+class SetCameraDescriptionEvent extends CameraEvent {
+  const SetCameraDescriptionEvent({
+    required this.selector,
+    this.lensDirection,
+  });
+
+  SetCameraDescriptionEvent.before({required CameraDescription current})
+      : this(
+          selector: (descriptions) => _getOtherDescription(
+            current,
+            descriptions,
+            (index) => index - 1,
+          ),
+        );
+
+  SetCameraDescriptionEvent.after({required CameraDescription current})
+      : this(
+          selector: (descriptions) => _getOtherDescription(
+            current,
+            descriptions,
+            (index) => index + 1,
+          ),
+        );
+
+  final CameraDescription Function(
+    List<CameraDescription> descriptions,
+  ) selector;
+
+  final CameraLensDirection? lensDirection;
+}
+
 class SetCameraLensDirectionEvent extends CameraEvent {
   const SetCameraLensDirectionEvent({required this.lensDirection});
 
@@ -244,4 +302,18 @@ class UpdateOrientationEvent extends CameraEvent {
 
 class DisposeCameraEvent extends CameraEvent {
   const DisposeCameraEvent();
+}
+
+CameraDescription _getOtherDescription(
+  CameraDescription current,
+  List<CameraDescription> descriptions,
+  int Function(int) index,
+) {
+  final currentIndex = descriptions.indexOf(current);
+
+  if (currentIndex == -1) {
+    return descriptions.first;
+  }
+
+  return descriptions[index(currentIndex) % descriptions.length];
 }
