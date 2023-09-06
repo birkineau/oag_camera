@@ -27,6 +27,8 @@ class _CameraSettingsFocusState extends State<CameraSettingsFocus> {
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
+
+      /// TODO: Focus offset
       // onTapUp: (details) {
       //   final offset = Offset(
       //     details.globalPosition.dx / mediaQuery.size.width,

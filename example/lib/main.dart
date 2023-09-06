@@ -38,6 +38,7 @@ class _ExampleState extends State<Example> {
             maxItems: 10,
           ),
           Align(
+            alignment: const Alignment(.0, .5),
             child: FloatingActionButton(
               onPressed: () {
                 final state = _cameraApplicationKey.currentState;

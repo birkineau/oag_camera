@@ -87,40 +87,43 @@ class CameraApplicationState extends State<CameraApplication> {
           Positioned.fill(
             child: GestureDetector(
               onDoubleTap: _handleLivePreviewDoubleTap,
-              child: BlocListener<CameraZoomBloc, CameraZoom>(
-                bloc: _cameraZoomBloc,
-                listenWhen: (previous, current) {
-                  return (previous.current < threshold &&
-                          current.current >= threshold) ||
-                      (previous.current >= threshold &&
-                          current.current < threshold);
-                },
-                listener: (context, state) {
-                  final switchToWideLens = state.current < threshold;
+              child: const CameraScreen(),
 
-                  final current =
-                      _cameraStateBloc.state.controller?.value.description;
+              /// TODO: Logical cameras
+              // child: BlocListener<CameraZoomBloc, CameraZoom>(
+              //   bloc: _cameraZoomBloc,
+              //   listenWhen: (previous, current) {
+              //     return (previous.current < threshold &&
+              //             current.current >= threshold) ||
+              //         (previous.current >= threshold &&
+              //             current.current < threshold);
+              //   },
+              //   listener: (context, state) {
+              //     final switchToWideLens = state.current < threshold;
 
-                  if (current == null) {
-                    return;
-                  }
+              //     final current =
+              //         _cameraStateBloc.state.controller?.value.description;
 
-                  final CameraEvent event;
+              //     if (current == null) {
+              //       return;
+              //     }
 
-                  if (switchToWideLens) {
-                    event = SetCameraDescriptionEvent.before(current: current);
-                    log("trigger wide lens camera: ${state.current}");
-                  } else {
-                    event = SetCameraDescriptionEvent.after(current: current);
-                    log("trigger normal camera: ${state.current}");
-                  }
+              //     final CameraEvent event;
 
-                  _cameraStateBloc.add(event);
-                },
-                child: const CameraSettingsFocus(
-                  cameraScreen: CameraScreen(),
-                ),
-              ),
+              //     if (switchToWideLens) {
+              //       event = SetCameraDescriptionEvent.before(current: current);
+              //       log("trigger wide lens camera: ${state.current}");
+              //     } else {
+              //       event = SetCameraDescriptionEvent.after(current: current);
+              //       log("trigger normal camera: ${state.current}");
+              //     }
+
+              //     _cameraStateBloc.add(event);
+              //   },
+              //   child: const CameraSettingsFocus(
+              //     cameraScreen: CameraScreen(),
+              //   ),
+              // ),
             ),
           ),
 

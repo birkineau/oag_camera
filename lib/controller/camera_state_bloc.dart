@@ -212,6 +212,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
       );
 
       for (final entry in _cameras.entries) {
+        entry.value.sort((a, b) => a.name.compareTo(b.name));
         if (entry.value.isEmpty) {
           throw Exception("No device camera(s) found for '${entry.key}'.");
         }
