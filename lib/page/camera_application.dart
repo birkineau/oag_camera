@@ -43,7 +43,7 @@ class CameraApplication extends StatefulWidget {
 }
 
 class CameraApplicationState extends State<CameraApplication> {
-  List<CameraItem> getCameraItems() => _cameraRollBloc.state.items;
+  List<CameraItem> getItems() => _cameraRollBloc.state.items;
 
   final _cameraStateBloc = CameraStateBloc();
   final _cameraBlurBloc = CameraBlurBloc();

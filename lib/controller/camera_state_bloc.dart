@@ -63,7 +63,6 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
       final file = await controller.takePicture();
       final name = path.basename(file.path);
       final bytes = await file.readAsBytes();
-
       final buffer = await ImmutableBuffer.fromUint8List(bytes);
       final descriptor = await ui.ImageDescriptor.encoded(buffer);
 

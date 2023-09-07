@@ -36,7 +36,7 @@ class _CameraExampleState extends State<CameraExample> {
           CameraApplication(
             key: _cameraApplicationKey,
             onBackButtonPressed: () => log("back button pressed"),
-            maxItems: 10,
+            maxItems: 3,
           ),
           Align(
             alignment: const Alignment(.0, .5),
@@ -45,7 +45,7 @@ class _CameraExampleState extends State<CameraExample> {
                 final state = _cameraApplicationKey.currentState;
                 if (state == null) return;
 
-                final items = state.getCameraItems();
+                final items = state.getItems();
                 var i = 0;
 
                 for (final item in items) {
