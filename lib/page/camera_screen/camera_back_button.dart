@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_settings_bloc.dart';
+import '../../model/camera_settings_state.dart';
 import '../camera_roll/camera_control_button.dart';
-import 'camera_settings_flash_mode.dart';
 
-class CameraToggleSettingsButton extends StatelessWidget {
-  const CameraToggleSettingsButton({super.key});
+class CameraBackButton extends StatelessWidget {
+  const CameraBackButton({super.key, this.onPressed});
+
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     final button = CameraControlButton(
-      onPressed: () {
-        final bloc = context.read<CameraSettingsBloc>();
-        bloc.add(CameraSettingsSetVisible(visible: !bloc.state.visible));
-      },
-      child: const Icon(Icons.settings, color: Colors.white),
+      onPressed: onPressed,
+      backgroundColor: Colors.black54,
+      child: const Icon(Icons.arrow_back, color: Colors.white),
     );
 
-    return CameraSettingsSelector(
+    return BlocSelector<CameraSettingsBloc, CameraSettingsState, bool>(
       selector: (state) => state.visible,
       builder: (context, visible) => AnimatedOpacity(
         duration: const Duration(milliseconds: 300),

@@ -12,8 +12,10 @@ import '../controller/camera_zoom_bloc.dart';
 import '../model/camera_item.dart';
 import '../model/camera_settings_state.dart';
 import '../model/camera_zoom.dart';
+import 'camera_roll/camera_control_button.dart';
 import 'camera_roll/camera_roll_button.dart';
 import 'camera_roll/camera_roll_controls.dart';
+import 'camera_screen/camera_back_button.dart';
 import 'camera_screen/camera_screen.dart';
 import 'camera_screen/camera_screen_controls.dart';
 import 'camera_screen/camera_settings_exposure.dart';
@@ -27,10 +29,12 @@ class CameraApplication extends StatefulWidget {
 
   const CameraApplication({
     super.key,
+    this.onBackButtonPressed,
     required this.maxItems,
     this.initialItems,
   });
 
+  final VoidCallback? onBackButtonPressed;
   final int maxItems;
   final List<CameraItem>? initialItems;
 
@@ -126,6 +130,14 @@ class CameraApplicationState extends State<CameraApplication> {
               //   ),
               // ),
             ),
+          ),
+
+          Positioned(
+            width: CameraRollButton.kButtonSize,
+            height: CameraRollButton.kButtonSize,
+            top: mediaQuery.viewPadding.top,
+            left: 8.0,
+            child: CameraBackButton(onPressed: widget.onBackButtonPressed),
           ),
 
           Positioned(

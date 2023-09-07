@@ -13,19 +13,19 @@ void main() async {
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Example(),
+      home: CameraExample(),
     ),
   );
 }
 
-class Example extends StatefulWidget {
-  const Example({super.key});
+class CameraExample extends StatefulWidget {
+  const CameraExample({super.key});
 
   @override
-  State<Example> createState() => _ExampleState();
+  State<CameraExample> createState() => _CameraExampleState();
 }
 
-class _ExampleState extends State<Example> {
+class _CameraExampleState extends State<CameraExample> {
   final _cameraApplicationKey = GlobalKey<CameraApplicationState>();
 
   @override
@@ -35,6 +35,7 @@ class _ExampleState extends State<Example> {
         children: [
           CameraApplication(
             key: _cameraApplicationKey,
+            onBackButtonPressed: () => log("back button pressed"),
             maxItems: 10,
           ),
           Align(
