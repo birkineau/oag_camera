@@ -45,6 +45,7 @@ class _CameraSettingsFlashModeState extends State<CameraSettingsFlashMode>
   Widget build(BuildContext context) {
     final viewPadding = MediaQuery.of(context).viewPadding;
     final buttonStyle = TextButton.styleFrom(
+      backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
       splashFactory: InkSparkle.constantTurbulenceSeedSplashFactory,
     );
