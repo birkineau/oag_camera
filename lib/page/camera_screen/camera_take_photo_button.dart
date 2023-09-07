@@ -99,8 +99,15 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     setState(() => _tapDownAnimation = null);
   }
 
+  /// Cutler Bay driver,
+  /// at end of route,
+  /// pick up at facility on patient,
+  /// when drop-off at home => created drop-off at facility
+
   Future<void> _takePhoto(TapUpDetails details) async {
     final cameraRoll = context.read<CameraRollBloc>();
+
+    /// TODO: Create my own snackbar implementation...
     if (cameraRoll.state.isFull) {
       showTopSnackBar(
         Overlay.of(context),
@@ -112,6 +119,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
             style: TextStyle(fontSize: 16.0),
           ),
         ),
+        dismissType: DismissType.onSwipe,
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         curve: Curves.fastLinearToSlowEaseIn,
         reverseCurve: Curves.fastEaseInToSlowEaseOut,
