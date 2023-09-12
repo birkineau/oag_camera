@@ -31,31 +31,10 @@ class _CameraExampleState extends State<CameraExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          CameraApplication(
-            key: _cameraApplicationKey,
-            onBackButtonPressed: () => log("back button pressed"),
-            maxItems: 3,
-          ),
-          Align(
-            alignment: const Alignment(.0, .5),
-            child: FloatingActionButton(
-              onPressed: () {
-                final state = _cameraApplicationKey.currentState;
-                if (state == null) return;
-
-                final items = state.getItems();
-                var i = 0;
-
-                for (final item in items) {
-                  log("Item ${++i}: ${item.name}");
-                }
-              },
-              child: const Icon(Icons.add),
-            ),
-          ),
-        ],
+      body: CameraApplication(
+        key: _cameraApplicationKey,
+        onBackButtonPressed: () => log("back button pressed"),
+        maxItems: 3,
       ),
     );
   }

@@ -24,13 +24,16 @@ dependencies:
   flutter_bloc: ^8.1.3
 
   # Utility
+  auto_size_text: ^3.0.0
   collection: ^1.17.1
   equatable: ^2.0.5
   image: ^4.0.15
+  oag_snack_bar:
+    git:
+      url: https://github.com/birkineau/oag_snack_bar
   path: ^1.8.3
   path_provider: ^2.0.14
-  auto_size_text: ^3.0.0
-  top_snackbar_flutter: ^3.1.0
+  get_it: ^7.6.4
 
 dependency_overrides:
   collection: ^1.17.0

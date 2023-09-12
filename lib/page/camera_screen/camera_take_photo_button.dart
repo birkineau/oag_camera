@@ -1,16 +1,16 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:get_it/get_it.dart';
+import 'package:oag_snack_bar/oag_snack_bar.dart';
 
 import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
+import '../camera_application.dart';
 
 class CameraTakePhotoButton extends StatefulWidget {
   const CameraTakePhotoButton({super.key});
@@ -109,9 +109,12 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
     /// TODO: Create my own snackbar implementation...
     if (cameraRoll.state.isFull) {
-      showTopSnackBar(
-        Overlay.of(context),
-        const CameraSnackBar.error(
+      final topPadding = MediaQuery.of(context).viewPadding.top;
+
+      showOffsetOverlay(
+        Offset(.0, topPadding),
+        child: const CameraSnackBar.error(
+          height: 72.0,
           content: AutoSizeText(
             "The camera roll is full.",
             textAlign: TextAlign.center,
@@ -119,13 +122,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
             style: TextStyle(fontSize: 16.0),
           ),
         ),
-        dismissType: DismissType.onSwipe,
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        curve: Curves.fastLinearToSlowEaseIn,
-        reverseCurve: Curves.fastEaseInToSlowEaseOut,
-        animationDuration: const Duration(milliseconds: 500),
-        reverseAnimationDuration: const Duration(milliseconds: 400),
-        displayDuration: const Duration(milliseconds: 2000),
+        duration: const Duration(milliseconds: 1500),
       );
 
       return _depress();
@@ -154,6 +151,8 @@ class CameraSnackBar extends StatelessWidget {
 
   const CameraSnackBar({
     super.key,
+    this.width,
+    this.height,
     this.color = Colors.black,
     this.icon,
     required this.content,
@@ -161,8 +160,10 @@ class CameraSnackBar extends StatelessWidget {
 
   const CameraSnackBar.warning({
     super.key,
+    this.width,
+    this.height,
     this.color = Colors.amber,
-    this.content = const Text("An error occurred."),
+    required this.content,
   }) : icon = const Icon(
           Icons.warning_rounded,
           size: iconSize,
@@ -170,13 +171,17 @@ class CameraSnackBar extends StatelessWidget {
 
   const CameraSnackBar.error({
     super.key,
+    this.width,
+    this.height,
     this.color = Colors.red,
-    this.content = const Text("An error occurred."),
+    required this.content,
   }) : icon = const Icon(
           Icons.error_rounded,
           size: iconSize,
         );
 
+  final double? width;
+  final double? height;
   final Color? color;
   final Widget? icon;
   final Widget content;
@@ -186,54 +191,44 @@ class CameraSnackBar extends StatelessWidget {
     final theme = Theme.of(context);
     final hasIcon = icon != null;
 
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.only(top: 12.0),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              spreadRadius: 1.5,
-              blurRadius: 1.5,
-            ),
-          ],
-        ),
-        alignment: Alignment.center,
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: hasIcon
-                  ? Row(
-                      children: [
-                        IconTheme(
-                          data: IconThemeData(color: color),
-                          child: icon!,
+    return Container(
+      width: width,
+      height: height,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      // padding: const EdgeInsets.only(top: 12.0),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, spreadRadius: 1.5, blurRadius: 1.5),
+        ],
+      ),
+      alignment: Alignment.center,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: hasIcon
+                ? Row(
+                    children: [
+                      IconTheme(
+                        data: IconThemeData(color: color),
+                        child: icon!,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: content,
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: content,
-                          ),
-                        ),
-                        const SizedBox(width: iconSize),
-                      ],
-                    )
-                  : content,
-            ),
-            const SizedBox(height: 8.0),
-            _DurationLinearProgressIndicator(
-              duration: const Duration(milliseconds: 2500),
-              color: color ?? Colors.black,
-            ),
-          ],
-        ),
+                      ),
+                      const SizedBox(width: iconSize),
+                    ],
+                  )
+                : content,
+          ),
+        ],
       ),
     );
   }
@@ -262,11 +257,10 @@ class _DurationLinearProgressIndicatorState
   @override
   void initState() {
     super.initState();
-
     _animationController = AnimationController(
       vsync: this,
       duration: widget.duration,
-    )..forward();
+    );
   }
 
   @override
@@ -277,15 +271,21 @@ class _DurationLinearProgressIndicatorState
 
   @override
   Widget build(BuildContext context) {
+    log("huh");
+    _animationController.forward(from: .0);
+
     final backgroundColor = widget.color.withOpacity(.33);
 
     return AnimatedBuilder(
       animation: _animationController,
-      builder: (context, child) => LinearProgressIndicator(
-        value: 1.0 - _animationController.value,
-        backgroundColor: backgroundColor,
-        color: widget.color,
-      ),
+      builder: (context, child) {
+        log("value: ${_animationController.value}");
+        return LinearProgressIndicator(
+          value: 1.0 - _animationController.value,
+          backgroundColor: backgroundColor,
+          color: widget.color,
+        );
+      },
     );
   }
 }
