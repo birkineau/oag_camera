@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -225,4 +226,19 @@ class CameraApplicationState extends State<CameraApplication> {
 
     _cameraStateBloc.add(setLensDirection);
   }
+}
+
+class MultiGestureRecognizer extends GestureRecognizer {
+  @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
+  }
+
+  @override
+  void acceptGesture(int pointer) {
+    acceptGesture(pointer);
+  }
+
+  @override
+  String get debugDescription => "Multi gesture recognizer";
 }

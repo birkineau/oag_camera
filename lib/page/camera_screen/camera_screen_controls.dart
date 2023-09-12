@@ -24,15 +24,12 @@ class CameraScreenControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const secondaryButtonSize = 56.0;
-    const primaryButtonSize = secondaryButtonSize + 16.0;
-
     return const Column(
       children: [
         /// Zoom toggle/indicator.
         SizedBox(
-          width: secondaryButtonSize,
-          height: secondaryButtonSize,
+          width: CameraRollButton.kButtonSize,
+          height: CameraRollButton.kButtonSize,
           child: CameraZoomIndicator(),
         ),
         Row(
@@ -42,8 +39,8 @@ class CameraScreenControls extends StatelessWidget {
             Stack(
               children: [
                 SizedBox(
-                  width: secondaryButtonSize,
-                  height: secondaryButtonSize,
+                  width: CameraRollButton.kButtonSize,
+                  height: CameraRollButton.kButtonSize,
                   child: CameraRollButton(),
                 ),
               ],
@@ -51,15 +48,15 @@ class CameraScreenControls extends StatelessWidget {
 
             /// Take photo button.
             SizedBox(
-              width: primaryButtonSize,
-              height: primaryButtonSize,
+              width: CameraRollButton.kButtonSize + 16.0,
+              height: CameraRollButton.kButtonSize + 16.0,
               child: CameraTakePhotoButton(),
             ),
 
             /// Toggle lens direction button.
             SizedBox(
-              width: secondaryButtonSize,
-              height: secondaryButtonSize,
+              width: CameraRollButton.kButtonSize,
+              height: CameraRollButton.kButtonSize,
               child: CameraToggleLensDirectionButton(),
             ),
           ],

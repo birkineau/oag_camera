@@ -56,21 +56,15 @@ class _CameraSettingsFlashModeState extends State<CameraSettingsFlashMode>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          GestureDetector(
-            onTap: () {
-              final bloc = context.read<CameraSettingsBloc>();
-              bloc.add(CameraSettingsSetVisible(visible: !bloc.state.visible));
-            },
-            child: Container(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: const Text(
-                "FLASH MODE",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12.0,
-                ),
+          Container(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: const Text(
+              "FLASH MODE",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12.0,
               ),
             ),
           ),

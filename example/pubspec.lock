@@ -324,7 +324,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6f36f88c2045dd3ae574a2c9f53cefb1155292b6"
+      resolved-ref: "7d91d256dffe4a1321b7e68ae0efd260494a36f1"
       url: "https://github.com/birkineau/oag_snack_bar"
     source: git
     version: "0.0.1"

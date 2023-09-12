@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +108,6 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
               }
 
               return GestureDetector(
-                behavior: HitTestBehavior.translucent,
                 onScaleUpdate: _updateCameraZoom,
                 onScaleEnd: _saveCameraZoom,
                 child: Transform.scale(
