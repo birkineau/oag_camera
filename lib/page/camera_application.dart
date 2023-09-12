@@ -199,6 +199,7 @@ class CameraApplicationState extends State<CameraApplication> {
     /// Reset zoom on double tap, if the zoom is not already at the
     /// minimum zoom and if the settings are closed.
     if (_cameraZoomBloc.state.current != _cameraZoomBloc.state.min) {
+      log("reset zoom");
       return _cameraZoomBloc.add(const ResetCameraZoom());
     }
 

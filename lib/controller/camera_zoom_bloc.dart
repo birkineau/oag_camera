@@ -54,7 +54,7 @@ class CameraZoomBloc extends Bloc<CameraZoomEvent, CameraZoom> {
 
   /// Sets the camera zoom level by a specific value.
   void _setByValue(SetCameraZoomByValue event, Emitter<CameraZoom> emit) {
-    if (_isAtBoundary(event.value) && _isAtBoundary(state.current)) return;
+    if (_isAtBoundary(state.current) && event.value > state.current) return;
     _camera.setZoomLevel(event.value.clamp(state.min, state.max));
     emit(state.copyWith(previous: event.value, current: event.value));
   }
