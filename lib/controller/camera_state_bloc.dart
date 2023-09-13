@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:path/path.dart' as path;
 
 import '../model/camera_item.dart';
@@ -51,7 +52,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
   ///
   /// Throws an [Exception] if the camera controller is null or is not
   /// initialized.
-  Future<CameraItem?> takePhoto() async {
+  Future<CameraItem?> takePhoto({bool geolocate = false}) async {
     final controller = state.controller;
 
     /// Ensure the [CameraController] is initialized.
@@ -65,6 +66,17 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
       final bytes = await file.readAsBytes();
       final buffer = await ImmutableBuffer.fromUint8List(bytes);
       final descriptor = await ui.ImageDescriptor.encoded(buffer);
+
+      final perm = await Geolocator.checkPermission();
+      if (perm == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      log("pos: $pos");
 
       final item = CameraItem(
         name: name,

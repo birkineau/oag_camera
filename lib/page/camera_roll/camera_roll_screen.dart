@@ -31,6 +31,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   late PageController _pageController;
   final _transformationController = TransformationController();
 
+  DateTime? _lastTap;
   var _scale = _minScale;
   var _listenForPageChange = true;
 
@@ -142,14 +143,22 @@ class _CameraRollScreenState extends State<CameraRollScreen>
     );
 
     return GestureDetector(
-      onDoubleTap: () async {
-        if (isZoomedIn) {
-          await _resetScale();
-          if (mounted) setState(() {});
+      onTapDown: (details) {
+        final now = DateTime.now();
+
+        if (_lastTap == null) {
+          _lastTap = now;
           return;
         }
 
-        Navigator.pop(context);
+        final previousTap = _lastTap ?? now;
+        _lastTap = now;
+
+        final difference = now.difference(previousTap);
+        if (difference.inMilliseconds < 300) {
+          _handleItemPreviewDoubleTap(isZoomedIn);
+          _lastTap = null;
+        }
       },
       child: viewer,
     );
@@ -174,6 +183,16 @@ class _CameraRollScreenState extends State<CameraRollScreen>
     _scale = _minScale;
     _transformationTween.begin = _transformationController.value;
     return await _animationController.forward(from: .0);
+  }
+
+  Future<void> _handleItemPreviewDoubleTap(bool isZoomedIn) async {
+    if (isZoomedIn) {
+      await _resetScale();
+      if (mounted) setState(() {});
+      return;
+    }
+
+    Navigator.pop(context);
   }
 
   void _onPageChanged(int index) {

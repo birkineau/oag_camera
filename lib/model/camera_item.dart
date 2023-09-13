@@ -44,6 +44,21 @@ class CameraItem with _$CameraItem, EquatableMixin {
       ];
 }
 
+Future<CameraItem> compressCameraItem(
+  CameraItem item, {
+  required int quality,
+  CompressFormat format = CompressFormat.jpeg,
+}) async {
+  final compressedBytes = await FlutterImageCompress.compressWithList(
+    item.bytes,
+    quality: quality,
+    format: format,
+    autoCorrectionAngle: false,
+  );
+
+  return item.copyWith(bytes: compressedBytes);
+}
+
 Future<File> moveFile({
   required File source,
   required String newPath,
@@ -59,19 +74,4 @@ Future<File> moveFile({
   } catch (o) {
     throw Exception("Failed to move file.");
   }
-}
-
-Future<CameraItem> compressCameraItem(
-  CameraItem item, {
-  required int quality,
-  CompressFormat format = CompressFormat.jpeg,
-}) async {
-  final compressedBytes = await FlutterImageCompress.compressWithList(
-    item.bytes,
-    quality: quality,
-    format: format,
-    autoCorrectionAngle: false,
-  );
-
-  return item.copyWith(bytes: compressedBytes);
 }

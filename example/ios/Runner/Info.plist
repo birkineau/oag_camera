@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Test camera</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Test when in use usage</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Test microphone</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

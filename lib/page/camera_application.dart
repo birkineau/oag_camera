@@ -66,6 +66,8 @@ class CameraApplicationState extends State<CameraApplication> {
   final _cameraZoomBloc = CameraZoomBloc();
   final _cameraSettingsBloc = CameraSettingsBloc();
 
+  DateTime? _lastTap;
+
   @override
   void initState() {
     super.initState();
@@ -106,7 +108,23 @@ class CameraApplicationState extends State<CameraApplication> {
         BlocProvider.value(value: _cameraRollBloc),
       ],
       child: GestureDetector(
-        onDoubleTap: _handleLivePreviewDoubleTap,
+        onTapDown: (details) {
+          final now = DateTime.now();
+
+          if (_lastTap == null) {
+            _lastTap = now;
+            return;
+          }
+
+          final previousTap = _lastTap ?? now;
+          _lastTap = now;
+
+          final difference = now.difference(previousTap);
+          if (difference.inMilliseconds < 300) {
+            _handleLivePreviewDoubleTap();
+            _lastTap = null;
+          }
+        },
         child: OagOverlay(
           key: GetIt.instance<GlobalKey<OagOverlayState>>(),
           duration: const Duration(milliseconds: 500),
