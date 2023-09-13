@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -107,14 +108,13 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
   Future<void> _takePhoto(TapUpDetails details) async {
     final cameraRoll = context.read<CameraRollBloc>();
 
-    /// TODO: Create my own snackbar implementation...
     if (cameraRoll.state.isFull) {
-      final topPadding = MediaQuery.of(context).viewPadding.top;
+      final topPadding = math.max(8.0, MediaQuery.of(context).viewPadding.top);
 
-      showOffsetOverlay(
+      showOverlay(
         Offset(.0, topPadding),
         child: const CameraSnackBar.error(
-          height: 72.0,
+          height: 64.0,
           content: AutoSizeText(
             "The camera roll is full.",
             textAlign: TextAlign.center,
@@ -122,7 +122,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
             style: TextStyle(fontSize: 16.0),
           ),
         ),
-        duration: const Duration(milliseconds: 1500),
+        duration: const Duration(milliseconds: 2250),
       );
 
       return _depress();
@@ -134,7 +134,26 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
       final photo = await cameraController.takePhoto();
 
       if (photo == null) {
-        throw Exception("Unable to take photo.");
+        if (!mounted) return;
+
+        final topPadding = math.max(
+          8.0,
+          MediaQuery.of(context).viewPadding.top,
+        );
+
+        return showOverlay(
+          Offset(.0, topPadding),
+          child: const CameraSnackBar.error(
+            height: 64.0,
+            content: AutoSizeText(
+              "ERROR: Unable to take photo.",
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ),
+          duration: const Duration(milliseconds: 2250),
+        );
       }
 
       cameraRoll.add(AddItemEvent(item: photo));

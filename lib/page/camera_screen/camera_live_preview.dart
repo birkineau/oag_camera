@@ -102,10 +102,8 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
               /// orientation is used.
               var scale = size.aspectRatio * controller.value.aspectRatio;
 
-              /// To prevent scaling down, invert the value.
-              if (scale < 1.0) {
-                scale = 1.0 / scale;
-              }
+              /// Invert the value if it would scale down.
+              if (scale < 1.0) scale = 1.0 / scale;
 
               return GestureDetector(
                 onScaleUpdate: _updateCameraZoom,

@@ -28,7 +28,7 @@ import 'camera_screen/camera_toggle_settings_button.dart';
 
 final _overlayKey = GlobalKey<OagOverlayState>();
 
-void showOffsetOverlay(
+void showOverlay(
   Offset offset, {
   required Widget child,
   Duration? duration,
