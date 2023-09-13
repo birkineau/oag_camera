@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 final _pageStorageBucket = PageStorageBucket();
@@ -72,8 +75,8 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
     _centerIndex = widget.initialIndex ?? widget.items.length - 1;
     _scrollController.addListener(_onScroll);
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => _scrollController.jumpTo(_indexToOffset(_centerIndex)),
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) => _scrollController.jumpTo(_indexToOffset(_centerIndex)),
     );
   }
 
@@ -89,6 +92,27 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
     _halfExtent = _extent / 2.0;
     _padding = (_extent - widget.itemSize) / 2.0;
     _delta = _halfExtent - _padding - widget.itemSize;
+  }
+
+  @override
+  void didUpdateWidget(CenterItemSelector<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // If the number of items has decreased
+    if (widget.items.length < oldWidget.items.length) {
+      // If the old center item was the last in the list
+      if (_centerIndex == oldWidget.items.length - 1) {
+        // Select the item before it
+        _centerIndex -= 1;
+      } else {
+        // Otherwise, keep the _centerIndex the same
+        // as it now points to the item after the deleted item.
+      }
+
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _scrollController.jumpTo(_indexToOffset(_centerIndex));
+      });
+    }
   }
 
   @override
@@ -168,9 +192,7 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
   }
 
   void _onScroll() {
-    if (_ignoreScrollNotification) {
-      return;
-    }
+    if (_ignoreScrollNotification) return;
 
     final centerOffset =
         _scrollController.offset + _delta + widget.itemSize / 2.0;
@@ -201,6 +223,9 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
     Curve curve = Curves.decelerate,
   }) async {
     _ignoreScrollNotification = true;
+
+    log("current offset: ${_scrollController.offset}");
+    log("   next offset: ${_indexToOffset(index)}");
 
     await _scrollController.animateTo(
       _indexToOffset(index),

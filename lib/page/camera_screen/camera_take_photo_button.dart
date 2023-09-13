@@ -4,8 +4,6 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:oag_snack_bar/oag_snack_bar.dart';
 
 import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
@@ -24,9 +22,6 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<double> _scaleAnimation;
-
-  final bool _isTakingPhoto = false;
-  Future<void>? _tapDownAnimation;
 
   @override
   void initState() {
@@ -56,48 +51,53 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<CameraStateBloc, CameraState, CameraStatus>(
-      selector: (state) => state.status,
-      builder: (context, status) => GestureDetector(
-        /// Prevent the user from taking photos when the camera controller is
-        /// uninitialized and from taking multiple photos at the same time.
-        onTapDown:
-            status == CameraStatus.ready && !_isTakingPhoto ? _press : null,
-        onTapUp: _takePhoto,
-        onTapCancel: _depress,
+    final button = Container(
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        border: Border.all(color: Colors.white, width: 3.0),
+        shape: BoxShape.circle,
+      ),
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) => Transform.scale(
+          scale: _scaleAnimation.value,
+          child: child,
+        ),
         child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black54,
-            border: Border.all(color: Colors.white, width: 3.0),
+          margin: const EdgeInsets.all(3.0),
+          decoration: const BoxDecoration(
+            color: Colors.white,
             shape: BoxShape.circle,
-          ),
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) => Transform.scale(
-              scale: _scaleAnimation.value,
-              child: child,
-            ),
-            child: Container(
-              margin: const EdgeInsets.all(3.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-            ),
           ),
         ),
       ),
     );
+
+    return BlocSelector<CameraStateBloc, CameraState, CameraStatus>(
+      selector: (state) => state.status,
+      builder: (context, status) {
+        final isReady = status == CameraStatus.ready;
+
+        return GestureDetector(
+          /// Prevent the user from taking photos when the camera controller is
+          /// uninitialized and from taking multiple photos at the same time.
+          onTapDown: isReady ? _press : null,
+          onTapUp: isReady ? _takePhoto : null,
+          onTapCancel: _depress,
+          child: button,
+        );
+      },
+    );
   }
 
-  void _press(TapDownDetails details) {
-    _tapDownAnimation = _animationController.forward();
+  Future<void> _press(TapDownDetails details) async {
+    await _animationController.forward();
     setState(() {});
   }
 
   Future<void> _depress() async {
     await _animationController.reverse();
-    setState(() => _tapDownAnimation = null);
+    setState(() {});
   }
 
   /// Cutler Bay driver,

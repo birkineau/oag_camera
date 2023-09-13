@@ -34,7 +34,7 @@ class _CameraExampleState extends State<CameraExample> {
       body: CameraApplication(
         key: _cameraApplicationKey,
         onBackButtonPressed: () => log("back button pressed"),
-        maxItems: 3,
+        maxItems: 10,
       ),
     );
   }

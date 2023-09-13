@@ -25,6 +25,8 @@ class CameraItem with _$CameraItem, EquatableMixin {
     required CameraItemType type,
     required CameraLensDirection lensDirection,
     required DeviceOrientation orientation,
+    required double latitude,
+    required double longitude,
     @UtcDateTimeJsonConverter() required DateTime timeStamp,
   }) = _CameraItem;
 
@@ -41,6 +43,8 @@ class CameraItem with _$CameraItem, EquatableMixin {
         lensDirection,
         orientation,
         timeStamp,
+        latitude,
+        longitude,
       ];
 }
 

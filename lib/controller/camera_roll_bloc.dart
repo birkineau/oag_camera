@@ -90,7 +90,7 @@ class CameraRollBloc extends Bloc<CameraRollEvent, CameraRollState> {
     if (newItems.isEmpty) {
       newSelectedIndex = null;
     } else {
-      newSelectedIndex = math.min(newItems.length - 1, deletionIndex + 1);
+      newSelectedIndex = math.min(newItems.length - 1, deletionIndex);
     }
 
     emit(

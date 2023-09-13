@@ -25,9 +25,8 @@ dependencies:
 
   # Utility
   auto_size_text: ^3.0.0
-  collection: ^1.17.1
+  collection: ^1.18.0
   equatable: ^2.0.5
-  image: ^4.0.15
   oag_snack_bar:
     git:
       url: https://github.com/birkineau/oag_snack_bar
@@ -37,8 +36,7 @@ dependencies:
   geolocator: ^10.0.1
 
 dependency_overrides:
-  collection: ^1.17.0
-  path: ^1.8.2
+  collection: ^1.17.2
 
 dev_dependencies:
   flutter_test:

@@ -28,6 +28,8 @@ mixin _$CameraItem {
   CameraItemType get type => throw _privateConstructorUsedError;
   CameraLensDirection get lensDirection => throw _privateConstructorUsedError;
   DeviceOrientation get orientation => throw _privateConstructorUsedError;
+  double get latitude => throw _privateConstructorUsedError;
+  double get longitude => throw _privateConstructorUsedError;
   @UtcDateTimeJsonConverter()
   DateTime get timeStamp => throw _privateConstructorUsedError;
 
@@ -51,6 +53,8 @@ abstract class $CameraItemCopyWith<$Res> {
       CameraItemType type,
       CameraLensDirection lensDirection,
       DeviceOrientation orientation,
+      double latitude,
+      double longitude,
       @UtcDateTimeJsonConverter() DateTime timeStamp});
 }
 
@@ -74,6 +78,8 @@ class _$CameraItemCopyWithImpl<$Res, $Val extends CameraItem>
     Object? type = null,
     Object? lensDirection = null,
     Object? orientation = null,
+    Object? latitude = null,
+    Object? longitude = null,
     Object? timeStamp = null,
   }) {
     return _then(_value.copyWith(
@@ -105,6 +111,14 @@ class _$CameraItemCopyWithImpl<$Res, $Val extends CameraItem>
           ? _value.orientation
           : orientation // ignore: cast_nullable_to_non_nullable
               as DeviceOrientation,
+      latitude: null == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as double,
+      longitude: null == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as double,
       timeStamp: null == timeStamp
           ? _value.timeStamp
           : timeStamp // ignore: cast_nullable_to_non_nullable
@@ -129,6 +143,8 @@ abstract class _$$_CameraItemCopyWith<$Res>
       CameraItemType type,
       CameraLensDirection lensDirection,
       DeviceOrientation orientation,
+      double latitude,
+      double longitude,
       @UtcDateTimeJsonConverter() DateTime timeStamp});
 }
 
@@ -150,6 +166,8 @@ class __$$_CameraItemCopyWithImpl<$Res>
     Object? type = null,
     Object? lensDirection = null,
     Object? orientation = null,
+    Object? latitude = null,
+    Object? longitude = null,
     Object? timeStamp = null,
   }) {
     return _then(_$_CameraItem(
@@ -181,6 +199,14 @@ class __$$_CameraItemCopyWithImpl<$Res>
           ? _value.orientation
           : orientation // ignore: cast_nullable_to_non_nullable
               as DeviceOrientation,
+      latitude: null == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as double,
+      longitude: null == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as double,
       timeStamp: null == timeStamp
           ? _value.timeStamp
           : timeStamp // ignore: cast_nullable_to_non_nullable
@@ -200,6 +226,8 @@ class _$_CameraItem extends _CameraItem {
       required this.type,
       required this.lensDirection,
       required this.orientation,
+      required this.latitude,
+      required this.longitude,
       @UtcDateTimeJsonConverter() required this.timeStamp})
       : super._();
 
@@ -221,6 +249,10 @@ class _$_CameraItem extends _CameraItem {
   final CameraLensDirection lensDirection;
   @override
   final DeviceOrientation orientation;
+  @override
+  final double latitude;
+  @override
+  final double longitude;
   @override
   @UtcDateTimeJsonConverter()
   final DateTime timeStamp;
@@ -248,6 +280,8 @@ abstract class _CameraItem extends CameraItem {
           required final CameraItemType type,
           required final CameraLensDirection lensDirection,
           required final DeviceOrientation orientation,
+          required final double latitude,
+          required final double longitude,
           @UtcDateTimeJsonConverter() required final DateTime timeStamp}) =
       _$_CameraItem;
   const _CameraItem._() : super._();
@@ -270,6 +304,10 @@ abstract class _CameraItem extends CameraItem {
   CameraLensDirection get lensDirection;
   @override
   DeviceOrientation get orientation;
+  @override
+  double get latitude;
+  @override
+  double get longitude;
   @override
   @UtcDateTimeJsonConverter()
   DateTime get timeStamp;

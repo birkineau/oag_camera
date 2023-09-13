@@ -14,20 +14,11 @@ class CameraRollItemSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectorKey = GlobalKey<CenterItemSelectorState>();
-
-    final selector = BlocConsumer<CameraRollBloc, CameraRollState>(
-      listenWhen: _selectionChanged,
-      listener: (context, state) => _updateSelector(
-        context,
-        selectorKey,
-        state,
-      ),
+    final itemSelector = BlocBuilder<CameraRollBloc, CameraRollState>(
       buildWhen: (previous, current) => _itemCountChanged(previous, current),
       builder: (context, state) => LayoutBuilder(
         builder: (context, constraints) => CenterItemSelector(
-          key: selectorKey,
-          itemSize: kItemSize,
+          itemSize: CameraRollItemSelector.kItemSize,
           extent: constraints.maxWidth,
           onItemSelected: (index) => _setSelectedItem(context, index),
           initialIndex: state.selectedIndex,
@@ -40,8 +31,8 @@ class CameraRollItemSelector extends StatelessWidget {
               index: index,
               selected: isSelected,
               child: SizedBox(
-                width: kItemSize,
-                height: kItemSize,
+                width: CameraRollItemSelector.kItemSize,
+                height: CameraRollItemSelector.kItemSize,
                 child: CameraItemPreview(
                   scaleToFit: false,
                   filterQuality: FilterQuality.none,
@@ -55,39 +46,20 @@ class CameraRollItemSelector extends StatelessWidget {
     );
 
     return Container(
-      height: kItemSize,
+      height: CameraRollItemSelector.kItemSize,
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
       clipBehavior: Clip.antiAlias,
-      child: selector,
+      child: itemSelector,
     );
-  }
-
-  bool _selectionChanged(CameraRollState previous, CameraRollState current) {
-    return current.selectedIndex != null &&
-        previous.selectedIndex != current.selectedIndex;
   }
 
   bool _itemCountChanged(CameraRollState previous, CameraRollState current) {
     return current.items.isNotEmpty &&
         previous.items.length != current.items.length;
-  }
-
-  void _updateSelector(
-    BuildContext context,
-    GlobalKey<CenterItemSelectorState> key,
-    CameraRollState state,
-  ) {
-    final selectorState = key.currentState;
-
-    if (selectorState == null) {
-      return;
-    }
-
-    selectorState.selectItemAt(state.selectedIndex!, notify: false);
   }
 
   void _setSelectedItem(BuildContext context, int index) {

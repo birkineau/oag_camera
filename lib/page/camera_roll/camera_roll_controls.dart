@@ -88,7 +88,6 @@ class CameraRollControls extends StatelessWidget {
 
   void _deleteSelectedItem(BuildContext context) {
     final cameraRollBloc = context.read<CameraRollBloc>();
-
     if (cameraRollBloc.state.length == 1) {
       Navigator.pop(context);
     }

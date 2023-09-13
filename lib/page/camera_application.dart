@@ -14,6 +14,7 @@ import '../controller/camera_state_bloc.dart';
 import '../controller/camera_zoom_bloc.dart';
 import '../model/camera_item.dart';
 import '../model/camera_settings_state.dart';
+import '../model/camera_status.dart';
 import '../model/camera_zoom.dart';
 import 'camera_roll/camera_control_button.dart';
 import 'camera_roll/camera_roll_button.dart';
@@ -218,45 +219,27 @@ class CameraApplicationState extends State<CameraApplication> {
     /// Reset zoom on double tap, if the zoom is not already at the
     /// minimum zoom and if the settings are closed.
     if (_cameraZoomBloc.state.current != _cameraZoomBloc.state.min) {
-      log("reset zoom");
       return _cameraZoomBloc.add(const ResetCameraZoom());
     }
 
+    /// Toggle the camera lens direction on double tap, if the camera is ready.
+    if (_cameraStateBloc.state.status != CameraStatus.ready) return;
     _cameraBlurBloc.add(const BlurScreenshotEvent());
 
     final controller = _cameraStateBloc.state.controller;
-    if (controller == null) return;
+    if (controller == null) {
+      _cameraBlurBloc.add(const UnblurScreenshotEvent());
+      return;
+    }
 
     final isBack =
         controller.description.lensDirection == CameraLensDirection.back;
 
-    final SetCameraLensDirectionEvent setLensDirection;
-
-    if (isBack) {
-      setLensDirection = const SetCameraLensDirectionEvent(
-        lensDirection: CameraLensDirection.front,
-      );
-    } else {
-      setLensDirection = const SetCameraLensDirectionEvent(
-        lensDirection: CameraLensDirection.back,
-      );
-    }
-
-    _cameraStateBloc.add(setLensDirection);
+    _cameraStateBloc.add(
+      SetCameraLensDirectionEvent(
+        lensDirection:
+            isBack ? CameraLensDirection.front : CameraLensDirection.back,
+      ),
+    );
   }
-}
-
-class MultiGestureRecognizer extends GestureRecognizer {
-  @override
-  void rejectGesture(int pointer) {
-    acceptGesture(pointer);
-  }
-
-  @override
-  void acceptGesture(int pointer) {
-    acceptGesture(pointer);
-  }
-
-  @override
-  String get debugDescription => "Multi gesture recognizer";
 }

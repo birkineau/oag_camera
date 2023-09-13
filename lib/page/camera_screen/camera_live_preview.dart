@@ -84,7 +84,7 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
         final controller = state.controller;
         final isControllerReady = controller != null &&
             controller.value.isInitialized &&
-            state.status == CameraStatus.ready;
+            state.status != CameraStatus.notReady;
 
         /// If the camera is not ready, display the placeholder.
         if (isControllerReady) {

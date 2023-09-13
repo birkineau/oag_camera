@@ -14,6 +14,8 @@ import '../model/camera_item_type.dart';
 import '../model/camera_state.dart';
 import '../model/camera_status.dart';
 
+typedef _ImageData = ({Uint8List bytes, int width, int height});
+
 const _notReadyState = CameraState(
   controller: null,
   status: CameraStatus.notReady,
@@ -52,7 +54,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
   ///
   /// Throws an [Exception] if the camera controller is null or is not
   /// initialized.
-  Future<CameraItem?> takePhoto({bool geolocate = false}) async {
+  Future<CameraItem?> takePhoto() async {
     final controller = state.controller;
 
     /// Ensure the [CameraController] is initialized.
@@ -61,38 +63,54 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     }
 
     try {
-      final file = await controller.takePicture();
-      final name = path.basename(file.path);
-      final bytes = await file.readAsBytes();
-      final buffer = await ImmutableBuffer.fromUint8List(bytes);
-      final descriptor = await ui.ImageDescriptor.encoded(buffer);
+      emit(state.copyWith(status: CameraStatus.takingPhoto));
 
-      final perm = await Geolocator.checkPermission();
-      if (perm == LocationPermission.denied) {
-        await Geolocator.requestPermission();
+      final file = await controller.takePicture();
+
+      Future<_ImageData> getImageData() async {
+        final bytes = await file.readAsBytes();
+        final buffer = await ImmutableBuffer.fromUint8List(bytes);
+        final descriptor = await ui.ImageDescriptor.encoded(buffer);
+
+        final data = (
+          bytes: bytes,
+          width: descriptor.width,
+          height: descriptor.height,
+        );
+
+        buffer.dispose();
+        descriptor.dispose();
+
+        return data;
       }
 
-      final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+      final operation = await Future.wait(
+        [
+          getImageData(),
+          Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high),
+        ],
       );
 
-      log("pos: $pos");
+      final name = path.basename(file.path);
+      final data = operation[0] as _ImageData;
+      final position = operation[1] as Position;
 
       final item = CameraItem(
         name: name,
-        bytes: bytes,
-        width: descriptor.width,
-        height: descriptor.height,
+        bytes: data.bytes,
+        width: data.width,
+        height: data.height,
         type: CameraItemType.photo,
         lensDirection: controller.description.lensDirection,
         orientation: controller.value.deviceOrientation,
-        timeStamp: DateTime.now(),
+        timeStamp: position.timestamp ?? DateTime.now(),
+        latitude: position.latitude,
+        longitude: position.longitude,
       );
 
       log("Photo taken '$name'.", name: "$CameraStateBloc.takePhoto");
-      buffer.dispose();
-      descriptor.dispose();
 
+      emit(state.copyWith(status: CameraStatus.ready));
       return item;
     } on CameraException catch (e) {
       log(

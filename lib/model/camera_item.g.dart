@@ -16,6 +16,8 @@ _$_CameraItem _$$_CameraItemFromJson(Map<String, dynamic> json) =>
       lensDirection:
           $enumDecode(_$CameraLensDirectionEnumMap, json['lensDirection']),
       orientation: $enumDecode(_$DeviceOrientationEnumMap, json['orientation']),
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
       timeStamp: const UtcDateTimeJsonConverter()
           .fromJson(json['timeStamp'] as String),
     );
@@ -29,6 +31,8 @@ Map<String, dynamic> _$$_CameraItemToJson(_$_CameraItem instance) =>
       'type': _$CameraItemTypeEnumMap[instance.type]!,
       'lensDirection': _$CameraLensDirectionEnumMap[instance.lensDirection]!,
       'orientation': _$DeviceOrientationEnumMap[instance.orientation]!,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
       'timeStamp': const UtcDateTimeJsonConverter().toJson(instance.timeStamp),
     };
 

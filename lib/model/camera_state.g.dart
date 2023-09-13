@@ -32,6 +32,7 @@ Value? _$JsonConverterFromJson<Json, Value>(
 
 const _$CameraStatusEnumMap = {
   CameraStatus.notReady: 'notReady',
+  CameraStatus.takingPhoto: 'takingPhoto',
   CameraStatus.ready: 'ready',
 };
 
