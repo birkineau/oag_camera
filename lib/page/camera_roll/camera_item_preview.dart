@@ -142,9 +142,7 @@ class _CameraItemPreviewState extends State<CameraItemPreview>
       child: AnimatedBuilder(
         animation: _animationController,
         builder: _builder,
-        child: CameraItemWidget(
-          item: widget.item,
-        ),
+        child: CameraItemWidget(item: widget.item),
       ),
     );
   }

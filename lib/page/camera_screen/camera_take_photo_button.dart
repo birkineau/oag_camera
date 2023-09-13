@@ -125,7 +125,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
         duration: const Duration(milliseconds: 2250),
       );
 
-      return _depress();
+      return await _depress();
     }
 
     final cameraController = context.read<CameraStateBloc>();

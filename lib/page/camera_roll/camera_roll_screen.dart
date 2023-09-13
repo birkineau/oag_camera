@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,8 +74,8 @@ class _CameraRollScreenState extends State<CameraRollScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isZoomedIn = _scale > _minScale;
     final cameraStateBloc = context.read<CameraStateBloc>();
+    final isZoomedIn = _scale > _minScale;
 
     final child = CameraOrientationBuilder(
       bloc: context.read<CameraStateBloc>(),
@@ -130,16 +132,26 @@ class _CameraRollScreenState extends State<CameraRollScreen>
       },
     );
 
+    final viewer = InteractiveViewer(
+      transformationController: _transformationController,
+      onInteractionEnd: _updateScale,
+      minScale: _minScale,
+      maxScale: _maxScale,
+      clipBehavior: Clip.none,
+      child: child,
+    );
+
     return GestureDetector(
-      onDoubleTap: isZoomedIn ? _resetScale : null,
-      child: InteractiveViewer(
-        transformationController: _transformationController,
-        onInteractionEnd: _updateScale,
-        minScale: _minScale,
-        maxScale: _maxScale,
-        clipBehavior: Clip.none,
-        child: child,
-      ),
+      onDoubleTap: () async {
+        if (isZoomedIn) {
+          await _resetScale();
+          if (mounted) setState(() {});
+          return;
+        }
+
+        Navigator.pop(context);
+      },
+      child: viewer,
     );
   }
 
@@ -158,9 +170,10 @@ class _CameraRollScreenState extends State<CameraRollScreen>
     _listenForPageChange = true;
   }
 
-  void _resetScale() async {
+  Future<void> _resetScale() async {
+    _scale = _minScale;
     _transformationTween.begin = _transformationController.value;
-    _animationController.forward(from: .0);
+    return await _animationController.forward(from: .0);
   }
 
   void _onPageChanged(int index) {
