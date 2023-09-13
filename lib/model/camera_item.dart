@@ -47,41 +47,17 @@ Future<File> moveFile({
   }
 }
 
-/// Compresses an image [File] with the specified [quality]. This function
-/// appends [nameTag] to the end of the file name. The default value of
-/// [nameTag] is "_cmp".
-///
-/// The compressed file is stored in the same directory as the source file.
-///
-/// Example: 'my_image.jpg' is compressed and saved as 'my_image_cmp.jpg'.
-Future<File?> compressImage(
-  File file, {
+Future<CameraItem> compressCameraItem(
+  CameraItem item, {
   required int quality,
-  bool allowUncompressed = true,
   CompressFormat format = CompressFormat.jpeg,
-  String nameTag = "_cmp",
 }) async {
-  if (!file.existsSync()) {
-    throw Exception("File does not exist.");
-  }
-
-  /// Do not compress the file if it already compressed.
-  if (path.basename(file.path).contains(nameTag)) return null;
-
-  final name = path.basenameWithoutExtension(file.absolute.path);
-  final directory = path.dirname(file.absolute.path);
-  final extension = path.extension(file.absolute.path);
-  final outputPath = path.join(directory, "$name$nameTag$extension");
-  final compressedFile = await FlutterImageCompress.compressAndGetFile(
-    file.absolute.path,
-    outputPath,
+  final compressedBytes = await FlutterImageCompress.compressWithList(
+    item.bytes,
     quality: quality,
     format: format,
+    autoCorrectionAngle: false,
   );
 
-  if (compressedFile == null) {
-    return allowUncompressed ? file : null;
-  }
-
-  return File(compressedFile.path);
+  return item.copyWith(bytes: compressedBytes);
 }
