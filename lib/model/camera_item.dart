@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:path/path.dart' as path;
 
 import '../utility/converter/uint8_list_converter.dart';
 import '../utility/converter/utc_date_time_converter.dart';
@@ -14,7 +14,9 @@ part 'camera_item.freezed.dart';
 part 'camera_item.g.dart';
 
 @freezed
-class CameraItem with _$CameraItem {
+class CameraItem with _$CameraItem, EquatableMixin {
+  const CameraItem._();
+
   const factory CameraItem({
     required String name,
     @Uint8ListConverter() required Uint8List bytes,
@@ -28,6 +30,18 @@ class CameraItem with _$CameraItem {
 
   factory CameraItem.fromJson(Map<String, dynamic> json) =>
       _$CameraItemFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        name,
+        bytes.length,
+        width,
+        height,
+        type,
+        lensDirection,
+        orientation,
+        timeStamp,
+      ];
 }
 
 Future<File> moveFile({

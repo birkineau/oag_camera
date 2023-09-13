@@ -191,7 +191,7 @@ class __$$_CameraItemCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CameraItem implements _CameraItem {
+class _$_CameraItem extends _CameraItem {
   const _$_CameraItem(
       {required this.name,
       @Uint8ListConverter() required this.bytes,
@@ -200,7 +200,8 @@ class _$_CameraItem implements _CameraItem {
       required this.type,
       required this.lensDirection,
       required this.orientation,
-      @UtcDateTimeJsonConverter() required this.timeStamp});
+      @UtcDateTimeJsonConverter() required this.timeStamp})
+      : super._();
 
   factory _$_CameraItem.fromJson(Map<String, dynamic> json) =>
       _$$_CameraItemFromJson(json);
@@ -224,42 +225,6 @@ class _$_CameraItem implements _CameraItem {
   @UtcDateTimeJsonConverter()
   final DateTime timeStamp;
 
-  @override
-  String toString() {
-    return 'CameraItem(name: $name, bytes: $bytes, width: $width, height: $height, type: $type, lensDirection: $lensDirection, orientation: $orientation, timeStamp: $timeStamp)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_CameraItem &&
-            (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality().equals(other.bytes, bytes) &&
-            (identical(other.width, width) || other.width == width) &&
-            (identical(other.height, height) || other.height == height) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.lensDirection, lensDirection) ||
-                other.lensDirection == lensDirection) &&
-            (identical(other.orientation, orientation) ||
-                other.orientation == orientation) &&
-            (identical(other.timeStamp, timeStamp) ||
-                other.timeStamp == timeStamp));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      const DeepCollectionEquality().hash(bytes),
-      width,
-      height,
-      type,
-      lensDirection,
-      orientation,
-      timeStamp);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
@@ -274,7 +239,7 @@ class _$_CameraItem implements _CameraItem {
   }
 }
 
-abstract class _CameraItem implements CameraItem {
+abstract class _CameraItem extends CameraItem {
   const factory _CameraItem(
           {required final String name,
           @Uint8ListConverter() required final Uint8List bytes,
@@ -285,6 +250,7 @@ abstract class _CameraItem implements CameraItem {
           required final DeviceOrientation orientation,
           @UtcDateTimeJsonConverter() required final DateTime timeStamp}) =
       _$_CameraItem;
+  const _CameraItem._() : super._();
 
   factory _CameraItem.fromJson(Map<String, dynamic> json) =
       _$_CameraItem.fromJson;

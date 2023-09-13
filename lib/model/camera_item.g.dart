@@ -14,10 +14,10 @@ _$_CameraItem _$$_CameraItemFromJson(Map<String, dynamic> json) =>
       height: json['height'] as int,
       type: $enumDecode(_$CameraItemTypeEnumMap, json['type']),
       lensDirection:
-          $enumDecode(_$CameraLensDirectionEnumMap, json['lens_direction']),
+          $enumDecode(_$CameraLensDirectionEnumMap, json['lensDirection']),
       orientation: $enumDecode(_$DeviceOrientationEnumMap, json['orientation']),
       timeStamp: const UtcDateTimeJsonConverter()
-          .fromJson(json['time_stamp'] as String),
+          .fromJson(json['timeStamp'] as String),
     );
 
 Map<String, dynamic> _$$_CameraItemToJson(_$_CameraItem instance) =>
@@ -27,9 +27,9 @@ Map<String, dynamic> _$$_CameraItemToJson(_$_CameraItem instance) =>
       'width': instance.width,
       'height': instance.height,
       'type': _$CameraItemTypeEnumMap[instance.type]!,
-      'lens_direction': _$CameraLensDirectionEnumMap[instance.lensDirection]!,
+      'lensDirection': _$CameraLensDirectionEnumMap[instance.lensDirection]!,
       'orientation': _$DeviceOrientationEnumMap[instance.orientation]!,
-      'time_stamp': const UtcDateTimeJsonConverter().toJson(instance.timeStamp),
+      'timeStamp': const UtcDateTimeJsonConverter().toJson(instance.timeStamp),
     };
 
 const _$CameraItemTypeEnumMap = {
