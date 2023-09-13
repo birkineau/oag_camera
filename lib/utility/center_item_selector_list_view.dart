@@ -55,7 +55,7 @@ class CenterItemSelector<T> extends StatefulWidget {
 }
 
 class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
-  late final ScrollController _scrollController;
+  late ScrollController _scrollController;
 
   late int _centerIndex;
   int get index => _centerIndex;
@@ -92,27 +92,6 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
     _halfExtent = _extent / 2.0;
     _padding = (_extent - widget.itemSize) / 2.0;
     _delta = _halfExtent - _padding - widget.itemSize;
-  }
-
-  @override
-  void didUpdateWidget(CenterItemSelector<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // If the number of items has decreased
-    if (widget.items.length < oldWidget.items.length) {
-      // If the old center item was the last in the list
-      if (_centerIndex == oldWidget.items.length - 1) {
-        // Select the item before it
-        _centerIndex -= 1;
-      } else {
-        // Otherwise, keep the _centerIndex the same
-        // as it now points to the item after the deleted item.
-      }
-
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _scrollController.jumpTo(_indexToOffset(_centerIndex));
-      });
-    }
   }
 
   @override

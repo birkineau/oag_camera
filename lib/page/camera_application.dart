@@ -26,6 +26,7 @@ import 'camera_screen/camera_settings_exposure.dart';
 import 'camera_screen/camera_settings_flash_mode.dart';
 import 'camera_screen/camera_settings_focus.dart';
 import 'camera_screen/camera_toggle_settings_button.dart';
+import 'camera_screen/deleted_camera_item_animation.dart';
 
 final _overlayKey = GlobalKey<OagOverlayState>();
 
@@ -186,6 +187,9 @@ class CameraApplicationState extends State<CameraApplication> {
                 right: viewPadding.right + 8.0,
                 child: const CameraScreenControls(),
               ),
+
+              /// Animates the deletion of the last item in the camera roll.
+              const Positioned.fill(child: DeletedCameraItemAnimation()),
 
               /// Camera roll controls placeholder; the [CameraRollControls] is
               /// wrapped by a [Hero] widget, so it needs to be placed in the widget

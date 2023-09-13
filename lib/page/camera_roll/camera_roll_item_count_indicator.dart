@@ -35,7 +35,11 @@ class CameraRollItemCountIndicator extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(minWidth: minWidth),
           child: BlocBuilder<CameraRollBloc, CameraRollState>(
-            buildWhen: _selectionChanged,
+            buildWhen: (previous, current) => _selectionChanged(
+              context,
+              previous,
+              current,
+            ),
             builder: (context, state) {
               if (state.selectedIndex == null) {
                 return const SizedBox.shrink();
@@ -53,8 +57,19 @@ class CameraRollItemCountIndicator extends StatelessWidget {
     );
   }
 
-  bool _selectionChanged(CameraRollState previous, CameraRollState current) {
-    return current.selectedIndex != null &&
-        previous.selectedIndex != current.selectedIndex;
+  bool _selectionChanged(
+    BuildContext context,
+    CameraRollState previous,
+    CameraRollState current,
+  ) {
+    final previousItem = previous.selectedIndex != null
+        ? previous.items[previous.selectedIndex!]
+        : null;
+
+    final currentItem = current.selectedIndex != null
+        ? current.items[current.selectedIndex!]
+        : null;
+
+    return previousItem != currentItem;
   }
 }

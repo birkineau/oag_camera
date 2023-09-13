@@ -64,13 +64,13 @@ class CameraRollControls extends StatelessWidget {
           child: BlocBuilder<CameraRollBloc, CameraRollState>(
             buildWhen: (_, current) => !current.isEmpty,
             builder: (context, state) {
-              final hasOneItem = state.length == 1;
+              final hasOneItemOrLess = state.length <= 1;
 
               return IgnorePointer(
-                ignoring: hasOneItem,
+                ignoring: hasOneItemOrLess,
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
-                  opacity: hasOneItem ? .0 : 1.0,
+                  opacity: hasOneItemOrLess ? .0 : 1.0,
                   child: const CameraRollItemSelector(),
                 ),
               );
