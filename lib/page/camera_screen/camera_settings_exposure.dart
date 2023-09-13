@@ -8,6 +8,7 @@ import '../../controller/camera_settings_bloc.dart';
 import '../../model/camera_settings_state.dart';
 import '../../utility/axis_fade.dart';
 import '../../utility/center_item_selector_list_view.dart';
+import '../../utility/snap_scroll_page_physics.dart';
 import 'camera_orientation_rotator.dart';
 import 'camera_settings_visibility.dart';
 
@@ -34,7 +35,7 @@ class CameraSettingsExposure extends StatelessWidget {
           buildWhen: _rangeChanged,
           builder: (context, state) => CenterItemSelector(
             key: selectorKey,
-            scrollConfiguration: const CenterItemSelectorScrollConfiguration(
+            scrollConfiguration: const SnapScrollPhysicsConfiguration(
               minPages: .0,
               maxPages: 8.0,
               velocityDivisor: 100,

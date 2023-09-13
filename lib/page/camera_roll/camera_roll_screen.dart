@@ -170,9 +170,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   }
 
   void _jumpToSelection(BuildContext context, CameraRollState state) async {
-    if (_pageController.position.isScrollingNotifier.value) {
-      return;
-    }
+    if (_pageController.position.isScrollingNotifier.value) return;
 
     _listenForPageChange = false;
     _pageController.jumpToPage(state.selectedIndex!);
@@ -196,10 +194,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   }
 
   void _onPageChanged(int index) {
-    if (!_listenForPageChange) {
-      return;
-    }
-
+    if (!_listenForPageChange) return;
     context.read<CameraRollBloc>().add(SetSelectedItemEvent(index: index));
   }
 

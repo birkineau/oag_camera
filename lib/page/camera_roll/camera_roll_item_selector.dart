@@ -1,23 +1,52 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_roll_bloc.dart';
+import '../../model/camera_item.dart';
 import '../../model/camera_roll_state.dart';
 import '../../utility/center_item_selector_list_view.dart';
 import 'camera_item_preview.dart';
 
-class CameraRollItemSelector extends StatelessWidget {
+class CameraRollItemSelector extends StatefulWidget {
   static const kItemSize = 64.0;
 
   const CameraRollItemSelector({super.key});
 
   @override
+  State<CameraRollItemSelector> createState() => _CameraRollItemSelectorState();
+}
+
+class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
+  final _selectorKey = GlobalKey<CenterItemSelectorState>();
+  int? _previousIndex;
+
+  @override
   Widget build(BuildContext context) {
-    final itemSelector = BlocBuilder<CameraRollBloc, CameraRollState>(
+    final itemSelector = BlocConsumer<CameraRollBloc, CameraRollState>(
+      listenWhen: (previous, current) {
+        log("previous: ${previous.selectedIndex}");
+        log(" current: ${current.selectedIndex}");
+        return current is CameraRollDeletedItemState &&
+            (_previousIndex = previous.selectedIndex) != current.selectedIndex;
+      },
+      listener: (context, state) {
+        final index = state.selectedIndex;
+        if (index == null) return;
+
+        final selectorState = _selectorKey.currentState;
+        if (selectorState == null) return;
+
+        if (_previousIndex != null) selectorState.remove(_previousIndex!);
+
+        // selectorState.selectItemAt(index, notify: false);
+      },
       buildWhen: (previous, current) => _itemCountChanged(previous, current),
       builder: (context, state) => LayoutBuilder(
         builder: (context, constraints) => CenterItemSelector(
+          key: _selectorKey,
           itemSize: CameraRollItemSelector.kItemSize,
           extent: constraints.maxWidth,
           onItemSelected: (index) => _setSelectedItem(context, index),
