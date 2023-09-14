@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
@@ -59,9 +60,8 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
   void initState() {
     super.initState();
 
-    _scrollController = ScrollController();
+    _scrollController = ScrollController()..addListener(_onScroll);
     _centerIndex = widget.initialIndex ?? widget.items.length - 1;
-    _scrollController.addListener(_onScroll);
 
     SchedulerBinding.instance.addPostFrameCallback(
       (_) => _scrollController.jumpTo(_indexToOffset(_centerIndex)),
@@ -80,16 +80,10 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
     _halfExtent = _extent / 2.0;
     _padding = (_extent - widget.itemSize) / 2.0;
     _delta = _halfExtent - _padding - widget.itemSize;
-  }
 
-  @override
-  void didUpdateWidget(CenterItemSelector<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    _scrollController.dispose();
-    _scrollController = ScrollController(
-      initialScrollOffset: _indexToOffset(_centerIndex),
-    )..addListener(_onScroll);
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) => _scrollController.jumpTo(_indexToOffset(_centerIndex)),
+    );
   }
 
   @override
@@ -122,10 +116,21 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
             key: ValueKey("item_$index"),
             behavior: HitTestBehavior.translucent,
             onTap: () => selectItemAt(index),
-            child: SizedBox(
-              width: widget.itemSize,
-              height: widget.itemSize,
-              child: widget.itemBuilder(context, index, index == _centerIndex),
+            child: SizeTransition(
+              sizeFactor: CurvedAnimation(
+                parent: animation, // animation
+                curve: Curves.fastEaseInToSlowEaseOut,
+              ),
+              axis: Axis.horizontal,
+              child: SizedBox(
+                width: widget.itemSize,
+                height: widget.itemSize,
+                child: widget.itemBuilder(
+                  context,
+                  index,
+                  index == _centerIndex,
+                ),
+              ),
             ),
           ),
         ),
@@ -134,16 +139,24 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
   }
 
   void remove(int index) {
-    log("A");
     final listState = _listKey.currentState;
     if (listState == null) return;
-    log("B");
+
+    final child = widget.itemBuilder(context, index, false);
+    const curve = Curves.linear;
+
     listState.removeItem(
       index,
       (context, animation) => SizeTransition(
-        sizeFactor: animation,
-        child: widget.itemBuilder(context, index, false),
+        sizeFactor: CurvedAnimation(
+          parent: animation,
+          curve: curve,
+          reverseCurve: curve.flipped,
+        ),
+        axis: Axis.horizontal,
+        child: child,
       ),
+      duration: const Duration(milliseconds: 300),
     );
   }
 
@@ -212,12 +225,14 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
     Duration duration = const Duration(milliseconds: 250),
     Curve curve = Curves.decelerate,
   }) async {
-    log("current offset: ${_scrollController.offset}");
-    final offset = _indexToOffset(index);
-    log("   next offset: $offset");
-
     _ignoreScrollNotification = true;
-    await _scrollController.animateTo(offset, duration: duration, curve: curve);
+
+    await _scrollController.animateTo(
+      _indexToOffset(index),
+      duration: duration,
+      curve: curve,
+    );
+
     _ignoreScrollNotification = false;
   }
 }

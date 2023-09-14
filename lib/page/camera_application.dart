@@ -194,17 +194,17 @@ class CameraApplicationState extends State<CameraApplication> {
               /// Camera roll controls placeholder; the [CameraRollControls] is
               /// wrapped by a [Hero] widget, so it needs to be placed in the widget
               /// tree before the [Hero] widget is used during the route transition.
-              const Positioned.fill(
-                child: IgnorePointer(
-                  child: Opacity(
-                    opacity: .0,
-                    child: Hero(
-                      tag: CameraApplication.heroCameraRollControls,
-                      child: CameraRollControls(),
-                    ),
-                  ),
-                ),
-              ),
+              // const Positioned.fill(
+              //   child: IgnorePointer(
+              //     child: Opacity(
+              //       opacity: .0,
+              //       child: Hero(
+              //         tag: CameraApplication.heroCameraRollControls,
+              //         // child: CameraRollControls(),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

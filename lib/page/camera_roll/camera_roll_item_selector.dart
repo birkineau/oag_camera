@@ -10,6 +10,13 @@ import '../../model/camera_roll_state.dart';
 import '../../utility/center_item_selector_list_view.dart';
 import 'camera_item_preview.dart';
 
+typedef CameraRollConsumer = BlocConsumer<CameraRollBloc, CameraRollState>;
+
+enum _ItemChangeReason {
+  deletion,
+  selection,
+}
+
 class CameraRollItemSelector extends StatefulWidget {
   static const kItemSize = 64.0;
 
@@ -21,31 +28,18 @@ class CameraRollItemSelector extends StatefulWidget {
 
 class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
   final _selectorKey = GlobalKey<CenterItemSelectorState>();
+
+  late _ItemChangeReason _reason;
   int? _previousIndex;
 
   @override
   Widget build(BuildContext context) {
-    final itemSelector = BlocConsumer<CameraRollBloc, CameraRollState>(
-      listenWhen: (previous, current) {
-        log("previous: ${previous.selectedIndex}");
-        log(" current: ${current.selectedIndex}");
-        return current is CameraRollDeletedItemState &&
-            (_previousIndex = previous.selectedIndex) != current.selectedIndex;
-      },
-      listener: (context, state) {
-        final index = state.selectedIndex;
-        if (index == null) return;
-
-        final selectorState = _selectorKey.currentState;
-        if (selectorState == null) return;
-
-        if (_previousIndex != null) selectorState.remove(_previousIndex!);
-
-        // selectorState.selectItemAt(index, notify: false);
-      },
-      buildWhen: (previous, current) => _itemCountChanged(previous, current),
-      builder: (context, state) => LayoutBuilder(
-        builder: (context, constraints) => CenterItemSelector(
+    final itemSelector = LayoutBuilder(
+      builder: (context, constraints) => CameraRollConsumer(
+        listenWhen: _selectedItemChanged,
+        listener: _updateSelectedItem,
+        buildWhen: _itemCountChanged,
+        builder: (context, state) => CenterItemSelector(
           key: _selectorKey,
           itemSize: CameraRollItemSelector.kItemSize,
           extent: constraints.maxWidth,
@@ -86,8 +80,30 @@ class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
     );
   }
 
+  bool _selectedItemChanged(CameraRollState previous, CameraRollState current) {
+    _previousIndex = previous.selectedIndex;
+
+    return current.selectedIndex != null &&
+        (current is CameraRollDeletedItemState ||
+            previous.selectedIndex != current.selectedIndex);
+  }
+
+  void _updateSelectedItem(BuildContext context, CameraRollState state) {
+    final selectorState = _selectorKey.currentState;
+    if (selectorState == null) return;
+
+    if (state is CameraRollDeletedItemState) {
+      selectorState
+        ..remove(_previousIndex!)
+        ..selectItemAt(state.selectedIndex!, notify: false);
+    } else {
+      selectorState.selectItemAt(state.selectedIndex!, notify: false);
+    }
+  }
+
   bool _itemCountChanged(CameraRollState previous, CameraRollState current) {
-    return current.items.isNotEmpty &&
+    return current.selectedIndex != null &&
+        current.items.isNotEmpty &&
         previous.items.length != current.items.length;
   }
 

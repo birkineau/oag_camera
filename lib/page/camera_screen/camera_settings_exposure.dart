@@ -55,8 +55,8 @@ class CameraSettingsExposure extends StatelessWidget {
               margin: EdgeInsets.only(
                 top: 5.75,
                 bottom: 5.75,
-                left: index % 4 == 0 ? 4.0 : 16.0,
-                right: 4.0,
+                left: index % 4 == 0 ? .0 : 2.5,
+                right: .0,
               ),
               decoration: BoxDecoration(
                 color: isSelected
@@ -88,7 +88,7 @@ class CameraSettingsExposure extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SizedBox(
-            width: 40.0,
+            width: buttonWidth,
             height: buttonHeight,
             child: _SetExposureButton(
               onPressed: () => _incrementExposure(selectorKey),
