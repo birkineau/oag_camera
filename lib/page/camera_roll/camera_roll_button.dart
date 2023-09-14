@@ -40,30 +40,29 @@ class CameraRollButton extends StatelessWidget {
           );
         }
 
-        return GestureDetector(
-          onTap: hasItemSelected ? () => _openCameraRoll(context) : null,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              layoutBuilder: (currentChild, previousChildren) => Stack(
-                key: ValueKey(state.selectedIndex),
-                fit: StackFit.expand,
-                alignment: Alignment.center,
-                children: [
-                  ...previousChildren,
-                  if (currentChild != null) currentChild,
-                ],
+        return Hero(
+          tag: "${CameraApplication.heroCameraRollItem}_${state.selectedIndex}",
+          child: GestureDetector(
+            onTap: hasItemSelected ? () => _openCameraRoll(context) : null,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(6.0)),
               ),
-              child: KeyedSubtree(
-                key: child.key,
-                child: Hero(
-                  tag:
-                      "${CameraApplication.heroCameraRollItem}_${state.selectedIndex}",
+              clipBehavior: Clip.antiAlias,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                layoutBuilder: (currentChild, previousChildren) => Stack(
+                  key: ValueKey(state.selectedIndex),
+                  fit: StackFit.expand,
+                  alignment: Alignment.center,
+                  children: [
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
+                child: KeyedSubtree(
+                  key: child.key,
                   child: child,
                 ),
               ),

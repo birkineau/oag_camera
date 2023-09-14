@@ -39,27 +39,6 @@ class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enableListeners) {
-      log("build NON LISTEN");
-      return _Selector(state: context.read<CameraRollBloc>().state);
-    }
-
-    final itemSelector = LayoutBuilder(
-      builder: (context, constraints) => CameraRollConsumer(
-        listenWhen: _selectedItemChanged,
-        listener: _updateSelectedItem,
-        buildWhen: _itemCountChanged,
-        builder: (context, state) {
-          log("build listening");
-          return _Selector(
-            selectorKey: _selectorKey,
-            onItemSelected: (index) => _setSelectedItem(context, index),
-            state: state,
-          );
-        },
-      ),
-    );
-
     return Container(
       height: CameraRollItemSelector.kItemSize,
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -68,7 +47,20 @@ class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
       clipBehavior: Clip.antiAlias,
-      child: itemSelector,
+      child: widget.enableListeners
+          ? LayoutBuilder(
+              builder: (context, constraints) => CameraRollConsumer(
+                listenWhen: _selectedItemChanged,
+                listener: _updateSelectedItem,
+                buildWhen: _itemCountChanged,
+                builder: (context, state) => _Selector(
+                  selectorKey: _selectorKey,
+                  onItemSelected: (index) => _setSelectedItem(context, index),
+                  state: state,
+                ),
+              ),
+            )
+          : _Selector(state: context.read<CameraRollBloc>().state),
     );
   }
 

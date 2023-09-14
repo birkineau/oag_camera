@@ -198,7 +198,6 @@ class CameraApplicationState extends State<CameraApplication> {
                     child: Hero(
                       tag: CameraApplication.heroCameraRollControls,
                       child: CameraRollControls(enableListeners: false),
-                      // child: SizedBox.shrink(),
                     ),
                   ),
                 ),
@@ -230,8 +229,7 @@ class CameraApplicationState extends State<CameraApplication> {
 
     final controller = _cameraStateBloc.state.controller;
     if (controller == null) {
-      _cameraBlurBloc.add(const UnblurScreenshotEvent());
-      return;
+      return _cameraBlurBloc.add(const UnblurScreenshotEvent());
     }
 
     final isBack =

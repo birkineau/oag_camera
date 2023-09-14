@@ -214,7 +214,6 @@ class CameraSnackBar extends StatelessWidget {
       width: width,
       height: height,
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      // padding: const EdgeInsets.only(top: 12.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: const BorderRadius.all(Radius.circular(12.0)),
