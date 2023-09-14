@@ -197,7 +197,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
       );
     }
 
-    return await controller.setDescription(event.selector(descriptions));
+    return controller.setDescription(event.selector(descriptions));
   }
 
   Future<void> _setLensDirection(

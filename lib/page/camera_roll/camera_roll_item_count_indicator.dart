@@ -8,9 +8,11 @@ import '../../utility/string_extension.dart';
 class CameraRollItemCountIndicator extends StatelessWidget {
   const CameraRollItemCountIndicator({
     super.key,
+    required this.enableListeners,
     required this.height,
   });
 
+  final bool enableListeners;
   final double height;
 
   @override
@@ -34,24 +36,16 @@ class CameraRollItemCountIndicator extends StatelessWidget {
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(minWidth: minWidth),
-          child: BlocBuilder<CameraRollBloc, CameraRollState>(
-            buildWhen: (previous, current) => _selectionChanged(
-              context,
-              previous,
-              current,
-            ),
-            builder: (context, state) {
-              if (state.selectedIndex == null) {
-                return const SizedBox.shrink();
-              }
-
-              return Text(
-                "${state.selectedIndex! + 1} / ${state.length}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
-              );
-            },
-          ),
+          child: enableListeners
+              ? BlocBuilder<CameraRollBloc, CameraRollState>(
+                  buildWhen: (previous, current) => _selectionChanged(
+                    context,
+                    previous,
+                    current,
+                  ),
+                  builder: (context, state) => _Indicator(state: state),
+                )
+              : _Indicator(state: context.read<CameraRollBloc>().state),
         ),
       ),
     );
@@ -71,5 +65,24 @@ class CameraRollItemCountIndicator extends StatelessWidget {
         : null;
 
     return previousItem != currentItem;
+  }
+}
+
+class _Indicator extends StatelessWidget {
+  const _Indicator({
+    required this.state,
+  });
+
+  final CameraRollState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.selectedIndex == null) return const SizedBox.shrink();
+
+    return Text(
+      "${state.selectedIndex! + 1} / ${state.length}",
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: Colors.white),
+    );
   }
 }

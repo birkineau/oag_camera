@@ -11,7 +11,12 @@ import 'camera_roll_item_selector.dart';
 class CameraRollControls extends StatelessWidget {
   static const bottomSpacing = 32.0;
 
-  const CameraRollControls({super.key});
+  const CameraRollControls({
+    super.key,
+    required this.enableListeners,
+  });
+
+  final bool enableListeners;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +76,9 @@ class CameraRollControls extends StatelessWidget {
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
                   opacity: hasOneItemOrLess ? .0 : 1.0,
-                  child: const CameraRollItemSelector(),
+                  child: CameraRollItemSelector(
+                    enableListeners: enableListeners,
+                  ),
                 ),
               );
             },
@@ -80,7 +87,10 @@ class CameraRollControls extends StatelessWidget {
 
         Positioned(
           bottom: selectorBottomPadding - indicatorHeight - 4.0,
-          child: const CameraRollItemCountIndicator(height: indicatorHeight),
+          child: CameraRollItemCountIndicator(
+            enableListeners: enableListeners,
+            height: indicatorHeight,
+          ),
         ),
       ],
     );
@@ -88,10 +98,7 @@ class CameraRollControls extends StatelessWidget {
 
   void _deleteSelectedItem(BuildContext context) {
     final cameraRollBloc = context.read<CameraRollBloc>();
-    if (cameraRollBloc.state.length == 1) {
-      Navigator.pop(context);
-    }
-
+    if (cameraRollBloc.state.length == 1) Navigator.pop(context);
     cameraRollBloc.add(const DeleteSelectedItemEvent());
   }
 }

@@ -180,7 +180,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   Future<void> _resetScale() async {
     _scale = _minScale;
     _transformationTween.begin = _transformationController.value;
-    return await _animationController.forward(from: .0);
+    return _animationController.forward(from: .0);
   }
 
   Future<void> _handleItemPreviewDoubleTap(bool isZoomedIn) async {

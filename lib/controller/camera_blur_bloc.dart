@@ -77,7 +77,7 @@ class CameraBlurBloc extends Bloc<CameraBlurEvent, CameraBlurState> {
       "The render object has not yet gone through the paint phase.",
     );
 
-    return await render.toImage();
+    return render.toImage();
   }
 }
 

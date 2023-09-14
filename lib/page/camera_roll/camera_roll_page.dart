@@ -21,7 +21,7 @@ class CameraRollPage extends StatelessWidget {
           Hero(
             tag: CameraApplication.heroCameraRollControls,
             flightShuttleBuilder: _cameraRollControlsFlightShuttleBuilder,
-            child: CameraRollControls(),
+            child: CameraRollControls(enableListeners: true),
           ),
         ],
       ),
@@ -38,7 +38,7 @@ Widget _cameraRollControlsFlightShuttleBuilder(
 ) {
   final curve = CurvedAnimation(
     parent: animation,
-    curve: const Interval(.5, 1.0, curve: Curves.easeInQuad),
+    curve: const Interval(.25, 1.0, curve: Curves.easeInQuad),
   );
 
   return MultiBlocProvider(
@@ -52,7 +52,9 @@ Widget _cameraRollControlsFlightShuttleBuilder(
         opacity: curve.value,
         child: child,
       ),
-      child: fromHeroContext.widget,
+      child: flightDirection == HeroFlightDirection.push
+          ? toHeroContext.widget
+          : fromHeroContext.widget,
     ),
   );
 }

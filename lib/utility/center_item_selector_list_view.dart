@@ -42,6 +42,9 @@ class CenterItemSelector<T> extends StatefulWidget {
 }
 
 class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
+  static const _listCurve = Curves.decelerate;
+  static const _listAnimationDuration = Duration(milliseconds: 300);
+
   final _listKey = GlobalKey<AnimatedListState>();
 
   late ScrollController _scrollController;
@@ -94,103 +97,108 @@ class CenterItemSelectorState<T> extends State<CenterItemSelector<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return PageStorage(
-      bucket: _pageStorageBucket,
-      child: KeyedSubtree(
-        key: PageStorageKey("center_item_selector_${widget.items.hashCode}"),
-        child: AnimatedList(
-          key: _listKey,
-          controller: _scrollController,
-          scrollDirection: widget.scrollDirection,
-          physics: SnapScrollPhysics(
-            snapSize: widget.itemSize,
-            configuration: widget.scrollConfiguration ??
-                SnapScrollPhysicsConfiguration.defaultConfiguration,
-          ),
-          padding: widget.scrollDirection == Axis.horizontal
-              ? EdgeInsets.symmetric(horizontal: _padding)
-              : EdgeInsets.symmetric(vertical: _padding),
-          reverse: widget.reverse,
-          initialItemCount: widget.items.length,
-          itemBuilder: (context, index, animation) => GestureDetector(
-            key: ValueKey("item_$index"),
-            behavior: HitTestBehavior.translucent,
-            onTap: () => selectItemAt(index),
-            child: SizeTransition(
-              sizeFactor: CurvedAnimation(
-                parent: animation, // animation
-                curve: Curves.fastEaseInToSlowEaseOut,
-              ),
-              axis: Axis.horizontal,
-              child: SizedBox(
-                width: widget.itemSize,
-                height: widget.itemSize,
-                child: widget.itemBuilder(
-                  context,
-                  index,
-                  index == _centerIndex,
-                ),
-              ),
+    final isHorizontal = widget.scrollDirection == Axis.horizontal;
+
+    return SizedBox(
+      width: isHorizontal ? null : widget.itemSize,
+      height: isHorizontal ? widget.itemSize : null,
+      child: PageStorage(
+        bucket: _pageStorageBucket,
+        child: KeyedSubtree(
+          key: PageStorageKey("center_item_selector_${widget.items.hashCode}"),
+          child: AnimatedList(
+            key: _listKey,
+            controller: _scrollController,
+            scrollDirection: widget.scrollDirection,
+            physics: SnapScrollPhysics(
+              snapSize: widget.itemSize,
+              configuration: widget.scrollConfiguration ??
+                  SnapScrollPhysicsConfiguration.defaultConfiguration,
             ),
+            padding: widget.scrollDirection == Axis.horizontal
+                ? EdgeInsets.symmetric(horizontal: _padding)
+                : EdgeInsets.symmetric(vertical: _padding),
+            reverse: widget.reverse,
+            initialItemCount: widget.items.length,
+            itemBuilder: (context, index, animation) {
+              final child = widget.itemBuilder(
+                context,
+                index,
+                index == _centerIndex,
+              );
+
+              return GestureDetector(
+                key: child.key,
+                behavior: HitTestBehavior.translucent,
+                onTap: () => selectItemAt(index),
+                child: SizeTransition(
+                  sizeFactor: CurvedAnimation(
+                    parent: animation, // animation
+                    curve: _listCurve,
+                    reverseCurve: _listCurve.flipped,
+                  ),
+                  axis: Axis.horizontal,
+                  child: SizedBox(
+                    width: widget.itemSize,
+                    height: widget.itemSize,
+                    child: child,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  void remove(int index) {
+  void insertItemAt(int index) {
+    final listState = _listKey.currentState;
+    if (listState == null) return;
+
+    listState.insertItem(index, duration: _listAnimationDuration);
+  }
+
+  void removeItemAt(int index) {
     final listState = _listKey.currentState;
     if (listState == null) return;
 
     final child = widget.itemBuilder(context, index, false);
-    const curve = Curves.linear;
 
     listState.removeItem(
       index,
-      (context, animation) => SizeTransition(
-        sizeFactor: CurvedAnimation(
-          parent: animation,
-          curve: curve,
-          reverseCurve: curve.flipped,
+      (context, animation) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: CurvedAnimation(
+            parent: animation,
+            curve: _listCurve,
+            reverseCurve: _listCurve.flipped,
+          ),
+          axis: Axis.horizontal,
+          child: child,
         ),
-        axis: Axis.horizontal,
-        child: child,
       ),
-      duration: const Duration(milliseconds: 300),
+      duration: _listAnimationDuration,
     );
   }
 
   Future<void> selectItemAt(int index, {bool notify = true}) async {
-    if (_centerIndex == index || _ignoreScrollNotification) {
-      return;
-    }
-
+    if (_centerIndex == index || _ignoreScrollNotification) return;
     setState(() => _centerIndex = index);
-
-    if (notify) {
-      widget.onItemSelected?.call(_centerIndex);
-    }
-
-    await _animateToIndex(index);
+    if (notify) widget.onItemSelected?.call(_centerIndex);
+    return _animateToIndex(index);
   }
 
   Future<void> selectPreviousItem() async {
     final previousIndex = _centerIndex - 1;
-
-    if (previousIndex < 0) {
-      return;
-    }
-
+    if (previousIndex < 0) return;
     return selectItemAt(previousIndex);
   }
 
   Future<void> selectNextItem() async {
     final nextIndex = _centerIndex + 1;
-
-    if (nextIndex >= widget.items.length) {
-      return;
-    }
-
+    if (nextIndex >= widget.items.length) return;
     return selectItemAt(nextIndex);
   }
 

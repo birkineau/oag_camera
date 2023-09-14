@@ -5,22 +5,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_roll_bloc.dart';
-import '../../model/camera_item.dart';
 import '../../model/camera_roll_state.dart';
 import '../../utility/center_item_selector_list_view.dart';
 import 'camera_item_preview.dart';
 
 typedef CameraRollConsumer = BlocConsumer<CameraRollBloc, CameraRollState>;
 
-enum _ItemChangeReason {
-  deletion,
-  selection,
-}
-
 class CameraRollItemSelector extends StatefulWidget {
   static const kItemSize = 64.0;
 
-  const CameraRollItemSelector({super.key});
+  const CameraRollItemSelector({
+    super.key,
+    required this.enableListeners,
+  });
+
+  final bool enableListeners;
 
   @override
   State<CameraRollItemSelector> createState() => _CameraRollItemSelectorState();
@@ -29,42 +28,35 @@ class CameraRollItemSelector extends StatefulWidget {
 class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
   final _selectorKey = GlobalKey<CenterItemSelectorState>();
 
-  late _ItemChangeReason _reason;
+  /// The index of the camera roll item that was just deleted.
+  ///
+  /// The current state has the new index of the selected item, so this value
+  /// is updated through the previous state of the camera roll.
+  ///
+  /// * See [CameraRollConsumer.listenWhen].
+  /// * See [CameraRollConsumer.listener].
   int? _previousIndex;
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.enableListeners) {
+      log("build NON LISTEN");
+      return _Selector(state: context.read<CameraRollBloc>().state);
+    }
+
     final itemSelector = LayoutBuilder(
       builder: (context, constraints) => CameraRollConsumer(
         listenWhen: _selectedItemChanged,
         listener: _updateSelectedItem,
         buildWhen: _itemCountChanged,
-        builder: (context, state) => CenterItemSelector(
-          key: _selectorKey,
-          itemSize: CameraRollItemSelector.kItemSize,
-          extent: constraints.maxWidth,
-          onItemSelected: (index) => _setSelectedItem(context, index),
-          initialIndex: state.selectedIndex,
-          items: state.items,
-          itemBuilder: (context, index, isSelected) {
-            final item = state.items[index];
-
-            return _CameraRollItemCard(
-              key: ValueKey("camera_item_${item.timeStamp}"),
-              index: index,
-              selected: isSelected,
-              child: SizedBox(
-                width: CameraRollItemSelector.kItemSize,
-                height: CameraRollItemSelector.kItemSize,
-                child: CameraItemPreview(
-                  scaleToFit: false,
-                  filterQuality: FilterQuality.none,
-                  item: item,
-                ),
-              ),
-            );
-          },
-        ),
+        builder: (context, state) {
+          log("build listening");
+          return _Selector(
+            selectorKey: _selectorKey,
+            onItemSelected: (index) => _setSelectedItem(context, index),
+            state: state,
+          );
+        },
       ),
     );
 
@@ -94,7 +86,7 @@ class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
 
     if (state is CameraRollDeletedItemState) {
       selectorState
-        ..remove(_previousIndex!)
+        ..removeItemAt(_previousIndex!)
         ..selectItemAt(state.selectedIndex!, notify: false);
     } else {
       selectorState.selectItemAt(state.selectedIndex!, notify: false);
@@ -110,6 +102,50 @@ class _CameraRollItemSelectorState extends State<CameraRollItemSelector> {
   void _setSelectedItem(BuildContext context, int index) {
     context.read<CameraRollBloc>().add(SetSelectedItemEvent(index: index));
     HapticFeedback.selectionClick();
+  }
+}
+
+class _Selector extends StatelessWidget {
+  const _Selector({
+    this.onItemSelected,
+    this.selectorKey,
+    required this.state,
+  });
+
+  final GlobalKey<CenterItemSelectorState>? selectorKey;
+  final void Function(int)? onItemSelected;
+  final CameraRollState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.selectedIndex == null) return const SizedBox.shrink();
+
+    return LayoutBuilder(
+      builder: (context, constraints) => CenterItemSelector(
+        key: selectorKey,
+        itemSize: CameraRollItemSelector.kItemSize,
+        extent: constraints.maxWidth,
+        initialIndex: state.selectedIndex,
+        onItemSelected: onItemSelected,
+        items: state.items,
+        itemBuilder: (context, index, isSelected) {
+          if (index >= state.items.length) return const SizedBox.shrink();
+
+          final item = state.items[index];
+
+          return _CameraRollItemCard(
+            key: ValueKey("camera_item_${item.timeStamp}"),
+            index: index,
+            selected: isSelected,
+            child: CameraItemPreview(
+              scaleToFit: false,
+              filterQuality: FilterQuality.none,
+              item: item,
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

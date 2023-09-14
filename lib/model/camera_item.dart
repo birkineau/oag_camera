@@ -69,7 +69,7 @@ Future<File> moveFile({
 }) async {
   try {
     /// Attempt to move the file to [newPath].
-    return await source.rename(newPath);
+    return source.rename(newPath);
   } on FileSystemException {
     // If moving fails, then copy it and delete
     final newFile = await source.copy(newPath);
