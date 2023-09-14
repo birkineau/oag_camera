@@ -119,7 +119,7 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
           child = SizedBox(
             key: const ValueKey("camera_live_preview_placeholder"),
             child: context.read<CameraBlurBloc>().state.placeholder ??
-                widget.placeholder,
+                const ColoredBox(color: Colors.black),
           );
         }
 

@@ -7,7 +7,7 @@ class CameraLivePreviewPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.grey.shade300;
+    final color = Colors.grey.shade100;
     const message = "Camera not ready";
     final messageStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
           color: color,
@@ -18,7 +18,7 @@ class CameraLivePreviewPlaceholder extends StatelessWidget {
       child: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            const spaceBetween = 16.0;
+            const spaceBetween = 24.0;
             final messageSize = message.intrinsicSize(
               context: context,
               maxWidth: constraints.maxWidth,
@@ -37,7 +37,7 @@ class CameraLivePreviewPlaceholder extends StatelessWidget {
                         spaceBetween,
                   ),
                   child: SizedBox(
-                    width: messageSize.width * 1.25,
+                    width: constraints.maxWidth * .66,
                     child: Image(
                       image: const AssetImage(
                         "packages/oag_camera/lib/assets/images/"

@@ -246,6 +246,10 @@ class CameraSnackBar extends StatelessWidget {
                   )
                 : content,
           ),
+          _DurationLinearProgressIndicator(
+            duration: const Duration(milliseconds: 2250),
+            color: color ?? Colors.black,
+          ),
         ],
       ),
     );
