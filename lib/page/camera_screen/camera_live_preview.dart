@@ -100,7 +100,6 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
             },
           );
         } else {
-          log("huh");
           child = SizedBox(
             key: const ValueKey("camera_live_preview_placeholder"),
             child: context.read<CameraBlurBloc>().state.placeholder,
