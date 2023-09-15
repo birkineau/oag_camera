@@ -38,7 +38,7 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
       reverseCurve: Curves.easeOutQuad,
     );
 
-    context.read<CameraBlurBloc>().stream.listen(_blurBlocListener);
+    context.read<CameraOverlayBloc>().stream.listen(_blurBlocListener);
   }
 
   @override
@@ -63,10 +63,13 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
               child: child,
             );
           },
-          child: const SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: ColoredBox(color: Colors.transparent),
+          child: BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
+            builder: (context, state) => SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: state.placeholder ??
+                  const ColoredBox(color: Colors.transparent),
+            ),
           ),
         ),
       ),

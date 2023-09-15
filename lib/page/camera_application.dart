@@ -63,7 +63,7 @@ class CameraApplicationState extends State<CameraApplication> {
   List<CameraItem> getItems() => _cameraRollBloc.state.items;
 
   final _cameraStateBloc = CameraStateBloc();
-  final _cameraOverlayBloc = CameraBlurBloc();
+  final _cameraOverlayBloc = CameraOverlayBloc();
   late final CameraRollBloc _cameraRollBloc;
   final _cameraZoomBloc = CameraZoomBloc();
   final _cameraSettingsBloc = CameraSettingsBloc();

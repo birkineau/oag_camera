@@ -92,7 +92,7 @@ class _CameraToggleLensDirectionButtonState
 
     HapticFeedback.lightImpact();
 
-    context.read<CameraBlurBloc>().add(const BlurScreenshotEvent());
+    context.read<CameraOverlayBloc>().add(const BlurScreenshotEvent());
 
     final isBack =
         controller.description.lensDirection == CameraLensDirection.back;

@@ -10,8 +10,8 @@ import '../page/camera_screen/camera_screen.dart';
 import '../page/camera_screen/camera_screen_overlay.dart';
 
 /// Controls the blur effect on the [CameraScreen].
-class CameraBlurBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
-  CameraBlurBloc() : super(const CameraOverlayState.unblurred()) {
+class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
+  CameraOverlayBloc() : super(const CameraOverlayState.unblurred()) {
     on<ShowFramePlaceholder>(_showFramePlaceholder);
     on<BlurScreenshotEvent>(_blurScreenshot);
     on<UnblurScreenshotEvent>(_unblurScreenshot);

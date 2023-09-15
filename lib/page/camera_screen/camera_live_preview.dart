@@ -102,12 +102,12 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
         } else {
           child = SizedBox(
             key: const ValueKey("camera_live_preview_placeholder"),
-            child: context.read<CameraBlurBloc>().state.placeholder,
+            child: context.read<CameraOverlayBloc>().state.placeholder,
           );
         }
 
         return RepaintBoundary(
-          key: context.read<CameraBlurBloc>().repaintBoundaryKey,
+          key: context.read<CameraOverlayBloc>().repaintBoundaryKey,
           child: Align(child: child),
         );
       },
@@ -120,7 +120,7 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
 
   void _updateCameraController(BuildContext context, CameraState state) {
     context
-      ..read<CameraBlurBloc>().add(const UnblurScreenshotEvent())
+      ..read<CameraOverlayBloc>().add(const UnblurScreenshotEvent())
       ..read<CameraZoomBloc>().add(
         InitializeCameraZoomLevels(
           camera: state.controller!,

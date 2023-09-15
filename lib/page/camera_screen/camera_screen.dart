@@ -10,7 +10,7 @@ class CameraScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final blurBloc = context.read<CameraBlurBloc>();
+    final blurBloc = context.read<CameraOverlayBloc>();
 
     return Stack(
       fit: StackFit.expand,
