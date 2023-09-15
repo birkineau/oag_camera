@@ -38,17 +38,14 @@ class CameraLivePreview extends StatefulWidget {
   State<CameraLivePreview> createState() => CameraLivePreviewState();
 }
 
-class CameraLivePreviewState extends State<CameraLivePreview> {
+class CameraLivePreviewState extends State<CameraLivePreview>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+    WidgetsBinding.instance.addObserver(this);
 
     context.read<CameraStateBloc>().add(
           const InitializeCameraEvent(
@@ -56,6 +53,32 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
             resolutionPreset: ResolutionPreset.max,
           ),
         );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final cameraStateBloc = context.read<CameraStateBloc>();
+    final cameraState = cameraStateBloc.state;
+    final controller = cameraState.controller;
+    if (controller == null || !controller.value.isInitialized) return;
+
+    final initializer = InitializeCameraEvent.fromController(controller);
+
+    if (state == AppLifecycleState.inactive) {
+      return context.read<CameraOverlayBloc>().add(
+            BlurScreenshotEvent(callback: cameraState.dispose),
+          );
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      return context.read<CameraStateBloc>().add(initializer);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

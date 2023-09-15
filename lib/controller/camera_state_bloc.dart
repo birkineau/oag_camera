@@ -135,9 +135,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     try {
       emit(state.copyWith(status: CameraStatus.notReady));
 
-      if (_cameras.isEmpty) {
-        await _updateDeviceCameraList();
-      }
+      if (_cameras.isEmpty) await _updateDeviceCameraList();
 
       /// Dispose of any previous camera controller; removes listeners.
       if (state.controller != null) {
@@ -217,11 +215,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     Emitter<CameraState> emit,
   ) {
     final controller = state.controller;
-
-    if (controller == null) {
-      return;
-    }
-
+    if (controller == null) return;
     emit(state.copyWith(orientation: controller.value.deviceOrientation));
   }
 
@@ -284,6 +278,15 @@ class InitializeCameraEvent extends CameraEvent {
     this.enableAudio = true,
     this.imageFormatGroup = ImageFormatGroup.yuv420,
   });
+
+  InitializeCameraEvent.fromController(CameraController controller)
+      : this(
+          lensDirection: controller.description.lensDirection,
+          resolutionPreset: controller.resolutionPreset,
+          enableAudio: controller.enableAudio,
+          imageFormatGroup:
+              controller.imageFormatGroup ?? ImageFormatGroup.yuv420,
+        );
 
   final CameraLensDirection lensDirection;
   final ResolutionPreset resolutionPreset;

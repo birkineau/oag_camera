@@ -26,10 +26,7 @@ class CameraState with _$CameraState, EquatableMixin {
       controller != null && controller!.value.isInitialized;
 
   void dispose() {
-    final controller = this.controller;
-    if (controller != null) {
-      controller.dispose();
-    }
+    if (isInitialized) controller!.dispose();
   }
 
   @override

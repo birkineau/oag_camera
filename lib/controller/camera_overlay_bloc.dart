@@ -91,21 +91,21 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
 }
 
 abstract class CameraOverlayEvent {
-  const CameraOverlayEvent();
-}
-
-class ShowFramePlaceholder extends CameraOverlayEvent {
-  const ShowFramePlaceholder({this.callback});
+  const CameraOverlayEvent({this.callback});
 
   final VoidCallback? callback;
 }
 
+class ShowFramePlaceholder extends CameraOverlayEvent {
+  const ShowFramePlaceholder({super.callback});
+}
+
 class BlurScreenshotEvent extends CameraOverlayEvent {
-  const BlurScreenshotEvent();
+  const BlurScreenshotEvent({super.callback});
 }
 
 class UnblurScreenshotEvent extends CameraOverlayEvent {
-  const UnblurScreenshotEvent();
+  const UnblurScreenshotEvent({super.callback});
 }
 
 class CameraOverlayState extends Equatable {
