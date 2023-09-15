@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
@@ -134,7 +135,6 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
   ) async {
     try {
       emit(state.copyWith(status: CameraStatus.notReady));
-
       if (_cameras.isEmpty) await _updateDeviceCameraList();
 
       /// Dispose of any previous camera controller; removes listeners.
@@ -235,6 +235,18 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
       _cameras = (await availableCameras()).groupListsBy(
         (camera) => camera.lensDirection,
       );
+
+      /// TODO: Remove when 'camera' package allows access to logical cameras.
+      /// TODO: Create platform channel to access logical cameras.
+      if (Platform.isIOS) {
+        _cameras[CameraLensDirection.back]?.add(
+          const CameraDescription(
+            name: "com.apple.avfoundation.avcapturedevice.built-in_video:6",
+            lensDirection: CameraLensDirection.back,
+            sensorOrientation: 90,
+          ),
+        );
+      }
 
       for (final entry in _cameras.entries) {
         entry.value.sort((a, b) => a.name.compareTo(b.name));
