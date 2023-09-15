@@ -137,7 +137,12 @@ class CameraApplicationState extends State<CameraApplication> {
                 height: CameraRollButton.kButtonSize,
                 top: mediaQuery.viewPadding.top,
                 left: 8.0,
-                child: CameraBackButton(onPressed: widget.onBackButtonPressed),
+                child: CameraBackButton(
+                  onPressed: () {
+                    _cameraBlurBloc.add(const BlurScreenshotEvent());
+                    widget.onBackButtonPressed?.call();
+                  },
+                ),
               ),
 
               Positioned(
