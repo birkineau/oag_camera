@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../page/camera_screen/camera_live_preview.dart';
 import '../page/camera_screen/camera_screen.dart';
-import '../page/camera_screen/camera_screen_blur.dart';
+import '../page/camera_screen/camera_screen_overlay.dart';
 
 /// Controls the blur effect on the [CameraScreen].
 class CameraBlurBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
@@ -18,7 +18,7 @@ class CameraBlurBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
   }
 
   final repaintBoundaryKey = GlobalKey();
-  final blurKey = GlobalKey<CameraScreenBlurState>();
+  final blurKey = GlobalKey<CameraScreenOverlayState>();
   final livePreviewKey = GlobalKey<CameraLivePreviewState>();
 
   Future<void> _showFramePlaceholder(
@@ -31,6 +31,7 @@ class CameraBlurBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
 
       emit(
         CameraOverlayState(
+          blur: .0,
           placeholder: RawImage(image: image),
           showOverlay: true,
         ),
@@ -53,6 +54,7 @@ class CameraBlurBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
 
       emit(
         CameraOverlayState(
+          blur: 8.0,
           showOverlay: true,
           placeholder: RawImage(image: image),
         ),
@@ -108,14 +110,17 @@ class UnblurScreenshotEvent extends CameraOverlayEvent {
 
 class CameraOverlayState extends Equatable {
   const CameraOverlayState({
+    required this.blur,
     this.placeholder,
     this.showOverlay = false,
   });
 
   const CameraOverlayState.unblurred()
-      : placeholder = null,
+      : blur = .0,
+        placeholder = null,
         showOverlay = false;
 
+  final double blur;
   final RawImage? placeholder;
   final bool showOverlay;
 

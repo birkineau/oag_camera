@@ -8,17 +8,18 @@ import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
 
-class CameraScreenBlur extends StatefulWidget {
-  const CameraScreenBlur({super.key});
+class CameraScreenOverlay extends StatefulWidget {
+  const CameraScreenOverlay({super.key});
 
   @override
-  State<CameraScreenBlur> createState() => CameraScreenBlurState();
+  State<CameraScreenOverlay> createState() => CameraScreenOverlayState();
 }
 
-class CameraScreenBlurState extends State<CameraScreenBlur>
+class CameraScreenOverlayState extends State<CameraScreenOverlay>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
-  late final Animation<double> _blurSigmaAnimation;
+  late final Tween<double> _blurTween;
+  late final CurvedAnimation _curvedAnimation;
 
   @override
   void initState() {
@@ -29,12 +30,12 @@ class CameraScreenBlurState extends State<CameraScreenBlur>
       duration: const Duration(milliseconds: 300),
     );
 
-    _blurSigmaAnimation = Tween<double>(begin: .0, end: 16.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOutQuad,
-        reverseCurve: Curves.easeOutQuad,
-      ),
+    _blurTween = Tween<double>(begin: .0, end: .0);
+
+    _curvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOutQuad,
+      reverseCurve: Curves.easeOutQuad,
     );
 
     context.read<CameraBlurBloc>().stream.listen(_blurBlocListener);
@@ -54,13 +55,14 @@ class CameraScreenBlurState extends State<CameraScreenBlur>
         ignoring: status == CameraStatus.ready,
         child: AnimatedBuilder(
           animation: _animationController,
-          builder: (context, child) => BackdropFilter(
-            filter: ui.ImageFilter.blur(
-              sigmaX: _blurSigmaAnimation.value,
-              sigmaY: _blurSigmaAnimation.value,
-            ),
-            child: child,
-          ),
+          builder: (context, child) {
+            final sigma = _blurTween.evaluate(_curvedAnimation);
+
+            return BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+              child: child,
+            );
+          },
           child: const SizedBox(
             width: double.infinity,
             height: double.infinity,
@@ -71,7 +73,11 @@ class CameraScreenBlurState extends State<CameraScreenBlur>
     );
   }
 
-  void _blurBlocListener(CameraOverlayState state) => state.showOverlay
-      ? _animationController.forward()
-      : _animationController.reverse();
+  void _blurBlocListener(CameraOverlayState state) {
+    _blurTween.end = state.blur;
+
+    state.showOverlay
+        ? _animationController.forward()
+        : _animationController.reverse();
+  }
 }
