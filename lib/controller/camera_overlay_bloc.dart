@@ -125,5 +125,5 @@ class CameraOverlayState extends Equatable {
   final bool showOverlay;
 
   @override
-  List<Object?> get props => [placeholder, showOverlay];
+  List<Object?> get props => [blur, placeholder, showOverlay];
 }
