@@ -53,24 +53,33 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
       selector: (state) => state.status,
       builder: (context, status) => IgnorePointer(
         ignoring: status == CameraStatus.ready,
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            final sigma = _blurTween.evaluate(_curvedAnimation);
-
-            return BackdropFilter(
-              filter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
-              child: child,
-            );
-          },
-          child: BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
-            builder: (context, state) => SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: state.placeholder ??
-                  const ColoredBox(color: Colors.transparent),
+        child: Stack(
+          children: [
+            BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
+              builder: (context, state) => SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: state.placeholder ??
+                    const ColoredBox(color: Colors.transparent),
+              ),
             ),
-          ),
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                final sigma = _blurTween.evaluate(_curvedAnimation);
+
+                return BackdropFilter(
+                  filter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+                  child: child,
+                );
+              },
+              child: const SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: ColoredBox(color: Colors.transparent),
+              ),
+            ),
+          ],
         ),
       ),
     );
