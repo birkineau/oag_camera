@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_roll_bloc.dart';
@@ -22,6 +23,8 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<double> _scaleAnimation;
+
+  bool _isTakingPhoto = false;
 
   @override
   void initState() {
@@ -73,20 +76,19 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
       ),
     );
 
-    return BlocSelector<CameraStateBloc, CameraState, CameraStatus>(
-      selector: (state) => state.status,
-      builder: (context, status) {
-        final isReady = status == CameraStatus.ready;
-
-        return GestureDetector(
+    return BlocSelector<CameraStateBloc, CameraState, bool>(
+      selector: (state) => state.status == CameraStatus.ready,
+      builder: (context, isReady) => IgnorePointer(
+        ignoring: !isReady,
+        child: GestureDetector(
           /// Prevent the user from taking photos when the camera controller is
           /// uninitialized and from taking multiple photos at the same time.
-          onTapDown: isReady ? _press : null,
-          onTapUp: isReady ? _takePhoto : null,
+          onTapDown: _press,
+          onTapUp: _takePhoto,
           onTapCancel: _depress,
           child: button,
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -110,19 +112,21 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
     if (cameraRoll.state.isFull) {
       final topPadding = math.max(8.0, MediaQuery.of(context).viewPadding.top);
+      const duration = Duration(milliseconds: 2250);
 
       showOverlay(
         Offset(.0, topPadding),
-        child: const CameraSnackBar.error(
+        child: CameraSnackBar.error(
+          key: UniqueKey(),
           height: 64.0,
-          content: AutoSizeText(
+          content: const AutoSizeText(
             "The camera roll is full.",
             textAlign: TextAlign.center,
             maxLines: 1,
             style: TextStyle(fontSize: 16.0),
           ),
         ),
-        duration: const Duration(milliseconds: 2250),
+        duration: duration,
       );
 
       return _depress();
@@ -131,7 +135,9 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     final cameraController = context.read<CameraStateBloc>();
 
     try {
+      setState(() => _isTakingPhoto = true);
       final photo = await cameraController.takePhoto();
+      setState(() => _isTakingPhoto = false);
 
       if (photo == null) {
         if (!mounted) return;
@@ -165,7 +171,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
   }
 }
 
-class CameraSnackBar extends StatelessWidget {
+class CameraSnackBar extends StatefulWidget {
   static const iconSize = 40.0;
 
   const CameraSnackBar({
@@ -206,82 +212,24 @@ class CameraSnackBar extends StatelessWidget {
   final Widget content;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final hasIcon = icon != null;
-
-    return Container(
-      width: width,
-      height: height,
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, spreadRadius: 1.5, blurRadius: 1.5),
-        ],
-      ),
-      alignment: Alignment.center,
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: hasIcon
-                ? Row(
-                    children: [
-                      IconTheme(
-                        data: IconThemeData(color: color),
-                        child: icon!,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: content,
-                        ),
-                      ),
-                      const SizedBox(width: iconSize),
-                    ],
-                  )
-                : content,
-          ),
-          _DurationLinearProgressIndicator(
-            duration: const Duration(milliseconds: 2250),
-            color: color ?? Colors.black,
-          ),
-        ],
-      ),
-    );
-  }
+  State<CameraSnackBar> createState() => _CameraSnackBarState();
 }
 
-/// A linear progress indicator with a duration as the progress indicator value.
-class _DurationLinearProgressIndicator extends StatefulWidget {
-  const _DurationLinearProgressIndicator({
-    required this.duration,
-    required this.color,
-  });
-
-  final Duration duration;
-  final Color color;
-
-  @override
-  State<_DurationLinearProgressIndicator> createState() =>
-      _DurationLinearProgressIndicatorState();
-}
-
-class _DurationLinearProgressIndicatorState
-    extends State<_DurationLinearProgressIndicator>
+class _CameraSnackBarState extends State<CameraSnackBar>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
+
+  void animate({Duration? duration}) {
+    if (duration != null) _animationController.duration = duration;
+    _animationController.forward(from: .0);
+  }
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: widget.duration,
+      duration: const Duration(milliseconds: 2250),
     );
   }
 
@@ -293,21 +241,57 @@ class _DurationLinearProgressIndicatorState
 
   @override
   Widget build(BuildContext context) {
-    log("huh");
-    _animationController.forward(from: .0);
+    animate();
 
-    final backgroundColor = widget.color.withOpacity(.33);
+    final hasIcon = widget.icon != null;
 
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        log("value: ${_animationController.value}");
-        return LinearProgressIndicator(
-          value: 1.0 - _animationController.value,
-          backgroundColor: backgroundColor,
-          color: widget.color,
-        );
-      },
+    return Container(
+      height: 72.0,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        boxShadow: const [
+          BoxShadow(
+            offset: Offset(1.0, 1.0),
+            color: Colors.black12,
+            spreadRadius: 1.5,
+            blurRadius: 1.5,
+          ),
+        ],
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: hasIcon
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        IconTheme(
+                          data: IconThemeData(color: widget.color),
+                          child: widget.icon!,
+                        ),
+                        Expanded(child: Center(child: widget.content)),
+                        const SizedBox(width: CameraSnackBar.iconSize),
+                      ],
+                    )
+                  : widget.content,
+            ),
+          ),
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) => LinearProgressIndicator(
+              value: 1.0 - _animationController.value,
+              backgroundColor: widget.color?.withOpacity(.33),
+              color: widget.color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

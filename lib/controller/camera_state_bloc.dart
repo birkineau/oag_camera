@@ -204,6 +204,8 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     SetCameraLensDirectionEvent event,
     Emitter<CameraState> emit,
   ) async {
+    emit(state.copyWith(status: CameraStatus.notReady));
+
     await _initializeCamera(
       InitializeCameraEvent(lensDirection: event.lensDirection),
       emit,

@@ -37,7 +37,7 @@ Future<void> showOverlay(
     return;
   }
 
-  return state.showAtOffset(offset, child: child, duration: duration);
+  await state.showAtOffset(offset, child: child, duration: duration);
 }
 
 class CameraApplication extends StatefulWidget {
@@ -127,7 +127,6 @@ class CameraApplicationState extends State<CameraApplication> {
           key: _overlayKey,
           duration: const Duration(milliseconds: 500),
           tapToDismiss: true,
-          allowDrag: true,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -162,17 +161,7 @@ class CameraApplicationState extends State<CameraApplication> {
                   height:
                       (mediaQuery.size.height - mediaQuery.padding.vertical) *
                           .6,
-                  child: BlocBuilder<CameraSettingsBloc, CameraSettingsState>(
-                    buildWhen: (_, current) =>
-                        current != const CameraSettingsState.uninitialized(),
-                    builder: (context, state) {
-                      if (state == const CameraSettingsState.uninitialized()) {
-                        return const SizedBox.shrink();
-                      }
-
-                      return const CameraSettingsExposure();
-                    },
-                  ),
+                  child: const CameraSettingsExposure(),
                 ),
               ),
 

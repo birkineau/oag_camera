@@ -15,10 +15,7 @@ class CameraScreen extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        CameraLivePreview(
-          key: blurBloc.livePreviewKey,
-          maxZoom: 5.5,
-        ),
+        CameraLivePreview(key: blurBloc.livePreviewKey, maxZoom: 5.5),
 
         /// Blurs the camera screen when switching lens direction.
         CameraScreenBlur(key: blurBloc.blurKey),

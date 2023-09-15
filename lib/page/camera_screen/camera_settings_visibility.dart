@@ -50,19 +50,28 @@ class _CameraSettingsVisibilityState extends State<CameraSettingsVisibility>
       reverseCurve: widget.curve.flipped,
     );
 
-    return BlocListener<CameraSettingsBloc, CameraSettingsState>(
-      listenWhen: (previous, current) => previous.visible != current.visible,
+    return BlocConsumer<CameraSettingsBloc, CameraSettingsState>(
+      listenWhen: (previous, current) =>
+          current.initialized && previous.visible != current.visible,
       listener: (context, state) => state.visible
           ? _animationController.forward()
           : _animationController.reverse(),
-      child: FadeTransition(
-        opacity: animation,
-        child: SizeTransition(
-          axis: widget.axis,
-          sizeFactor: animation,
-          child: widget.child,
-        ),
-      ),
+      buildWhen: (previous, current) =>
+          previous.initialized != current.initialized,
+      builder: (context, state) {
+        if (state.initialized) {
+          return FadeTransition(
+            opacity: animation,
+            child: SizeTransition(
+              axis: widget.axis,
+              sizeFactor: animation,
+              child: widget.child,
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }
