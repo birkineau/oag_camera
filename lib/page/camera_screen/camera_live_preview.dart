@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/camera_blur_bloc.dart';
+import '../../controller/camera_overlay_bloc.dart';
 import '../../controller/camera_settings_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../controller/camera_zoom_bloc.dart';
@@ -120,7 +120,7 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
 
   void _updateCameraController(BuildContext context, CameraState state) {
     context
-      ..read<CameraBlurBloc>().add(UnblurPreviewEvent(state.controller!))
+      ..read<CameraBlurBloc>().add(const UnblurScreenshotEvent())
       ..read<CameraZoomBloc>().add(
         InitializeCameraZoomLevels(
           camera: state.controller!,

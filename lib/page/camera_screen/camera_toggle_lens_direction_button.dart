@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/camera_blur_bloc.dart';
+import '../../controller/camera_overlay_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';

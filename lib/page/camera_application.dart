@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oag_snack_bar/oag_snack_bar.dart';
 
-import '../controller/camera_blur_bloc.dart';
+import '../controller/camera_overlay_bloc.dart';
 import '../controller/camera_roll_bloc.dart';
 import '../controller/camera_settings_bloc.dart';
 import '../controller/camera_state_bloc.dart';
@@ -63,7 +63,7 @@ class CameraApplicationState extends State<CameraApplication> {
   List<CameraItem> getItems() => _cameraRollBloc.state.items;
 
   final _cameraStateBloc = CameraStateBloc();
-  final _cameraBlurBloc = CameraBlurBloc();
+  final _cameraOverlayBloc = CameraBlurBloc();
   late final CameraRollBloc _cameraRollBloc;
   final _cameraZoomBloc = CameraZoomBloc();
   final _cameraSettingsBloc = CameraSettingsBloc();
@@ -83,7 +83,7 @@ class CameraApplicationState extends State<CameraApplication> {
   @override
   void dispose() {
     _cameraStateBloc.close();
-    _cameraBlurBloc.close();
+    _cameraOverlayBloc.close();
     _cameraZoomBloc.close();
     _cameraRollBloc.close();
     _cameraSettingsBloc.close();
@@ -100,7 +100,7 @@ class CameraApplicationState extends State<CameraApplication> {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _cameraStateBloc),
-        BlocProvider.value(value: _cameraBlurBloc),
+        BlocProvider.value(value: _cameraOverlayBloc),
         BlocProvider.value(value: _cameraZoomBloc),
         BlocProvider.value(value: _cameraSettingsBloc),
         BlocProvider.value(value: _cameraRollBloc),
@@ -138,10 +138,9 @@ class CameraApplicationState extends State<CameraApplication> {
                 top: mediaQuery.viewPadding.top,
                 left: 8.0,
                 child: CameraBackButton(
-                  onPressed: () {
-                    _cameraBlurBloc.add(const BlurScreenshotEvent());
-                    widget.onBackButtonPressed?.call();
-                  },
+                  onPressed: () => _cameraOverlayBloc.add(
+                    ShowFramePlaceholder(callback: widget.onBackButtonPressed),
+                  ),
                 ),
               ),
 
@@ -219,11 +218,11 @@ class CameraApplicationState extends State<CameraApplication> {
 
     /// Toggle the camera lens direction on double tap, if the camera is ready.
     if (_cameraStateBloc.state.status != CameraStatus.ready) return;
-    _cameraBlurBloc.add(const BlurScreenshotEvent());
+    _cameraOverlayBloc.add(const BlurScreenshotEvent());
 
     final controller = _cameraStateBloc.state.controller;
     if (controller == null) {
-      return _cameraBlurBloc.add(const UnblurScreenshotEvent());
+      return _cameraOverlayBloc.add(const UnblurScreenshotEvent());
     }
 
     final isBack =

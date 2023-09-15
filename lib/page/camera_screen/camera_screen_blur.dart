@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/camera_blur_bloc.dart';
+import '../../controller/camera_overlay_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
@@ -71,7 +71,7 @@ class CameraScreenBlurState extends State<CameraScreenBlur>
     );
   }
 
-  void _blurBlocListener(CameraBlurState state) => state.isBlurred
+  void _blurBlocListener(CameraOverlayState state) => state.showOverlay
       ? _animationController.forward()
       : _animationController.reverse();
 }

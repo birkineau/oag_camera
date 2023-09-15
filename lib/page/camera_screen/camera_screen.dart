@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/camera_blur_bloc.dart';
+import '../../controller/camera_overlay_bloc.dart';
 import 'camera_live_preview.dart';
 import 'camera_screen_blur.dart';
 
