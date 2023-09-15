@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,24 +61,8 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CameraStateBloc, CameraState>(
-      listenWhen: (previous, current) {
-        return previous.controller != current.controller &&
-            current.isInitialized;
-      },
-      listener: (context, state) {
-        context
-          ..read<CameraBlurBloc>().add(UnblurPreviewEvent(state.controller!))
-          ..read<CameraZoomBloc>().add(
-            InitializeCameraZoomLevels(
-              camera: state.controller!,
-              minimum: widget.minZoom,
-              maximum: widget.maxZoom,
-            ),
-          )
-          ..read<CameraSettingsBloc>().add(
-            InitializeCameraSettingsEvent(camera: state.controller!),
-          );
-      },
+      listenWhen: _cameraControllerChanged,
+      listener: _updateCameraController,
       builder: (context, state) {
         final Widget child;
         final controller = state.controller;
@@ -114,6 +100,7 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
             },
           );
         } else {
+          log("huh");
           child = SizedBox(
             key: const ValueKey("camera_live_preview_placeholder"),
             child: context.read<CameraBlurBloc>().state.placeholder ??
@@ -127,6 +114,25 @@ class CameraLivePreviewState extends State<CameraLivePreview> {
         );
       },
     );
+  }
+
+  bool _cameraControllerChanged(CameraState previous, CameraState current) {
+    return previous.controller != current.controller && current.isInitialized;
+  }
+
+  void _updateCameraController(BuildContext context, CameraState state) {
+    context
+      ..read<CameraBlurBloc>().add(UnblurPreviewEvent(state.controller!))
+      ..read<CameraZoomBloc>().add(
+        InitializeCameraZoomLevels(
+          camera: state.controller!,
+          minimum: widget.minZoom,
+          maximum: widget.maxZoom,
+        ),
+      )
+      ..read<CameraSettingsBloc>().add(
+        InitializeCameraSettingsEvent(camera: state.controller!),
+      );
   }
 
   void _updateCameraZoom(ScaleUpdateDetails details) {
