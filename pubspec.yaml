@@ -49,5 +49,5 @@ flutter:
   generate: false
   uses-material-design: true
 
-  assets:
-    - lib/assets/images/camera_status_not_ready.png
+  # assets:
+  #   - lib/assets/images/camera_status_not_ready.png

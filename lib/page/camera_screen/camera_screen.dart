@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_blur_bloc.dart';
 import 'camera_live_preview.dart';
-import 'camera_live_preview_placeholder.dart';
 import 'camera_screen_blur.dart';
 
 class CameraScreen extends StatelessWidget {
@@ -19,7 +18,6 @@ class CameraScreen extends StatelessWidget {
         CameraLivePreview(
           key: blurBloc.livePreviewKey,
           maxZoom: 5.5,
-          placeholder: const CameraLivePreviewPlaceholder(),
         ),
 
         /// Blurs the camera screen when switching lens direction.
