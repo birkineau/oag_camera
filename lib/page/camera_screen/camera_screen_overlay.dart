@@ -22,7 +22,6 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
   late final AnimationController _animationController;
   late final Tween<double> _blurTween;
   late final CurvedAnimation _curvedAnimation;
-  late final StreamSubscription<CameraOverlayState> _blurSubscription;
 
   @override
   void initState() {
@@ -47,7 +46,6 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
   @override
   void dispose() {
     _animationController.dispose();
-    _blurSubscription.cancel();
     super.dispose();
   }
 
