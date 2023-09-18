@@ -20,7 +20,7 @@ class CameraRollPage extends StatelessWidget {
           CameraRollScreen(),
           Hero(
             tag: CameraApplication.heroCameraRollControls,
-            flightShuttleBuilder: _cameraRollControlsFlightShuttleBuilder,
+            flightShuttleBuilder: cameraRollControlsFlightShuttleBuilder,
             child: CameraRollControls(enableListeners: true),
           ),
         ],
@@ -29,7 +29,7 @@ class CameraRollPage extends StatelessWidget {
   }
 }
 
-Widget _cameraRollControlsFlightShuttleBuilder(
+Widget cameraRollControlsFlightShuttleBuilder(
   BuildContext flightContext,
   Animation<double> animation,
   HeroFlightDirection flightDirection,

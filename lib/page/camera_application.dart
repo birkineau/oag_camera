@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:oag_snack_bar/oag_snack_bar.dart';
 
 import '../controller/camera_overlay_bloc.dart';
@@ -8,8 +9,8 @@ import '../controller/camera_roll_bloc.dart';
 import '../controller/camera_settings_bloc.dart';
 import '../controller/camera_state_bloc.dart';
 import '../controller/camera_zoom_bloc.dart';
+import '../model/camera_configuration.dart';
 import '../model/camera_item.dart';
-import '../model/camera_settings_state.dart';
 import '../model/camera_status.dart';
 import 'camera_roll/camera_roll_button.dart';
 import 'camera_roll/camera_roll_controls.dart';
@@ -46,13 +47,11 @@ class CameraApplication extends StatefulWidget {
 
   const CameraApplication({
     super.key,
-    this.onBackButtonPressed,
-    required this.maxItems,
+    required this.configuration,
     this.initialItems,
   });
 
-  final VoidCallback? onBackButtonPressed;
-  final int maxItems;
+  final CameraConfiguration configuration;
   final List<CameraItem>? initialItems;
 
   @override
@@ -74,19 +73,22 @@ class CameraApplicationState extends State<CameraApplication> {
   void initState() {
     super.initState();
 
+    GetIt.I.registerSingleton<CameraConfiguration>(widget.configuration);
+
     _cameraRollBloc = CameraRollBloc(
-      maxItems: widget.maxItems,
+      maxItems: widget.configuration.maxPhotoItems,
       initialItems: widget.initialItems,
     );
   }
 
   @override
   void dispose() {
-    _cameraStateBloc.close();
-    _cameraOverlayBloc.close();
-    _cameraZoomBloc.close();
-    _cameraRollBloc.close();
     _cameraSettingsBloc.close();
+    _cameraRollBloc.close();
+    _cameraZoomBloc.close();
+    _cameraOverlayBloc.close();
+    _cameraStateBloc.close();
+    GetIt.I.unregister<CameraConfiguration>();
 
     super.dispose();
   }
@@ -132,6 +134,7 @@ class CameraApplicationState extends State<CameraApplication> {
             children: [
               const Positioned.fill(child: CameraScreen()),
 
+              /// Back button.
               Positioned(
                 width: CameraRollButton.kButtonSize,
                 height: CameraRollButton.kButtonSize,
@@ -139,11 +142,14 @@ class CameraApplicationState extends State<CameraApplication> {
                 left: 8.0,
                 child: CameraBackButton(
                   onPressed: () => _cameraOverlayBloc.add(
-                    ShowFramePlaceholder(callback: widget.onBackButtonPressed),
+                    ShowFramePlaceholder(
+                      callback: widget.configuration.onBackButtonPressed,
+                    ),
                   ),
                 ),
               ),
 
+              /// Settings visibility toglee button.
               Positioned(
                 width: CameraRollButton.kButtonSize,
                 height: CameraRollButton.kButtonSize,
@@ -177,7 +183,7 @@ class CameraApplicationState extends State<CameraApplication> {
                 child: const CameraScreenControls(),
               ),
 
-              /// Animates the deletion of the last item in the camera roll.
+              /// Animates the deletion of the last item  in the camera roll.
               const Positioned.fill(child: DeletedCameraItemAnimation()),
 
               /// Camera roll controls placeholder; the [CameraRollControls] is
@@ -216,23 +222,25 @@ class CameraApplicationState extends State<CameraApplication> {
       return _cameraZoomBloc.add(const ResetCameraZoom());
     }
 
-    /// Toggle the camera lens direction on double tap, if the camera is ready.
-    if (_cameraStateBloc.state.status != CameraStatus.ready) return;
-    _cameraOverlayBloc.add(const BlurScreenshotEvent());
+    if (widget.configuration.allowLensDirectionChange) {
+      /// Toggle the camera lens direction on double tap, if the camera is ready.
+      if (_cameraStateBloc.state.status != CameraStatus.ready) return;
+      _cameraOverlayBloc.add(const BlurScreenshotEvent());
 
-    final controller = _cameraStateBloc.state.controller;
-    if (controller == null) {
-      return _cameraOverlayBloc.add(const UnblurScreenshotEvent());
+      final controller = _cameraStateBloc.state.controller;
+      if (controller == null) {
+        return _cameraOverlayBloc.add(const UnblurScreenshotEvent());
+      }
+
+      final isBack =
+          controller.description.lensDirection == CameraLensDirection.back;
+
+      _cameraStateBloc.add(
+        SetCameraLensDirectionEvent(
+          lensDirection:
+              isBack ? CameraLensDirection.front : CameraLensDirection.back,
+        ),
+      );
     }
-
-    final isBack =
-        controller.description.lensDirection == CameraLensDirection.back;
-
-    _cameraStateBloc.add(
-      SetCameraLensDirectionEvent(
-        lensDirection:
-            isBack ? CameraLensDirection.front : CameraLensDirection.back,
-      ),
-    );
   }
 }

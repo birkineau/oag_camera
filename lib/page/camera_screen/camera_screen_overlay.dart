@@ -53,47 +53,47 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final overlay = BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
+      builder: (context, state) {
+        final begin = state.showOverlay ? .0 : 1.0;
+        final opacityTween = Tween(begin: begin, end: 1.0 - begin);
+
+        return AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) => Opacity(
+            opacity: opacityTween.evaluate(_curvedAnimation),
+            child: child,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              state.placeholder ?? const SizedBox.shrink(),
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  final sigma = _blurTween.evaluate(_curvedAnimation);
+
+                  return BackdropFilter(
+                    filter: ui.ImageFilter.blur(
+                      sigmaX: sigma,
+                      sigmaY: sigma,
+                    ),
+                    child: child,
+                  );
+                },
+                child: const ColoredBox(color: Colors.transparent),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
     return BlocSelector<CameraStateBloc, CameraState, CameraStatus>(
       selector: (state) => state.status,
       builder: (context, status) => IgnorePointer(
         ignoring: status == CameraStatus.ready,
-        child: BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
-          builder: (context, state) {
-            final begin = state.showOverlay ? .0 : 1.0;
-            final opacityTween = Tween(begin: begin, end: 1.0 - begin);
-
-            log("state.placeholder: ${state.placeholder}");
-
-            return AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) => Opacity(
-                opacity: opacityTween.evaluate(_curvedAnimation),
-                child: child,
-              ),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  state.placeholder ?? const SizedBox.shrink(),
-                  AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      final sigma = _blurTween.evaluate(_curvedAnimation);
-
-                      return BackdropFilter(
-                        filter: ui.ImageFilter.blur(
-                          sigmaX: sigma,
-                          sigmaY: sigma,
-                        ),
-                        child: child,
-                      );
-                    },
-                    child: const ColoredBox(color: Colors.transparent),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+        child: overlay,
       ),
     );
   }

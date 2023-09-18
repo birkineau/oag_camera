@@ -5,6 +5,7 @@ import '../../controller/camera_roll_bloc.dart';
 import '../../model/camera_roll_state.dart';
 import 'camera_roll_button.dart';
 import 'camera_control_button.dart';
+import 'camera_roll_delete_selected_item_button.dart';
 import 'camera_roll_item_count_indicator.dart';
 import 'camera_roll_item_selector.dart';
 
@@ -50,14 +51,7 @@ class CameraRollControls extends StatelessWidget {
           height: CameraRollButton.kButtonSize,
           top: viewPadding.top,
           right: 8.0,
-          child: CameraControlButton(
-            onPressed: () => _deleteSelectedItem(context),
-            child: const Icon(
-              Icons.delete_outline,
-              size: iconSize,
-              color: Colors.white,
-            ),
-          ),
+          child: const CameraRollDeleteSelectedItemButton(),
         ),
 
         /// Camera roll item selector; only visible when there is more than
@@ -88,11 +82,5 @@ class CameraRollControls extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  void _deleteSelectedItem(BuildContext context) {
-    final cameraRollBloc = context.read<CameraRollBloc>();
-    if (cameraRollBloc.state.length == 1) Navigator.pop(context);
-    cameraRollBloc.add(const DeleteSelectedItemEvent());
   }
 }

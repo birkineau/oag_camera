@@ -37,9 +37,25 @@ class CameraItemWidget extends StatelessWidget {
       flipY: flipY,
       child: Image.memory(
         item.bytes,
+        frameBuilder: _frameBuilder,
         fit: BoxFit.cover,
         filterQuality: filterQuality,
       ),
+    );
+  }
+
+  Widget _frameBuilder(
+    BuildContext context,
+    Widget child,
+    int? frame,
+    bool wasSynchronouslyLoaded,
+  ) {
+    if (wasSynchronouslyLoaded) return child;
+
+    return AnimatedOpacity(
+      opacity: frame == null ? .0 : 1.0,
+      duration: const Duration(milliseconds: 200),
+      child: child,
     );
   }
 }

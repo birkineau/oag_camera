@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../controller/camera_overlay_bloc.dart';
 import '../../controller/camera_settings_bloc.dart';
@@ -11,6 +10,7 @@ import '../../controller/camera_state_bloc.dart';
 import '../../controller/camera_zoom_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
+import '../../model/model.dart';
 
 /// Displays a live preview of the camera.
 ///
@@ -43,14 +43,17 @@ class CameraLivePreviewState extends State<CameraLivePreview>
   @override
   void initState() {
     super.initState();
+
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.addObserver(this);
 
+    final configuration = GetIt.I<CameraConfiguration>();
+
     context.read<CameraStateBloc>().add(
-          const InitializeCameraEvent(
-            lensDirection: CameraLensDirection.back,
-            resolutionPreset: ResolutionPreset.max,
+          InitializeCameraEvent(
+            lensDirection: configuration.initialLensDirection,
+            resolutionPreset: configuration.resolutionPreset,
           ),
         );
   }
@@ -96,11 +99,12 @@ class CameraLivePreviewState extends State<CameraLivePreview>
       listener: _updateCameraController,
       builder: (context, state) {
         final controller = state.controller;
-        final isControllerReady = controller != null &&
+        final isControllerInitialized = controller != null &&
             controller.value.isInitialized &&
-            state.status == CameraStatus.ready;
+            (state.status == CameraStatus.ready ||
+                state.status == CameraStatus.takingPhoto);
 
-        if (!isControllerReady) {
+        if (!isControllerInitialized) {
           return context.read<CameraOverlayBloc>().state.placeholder ??
               const ColoredBox(color: Colors.black);
         }

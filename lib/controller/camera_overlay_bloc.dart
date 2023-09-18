@@ -115,19 +115,22 @@ class CameraOverlayState extends Equatable {
     this.showOverlay = false,
   });
 
+  bool get isActive =>
+      (blur == .0 && showOverlay) || (blur != .0 && showOverlay);
+
   const CameraOverlayState.unblurred()
       : blur = .0,
         placeholder = null,
         showOverlay = false;
 
   CameraOverlayState copyWith({
-    double? Function()? blur,
-    RawImage? Function()? placeholder,
+    double Function()? blur,
+    RawImage Function()? placeholder,
     bool? showOverlay,
   }) {
     return CameraOverlayState(
-      blur: blur?.call() ?? this.blur,
-      placeholder: placeholder?.call() ?? this.placeholder,
+      blur: blur != null ? blur() : this.blur,
+      placeholder: placeholder != null ? placeholder() : this.placeholder,
       showOverlay: showOverlay ?? this.showOverlay,
     );
   }

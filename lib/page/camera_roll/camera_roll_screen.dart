@@ -1,16 +1,17 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_roll_state.dart';
+import '../../model/model.dart';
 import '../../utility/curved_rect_tween.dart';
 import '../camera_application.dart';
 import '../camera_screen/camera_orientation_builder.dart';
 import 'camera_item_preview.dart';
+import 'camera_roll_button.dart';
 
 class CameraRollScreen extends StatefulWidget {
   const CameraRollScreen({super.key});
@@ -188,6 +189,11 @@ class _CameraRollScreenState extends State<CameraRollScreen>
       await _resetScale();
       if (mounted) setState(() {});
       return;
+    }
+
+    final configuration = GetIt.I<CameraConfiguration>();
+    if (configuration.cameraRollType == CameraRollType.single) {
+      context.read<CameraRollBloc>().add(const DeleteSelectedItemEvent());
     }
 
     Navigator.pop(context);

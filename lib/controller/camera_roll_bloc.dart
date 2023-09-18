@@ -30,10 +30,7 @@ class CameraRollBloc extends Bloc<CameraRollEvent, CameraRollState> {
   }
 
   CameraItem? get selectedItem {
-    if (state.selectedIndex == null) {
-      return null;
-    }
-
+    if (state.selectedIndex == null) return null;
     return state.items[state.selectedIndex!];
   }
 
@@ -60,6 +57,8 @@ class CameraRollBloc extends Bloc<CameraRollEvent, CameraRollState> {
       "Added item '${event.item.name}' to camera roll.",
       name: "$CameraRollBloc._add",
     );
+
+    event.onItemAdded?.call(event.item);
   }
 
   void _setSelectedItem(
@@ -115,9 +114,13 @@ abstract class CameraRollEvent {
 
 /// Adds the [CameraItem] to the list of items.
 class AddItemEvent extends CameraRollEvent {
-  const AddItemEvent({required this.item});
+  const AddItemEvent({
+    required this.item,
+    this.onItemAdded,
+  });
 
   final CameraItem item;
+  final void Function(CameraItem item)? onItemAdded;
 }
 
 /// Deletes the currently selected item.

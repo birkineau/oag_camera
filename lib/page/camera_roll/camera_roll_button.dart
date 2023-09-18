@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
+import '../../controller/controller.dart';
 import '../../model/camera_roll_state.dart';
 import '../camera_application.dart';
 import '../camera_screen/camera_orientation_rotator.dart';
 import 'camera_item_preview.dart';
 import 'camera_roll_page.dart';
+import 'camera_roll_single_item_page.dart';
 
 class CameraRollButton extends StatelessWidget {
   static const kButtonSize = 56.0;
@@ -43,7 +45,7 @@ class CameraRollButton extends StatelessWidget {
         return Hero(
           tag: "${CameraApplication.heroCameraRollItem}_${state.selectedIndex}",
           child: GestureDetector(
-            onTap: hasItemSelected ? () => _openCameraRoll(context) : null,
+            onTap: hasItemSelected ? () => openCameraRoll(context) : null,
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.black54,
@@ -72,28 +74,46 @@ class CameraRollButton extends StatelessWidget {
       },
     );
   }
+}
 
-  void _openCameraRoll(BuildContext context) {
-    const duration = Duration(milliseconds: 500);
-    final cameraStateBloc = context.read<CameraStateBloc>();
-    final cameraRollBloc = context.read<CameraRollBloc>();
+enum CameraRollType {
+  /// The camera roll will display a single camera item.
+  single,
 
-    HapticFeedback.lightImpact();
+  /// The camera roll will display multiple items with a selector.
+  multiple,
+}
 
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        fullscreenDialog: true,
-        transitionDuration: duration,
-        reverseTransitionDuration: duration,
-        pageBuilder: (_, animation, ___) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: cameraRollBloc),
-            BlocProvider.value(value: cameraStateBloc),
-          ],
-          child: const CameraRollPage(),
-        ),
+ValueNotifier<bool> isCameraRollOpenNotifier = ValueNotifier(false);
+
+Future<void> openCameraRoll(
+  BuildContext context, {
+  CameraRollType type = CameraRollType.multiple,
+}) async {
+  const duration = Duration(milliseconds: 500);
+  HapticFeedback.lightImpact();
+  isCameraRollOpenNotifier.value = true;
+
+  await Navigator.push(
+    context,
+    PageRouteBuilder(
+      fullscreenDialog: true,
+      transitionDuration: duration,
+      reverseTransitionDuration: duration,
+      pageBuilder: (_, animation, ___) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: context.read<CameraStateBloc>()),
+          BlocProvider.value(value: context.read<CameraRollBloc>()),
+        ],
+        child: type == CameraRollType.multiple
+            ? const CameraRollPage()
+            : BlocProvider.value(
+                value: context.read<CameraOverlayBloc>(),
+                child: const CameraRollSingleItemPage(),
+              ),
       ),
-    );
-  }
+    ),
+  );
+
+  isCameraRollOpenNotifier.value = false;
 }

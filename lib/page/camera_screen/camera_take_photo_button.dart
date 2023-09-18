@@ -5,12 +5,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:oag_camera/model/camera_configuration.dart';
 
 import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
 import '../camera_application.dart';
+import '../camera_roll/camera_roll_button.dart';
 
 class CameraTakePhotoButton extends StatefulWidget {
   const CameraTakePhotoButton({super.key});
@@ -79,7 +82,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     return BlocSelector<CameraStateBloc, CameraState, bool>(
       selector: (state) => state.status == CameraStatus.ready,
       builder: (context, isReady) => IgnorePointer(
-        ignoring: !isReady,
+        ignoring: _isTakingPhoto || !isReady,
         child: GestureDetector(
           /// Prevent the user from taking photos when the camera controller is
           /// uninitialized and from taking multiple photos at the same time.
@@ -109,8 +112,13 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
   Future<void> _takePhoto(TapUpDetails details) async {
     final cameraRoll = context.read<CameraRollBloc>();
+    final configuration = GetIt.I<CameraConfiguration>();
 
     if (cameraRoll.state.isFull) {
+      if (configuration.openCameraRollWhenFull) {
+        return openCameraRoll(context, type: configuration.cameraRollType);
+      }
+
       final topPadding = math.max(8.0, MediaQuery.of(context).viewPadding.top);
       const duration = Duration(milliseconds: 2250);
 
@@ -149,9 +157,10 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
         return showOverlay(
           Offset(.0, topPadding),
-          child: const CameraSnackBar.error(
+          child: CameraSnackBar.error(
+            key: UniqueKey(),
             height: 64.0,
-            content: AutoSizeText(
+            content: const AutoSizeText(
               "ERROR: Unable to take photo.",
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -162,7 +171,22 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
         );
       }
 
-      cameraRoll.add(AddItemEvent(item: photo));
+      /// This closure will access the [mounted] property of the widget.
+      ///
+      /// A closure is necessary to get the current value of [mounted], because
+      /// otherwise it will be an out-of-date copy.
+      bool isMounted() => mounted;
+
+      cameraRoll.add(
+        AddItemEvent(
+          item: photo,
+          onItemAdded: (_) {
+            if (isMounted() && configuration.openCameraRollOnPhotoTaken) {
+              openCameraRoll(context, type: configuration.cameraRollType);
+            }
+          },
+        ),
+      );
     } catch (e) {
       rethrow;
     } finally {

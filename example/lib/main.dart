@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:oag_camera/model/camera_configuration.dart';
 import 'package:oag_camera/page/camera_application.dart';
 
 /// TODO: Holding the page and using the selector makes the diplayed item incorrect.
@@ -31,8 +32,12 @@ class _CameraExampleState extends State<CameraExample> {
     return Scaffold(
       body: CameraApplication(
         key: _cameraApplicationKey,
-        onBackButtonPressed: () => log("back button pressed"),
-        maxItems: 10,
+        // configuration: CameraConfiguration.defaultCameraConfiguration(
+        //   onBackButtonPressed: () => log("Back button pressed."),
+        // ),
+        configuration: CameraConfiguration.defaultSinglePortraitCamera(
+          onBackButtonPressed: () => log("Back button pressed."),
+        ),
       ),
     );
   }
