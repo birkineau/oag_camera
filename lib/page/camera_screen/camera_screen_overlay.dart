@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:developer';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
   late final AnimationController _animationController;
   late final Tween<double> _blurTween;
   late final CurvedAnimation _curvedAnimation;
+  late final StreamSubscription<CameraOverlayState> _blurSubscription;
 
   @override
   void initState() {
@@ -44,6 +47,7 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
   @override
   void dispose() {
     _animationController.dispose();
+    _blurSubscription.cancel();
     super.dispose();
   }
 
@@ -53,43 +57,50 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
       selector: (state) => state.status,
       builder: (context, status) => IgnorePointer(
         ignoring: status == CameraStatus.ready,
-        child: Stack(
-          children: [
-            BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
-              builder: (context, state) => SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: state.placeholder ??
-                    const ColoredBox(color: Colors.transparent),
-              ),
-            ),
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                final sigma = _blurTween.evaluate(_curvedAnimation);
+        child: BlocBuilder<CameraOverlayBloc, CameraOverlayState>(
+          builder: (context, state) {
+            final begin = state.showOverlay ? .0 : 1.0;
+            final opacityTween = Tween(begin: begin, end: 1.0 - begin);
 
-                return BackdropFilter(
-                  filter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
-                  child: child,
-                );
-              },
-              child: const SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: ColoredBox(color: Colors.transparent),
+            log("state.placeholder: ${state.placeholder}");
+
+            return AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) => Opacity(
+                opacity: opacityTween.evaluate(_curvedAnimation),
+                child: child,
               ),
-            ),
-          ],
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  state.placeholder ?? const SizedBox.shrink(),
+                  AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      final sigma = _blurTween.evaluate(_curvedAnimation);
+
+                      return BackdropFilter(
+                        filter: ui.ImageFilter.blur(
+                          sigmaX: sigma,
+                          sigmaY: sigma,
+                        ),
+                        child: child,
+                      );
+                    },
+                    child: const ColoredBox(color: Colors.transparent),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
   void _blurBlocListener(CameraOverlayState state) {
+    _blurTween.begin = _blurTween.end;
     _blurTween.end = state.blur;
-
-    state.showOverlay
-        ? _animationController.forward()
-        : _animationController.reverse();
+    _animationController.forward(from: .0);
   }
 }

@@ -69,7 +69,7 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
     UnblurScreenshotEvent event,
     Emitter<CameraOverlayState> emit,
   ) async {
-    emit(const CameraOverlayState.unblurred());
+    emit(state.copyWith(showOverlay: false, blur: () => .0));
   }
 
   /// Takes a screenshot of the live camera preview using [repaintBoundaryKey].
@@ -119,6 +119,18 @@ class CameraOverlayState extends Equatable {
       : blur = .0,
         placeholder = null,
         showOverlay = false;
+
+  CameraOverlayState copyWith({
+    double? Function()? blur,
+    RawImage? Function()? placeholder,
+    bool? showOverlay,
+  }) {
+    return CameraOverlayState(
+      blur: blur?.call() ?? this.blur,
+      placeholder: placeholder?.call() ?? this.placeholder,
+      showOverlay: showOverlay ?? this.showOverlay,
+    );
+  }
 
   final double blur;
   final RawImage? placeholder;

@@ -62,7 +62,15 @@ class CameraLivePreviewState extends State<CameraLivePreview>
     final controller = cameraState.controller;
     if (controller == null || !controller.value.isInitialized) return;
 
-    final initializer = InitializeCameraEvent.fromController(controller);
+    final initializer = InitializeCameraEvent.fromController(
+      controller,
+
+      /// When the application resumes, wait until the camera is reinitialized
+      /// before unblurring the camera preview overlay.
+      onInitialized: () => context.read<CameraOverlayBloc>().add(
+            UnblurScreenshotEvent(callback: cameraState.dispose),
+          ),
+    );
 
     if (state == AppLifecycleState.inactive) {
       return context.read<CameraOverlayBloc>().add(
@@ -87,51 +95,48 @@ class CameraLivePreviewState extends State<CameraLivePreview>
       listenWhen: _cameraControllerChanged,
       listener: _updateCameraController,
       builder: (context, state) {
-        final Widget child;
         final controller = state.controller;
         final isControllerReady = controller != null &&
             controller.value.isInitialized &&
-            state.status != CameraStatus.notReady;
+            state.status == CameraStatus.ready;
+
+        if (!isControllerReady) {
+          return context.read<CameraOverlayBloc>().state.placeholder ??
+              const ColoredBox(color: Colors.black);
+        }
 
         /// If the camera is not ready, display the placeholder.
-        if (isControllerReady) {
-          child = LayoutBuilder(
-            key: const ValueKey("camera_live_preview"),
-            builder: (context, constraints) {
-              final size =
-                  constraints.hasBoundedWidth && constraints.hasBoundedHeight
-                      ? Size(constraints.maxWidth, constraints.maxHeight)
-                      : MediaQuery.of(context).size;
+        final preview = LayoutBuilder(
+          key: ValueKey(controller.value.description.name),
+          builder: (context, constraints) {
+            final size =
+                constraints.hasBoundedWidth && constraints.hasBoundedHeight
+                    ? Size(constraints.maxWidth, constraints.maxHeight)
+                    : MediaQuery.of(context).size;
 
-              /// Calculate scale depending on screen and camera ratios;
-              /// this is actually size.aspectRatio / (1 / camera.aspectRatio)
-              /// because camera preview size is in landscape but portrait
-              /// orientation is used.
-              var scale = size.aspectRatio * controller.value.aspectRatio;
+            /// Calculate scale depending on screen and camera ratios;
+            /// this is actually size.aspectRatio / (1 / camera.aspectRatio)
+            /// because camera preview size is in landscape but portrait
+            /// orientation is used.
+            var scale = size.aspectRatio * controller.value.aspectRatio;
 
-              /// Invert the value if it would scale down.
-              if (scale < 1.0) scale = 1.0 / scale;
+            /// Invert the value if it would scale down.
+            if (scale < 1.0) scale = 1.0 / scale;
 
-              return GestureDetector(
-                onScaleUpdate: _updateCameraZoom,
-                onScaleEnd: _saveCameraZoom,
-                child: Transform.scale(
-                  scale: scale + .001, // prevents borders
-                  child: CameraPreview(controller),
-                ),
-              );
-            },
-          );
-        } else {
-          child = SizedBox(
-            key: const ValueKey("camera_live_preview_placeholder"),
-            child: context.read<CameraOverlayBloc>().state.placeholder,
-          );
-        }
+            return GestureDetector(
+              onScaleUpdate: _updateCameraZoom,
+              onScaleEnd: _saveCameraZoom,
+              child: Transform.scale(
+                scale: scale + .001, // prevents borders
+                child: CameraPreview(controller),
+              ),
+            );
+          },
+        );
 
         return RepaintBoundary(
           key: context.read<CameraOverlayBloc>().repaintBoundaryKey,
-          child: Align(child: child),
+          child: Align(child: preview),
         );
       },
     );

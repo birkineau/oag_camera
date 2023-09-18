@@ -162,6 +162,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
       );
 
       emit(state.copyWith(controller: controller, status: CameraStatus.ready));
+      event.onInitialized?.call();
     } on CameraException catch (e) {
       log(
         "Unable to initialize camera controller; "
@@ -238,15 +239,15 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
 
       /// TODO: Remove when 'camera' package allows access to logical cameras.
       /// TODO: Create platform channel to access logical cameras.
-      if (Platform.isIOS) {
-        _cameras[CameraLensDirection.back]?.add(
-          const CameraDescription(
-            name: "com.apple.avfoundation.avcapturedevice.built-in_video:6",
-            lensDirection: CameraLensDirection.back,
-            sensorOrientation: 90,
-          ),
-        );
-      }
+      // if (Platform.isIOS) {
+      //   _cameras[CameraLensDirection.back]?.add(
+      //     const CameraDescription(
+      //       name: "com.apple.avfoundation.avcapturedevice.built-in_video:6",
+      //       lensDirection: CameraLensDirection.back,
+      //       sensorOrientation: 90,
+      //     ),
+      //   );
+      // }
 
       for (final entry in _cameras.entries) {
         entry.value.sort((a, b) => a.name.compareTo(b.name));
@@ -289,21 +290,25 @@ class InitializeCameraEvent extends CameraEvent {
     this.resolutionPreset = ResolutionPreset.max,
     this.enableAudio = true,
     this.imageFormatGroup = ImageFormatGroup.yuv420,
+    this.onInitialized,
   });
 
-  InitializeCameraEvent.fromController(CameraController controller)
+  InitializeCameraEvent.fromController(CameraController controller,
+      {VoidCallback? onInitialized})
       : this(
           lensDirection: controller.description.lensDirection,
           resolutionPreset: controller.resolutionPreset,
           enableAudio: controller.enableAudio,
           imageFormatGroup:
               controller.imageFormatGroup ?? ImageFormatGroup.yuv420,
+          onInitialized: onInitialized,
         );
 
   final CameraLensDirection lensDirection;
   final ResolutionPreset resolutionPreset;
   final bool enableAudio;
   final ImageFormatGroup imageFormatGroup;
+  final VoidCallback? onInitialized;
 }
 
 class SetCameraDescriptionEvent extends CameraEvent {
