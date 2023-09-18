@@ -64,6 +64,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     }
 
     try {
+      // ignore: invalid_use_of_visible_for_testing_member
       emit(state.copyWith(status: CameraStatus.takingPhoto));
 
       final file = await controller.takePicture();
@@ -111,6 +112,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
 
       log("Photo taken '$name'.", name: "$CameraStateBloc.takePhoto");
 
+      // ignore: invalid_use_of_visible_for_testing_member
       emit(state.copyWith(status: CameraStatus.ready));
       return item;
     } on CameraException catch (e) {

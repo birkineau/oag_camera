@@ -72,10 +72,7 @@ class CameraScreenOverlayState extends State<CameraScreenOverlay>
                   final sigma = _blurTween.evaluate(_curvedAnimation);
 
                   return BackdropFilter(
-                    filter: ui.ImageFilter.blur(
-                      sigmaX: sigma,
-                      sigmaY: sigma,
-                    ),
+                    filter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
                     child: child,
                   );
                 },
