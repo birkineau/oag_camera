@@ -8,8 +8,10 @@ import '../model/camera_roll_state.dart';
 
 /// Provides add and remove operations for a list of [CameraItem] instances.
 class CameraRollBloc extends Bloc<CameraRollEvent, CameraRollState> {
-  CameraRollBloc({required int maxItems, List<CameraItem>? initialItems})
-      : super(
+  CameraRollBloc({
+    required int maxItems,
+    List<CameraItem>? initialItems,
+  }) : super(
           CameraRollState(
             maxItems: maxItems,
             items: initialItems ?? [],

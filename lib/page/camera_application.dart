@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:oag_camera/page/camera_roll/camera_roll_single_item_page.dart';
 import 'package:oag_snack_bar/oag_snack_bar.dart';
 
 import '../controller/camera_overlay_bloc.dart';
@@ -12,6 +13,7 @@ import '../controller/camera_zoom_bloc.dart';
 import '../model/camera_configuration.dart';
 import '../model/camera_item.dart';
 import '../model/camera_status.dart';
+import '../utility/double_tap_detector.dart';
 import 'camera_roll/camera_roll_button.dart';
 import 'camera_roll/camera_roll_controls.dart';
 import 'camera_screen/camera_back_button.dart';
@@ -42,8 +44,8 @@ Future<void> showOverlay(
 }
 
 class CameraApplication extends StatefulWidget {
-  static const heroCameraRollControls = "hero_camera_roll_controls";
   static const heroCameraRollItem = "hero_camera_roll_item";
+  static const heroCameraRollControls = "hero_camera_roll_controls";
 
   const CameraApplication({
     super.key,
@@ -66,8 +68,6 @@ class CameraApplicationState extends State<CameraApplication> {
   late final CameraRollBloc _cameraRollBloc;
   final _cameraZoomBloc = CameraZoomBloc();
   final _cameraSettingsBloc = CameraSettingsBloc();
-
-  DateTime? _lastTap;
 
   @override
   void initState() {
@@ -107,24 +107,8 @@ class CameraApplicationState extends State<CameraApplication> {
         BlocProvider.value(value: _cameraSettingsBloc),
         BlocProvider.value(value: _cameraRollBloc),
       ],
-      child: GestureDetector(
-        onTapDown: (details) {
-          final now = DateTime.now();
-
-          if (_lastTap == null) {
-            _lastTap = now;
-            return;
-          }
-
-          final previousTap = _lastTap ?? now;
-          _lastTap = now;
-
-          final difference = now.difference(previousTap);
-          if (difference.inMilliseconds < 300) {
-            _handleLivePreviewDoubleTap();
-            _lastTap = null;
-          }
-        },
+      child: DoubleTapDetector(
+        onDoubleTap: _handleLivePreviewDoubleTap,
         child: OagOverlay(
           key: _overlayKey,
           duration: const Duration(milliseconds: 500),
@@ -190,13 +174,16 @@ class CameraApplicationState extends State<CameraApplication> {
               /// wrapped by a [Hero] widget, so it needs to be placed in
               /// the widget tree before the [Hero] widget is used during the
               /// route transition.
-              const Positioned.fill(
+              Positioned.fill(
                 child: Opacity(
                   opacity: .0,
                   child: IgnorePointer(
                     child: Hero(
                       tag: CameraApplication.heroCameraRollControls,
-                      child: CameraRollControls(enableListeners: false),
+                      child: widget.configuration.cameraRollType ==
+                              CameraRollMode.single
+                          ? const CameraRollSingleItemControls()
+                          : const CameraRollControls(enableListeners: false),
                     ),
                   ),
                 ),
@@ -208,7 +195,7 @@ class CameraApplicationState extends State<CameraApplication> {
     );
   }
 
-  void _handleLivePreviewDoubleTap() {
+  Future<void> _handleLivePreviewDoubleTap() async {
     /// Close the camera settings on double tap if they're visible.
     if (_cameraSettingsBloc.state.visible) {
       return _cameraSettingsBloc.add(
@@ -223,24 +210,37 @@ class CameraApplicationState extends State<CameraApplication> {
     }
 
     if (widget.configuration.allowLensDirectionChange) {
-      /// Toggle the camera lens direction on double tap, if the camera is ready.
-      if (_cameraStateBloc.state.status != CameraStatus.ready) return;
-      _cameraOverlayBloc.add(const BlurScreenshotEvent());
-
-      final controller = _cameraStateBloc.state.controller;
-      if (controller == null) {
-        return _cameraOverlayBloc.add(const UnblurScreenshotEvent());
-      }
-
-      final isBack =
-          controller.description.lensDirection == CameraLensDirection.back;
-
-      _cameraStateBloc.add(
-        SetCameraLensDirectionEvent(
-          lensDirection:
-              isBack ? CameraLensDirection.front : CameraLensDirection.back,
-        ),
+      return toggleLensDirection(
+        cameraStateBloc: _cameraStateBloc,
+        cameraOverlayBloc: _cameraOverlayBloc,
       );
     }
   }
+}
+
+Future<void> toggleLensDirection({
+  required CameraStateBloc cameraStateBloc,
+  required CameraOverlayBloc cameraOverlayBloc,
+}) async {
+  /// Toggle the camera lens direction on double tap, if the camera is ready.
+  if (cameraStateBloc.state.status != CameraStatus.ready) return;
+  cameraOverlayBloc.add(const BlurScreenshotEvent());
+
+  /// If, for some reason, the controller is null, unblur and return.
+  final controller = cameraStateBloc.state.controller;
+  if (controller == null) {
+    throw StateError(
+      "Attempted to toggle lens direction, but the "
+      "camera controller is null.",
+    );
+  }
+
+  final oppositeLensDirection =
+      controller.description.lensDirection == CameraLensDirection.back
+          ? CameraLensDirection.front
+          : CameraLensDirection.back;
+
+  cameraStateBloc.add(
+    SetCameraLensDirectionEvent(lensDirection: oppositeLensDirection),
+  );
 }

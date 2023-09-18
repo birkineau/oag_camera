@@ -3,18 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../controller/camera_roll_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
+import '../../controller/controller.dart';
 import '../../model/camera_roll_state.dart';
 import '../../model/model.dart';
 import '../../utility/curved_rect_tween.dart';
+import '../../utility/double_tap_detector.dart';
 import '../camera_application.dart';
 import '../camera_screen/camera_orientation_builder.dart';
 import 'camera_item_preview.dart';
 import 'camera_roll_button.dart';
 
 class CameraRollScreen extends StatefulWidget {
-  const CameraRollScreen({super.key});
+  const CameraRollScreen({
+    super.key,
+    this.backgroundColor = Colors.black,
+  });
+
+  final Color backgroundColor;
 
   @override
   State<CameraRollScreen> createState() => _CameraRollScreenState();
@@ -54,7 +59,6 @@ class _CameraRollScreenState extends State<CameraRollScreen>
     );
 
     _transformationTween = Matrix4Tween(begin: null, end: Matrix4.identity());
-
     _pageController = PageController(initialPage: 0);
   }
 
@@ -108,8 +112,8 @@ class _CameraRollScreenState extends State<CameraRollScreen>
 
                 final child = Container(
                   key: ValueKey("camera_item_${item.timeStamp}"),
-                  decoration: const BoxDecoration(color: Colors.black),
-                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(color: widget.backgroundColor),
+                  clipBehavior: Clip.hardEdge,
                   child: BlocProvider.value(
                     value: cameraStateBloc,
                     child: CameraItemPreview(item: item),
@@ -118,8 +122,8 @@ class _CameraRollScreenState extends State<CameraRollScreen>
 
                 if (isSelected) {
                   return Hero(
-                    tag:
-                        "${CameraApplication.heroCameraRollItem}_${state.selectedIndex}",
+                    tag: "${CameraApplication.heroCameraRollItem}_"
+                        "${state.selectedIndex}",
                     createRectTween: _createRectTween,
                     flightShuttleBuilder: _flightShuttleBuilder,
                     child: child,
@@ -143,24 +147,8 @@ class _CameraRollScreenState extends State<CameraRollScreen>
       child: child,
     );
 
-    return GestureDetector(
-      onTapDown: (details) {
-        final now = DateTime.now();
-
-        if (_lastTap == null) {
-          _lastTap = now;
-          return;
-        }
-
-        final previousTap = _lastTap ?? now;
-        _lastTap = now;
-
-        final difference = now.difference(previousTap);
-        if (difference.inMilliseconds < 300) {
-          _handleItemPreviewDoubleTap(isZoomedIn);
-          _lastTap = null;
-        }
-      },
+    return DoubleTapDetector(
+      onDoubleTap: () => _handleItemPreviewDoubleTap(isZoomedIn),
       child: viewer,
     );
   }
@@ -192,8 +180,12 @@ class _CameraRollScreenState extends State<CameraRollScreen>
     }
 
     final configuration = GetIt.I<CameraConfiguration>();
-    if (configuration.cameraRollType == CameraRollType.single) {
+    if (configuration.cameraRollType == CameraRollMode.single) {
       context.read<CameraRollBloc>().add(const DeleteSelectedItemEvent());
+    }
+
+    if (context.read<CameraOverlayBloc>().state.isActive) {
+      context.read<CameraOverlayBloc>().add(const UnblurScreenshotEvent());
     }
 
     Navigator.pop(context);

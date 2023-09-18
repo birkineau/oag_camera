@@ -76,7 +76,7 @@ class CameraRollButton extends StatelessWidget {
   }
 }
 
-enum CameraRollType {
+enum CameraRollMode {
   /// The camera roll will display a single camera item.
   single,
 
@@ -84,15 +84,12 @@ enum CameraRollType {
   multiple,
 }
 
-ValueNotifier<bool> isCameraRollOpenNotifier = ValueNotifier(false);
-
 Future<void> openCameraRoll(
   BuildContext context, {
-  CameraRollType type = CameraRollType.multiple,
+  CameraRollMode type = CameraRollMode.multiple,
 }) async {
   const duration = Duration(milliseconds: 500);
   HapticFeedback.lightImpact();
-  isCameraRollOpenNotifier.value = true;
 
   await Navigator.push(
     context,
@@ -104,16 +101,12 @@ Future<void> openCameraRoll(
         providers: [
           BlocProvider.value(value: context.read<CameraStateBloc>()),
           BlocProvider.value(value: context.read<CameraRollBloc>()),
+          BlocProvider.value(value: context.read<CameraOverlayBloc>())
         ],
-        child: type == CameraRollType.multiple
+        child: type == CameraRollMode.multiple
             ? const CameraRollPage()
-            : BlocProvider.value(
-                value: context.read<CameraOverlayBloc>(),
-                child: const CameraRollSingleItemPage(),
-              ),
+            : const CameraRollSingleItemPage(),
       ),
     ),
   );
-
-  isCameraRollOpenNotifier.value = false;
 }

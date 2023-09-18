@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/camera_roll_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
+import '../../controller/controller.dart';
 import '../camera_application.dart';
 import 'camera_roll_controls.dart';
 import 'camera_roll_screen.dart';

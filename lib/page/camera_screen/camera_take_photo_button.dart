@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:oag_camera/controller/camera_overlay_bloc.dart';
 import 'package:oag_camera/model/camera_configuration.dart';
 
 import '../../controller/camera_roll_bloc.dart';
@@ -145,11 +146,10 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     try {
       setState(() => _isTakingPhoto = true);
       final photo = await cameraController.takePhoto();
+      if (!mounted) return;
       setState(() => _isTakingPhoto = false);
 
       if (photo == null) {
-        if (!mounted) return;
-
         final topPadding = math.max(
           8.0,
           MediaQuery.of(context).viewPadding.top,
@@ -180,10 +180,12 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
       cameraRoll.add(
         AddItemEvent(
           item: photo,
-          onItemAdded: (_) {
-            if (isMounted() && configuration.openCameraRollOnPhotoTaken) {
-              openCameraRoll(context, type: configuration.cameraRollType);
+          onItemAdded: (_) async {
+            if (!isMounted() || !configuration.openCameraRollOnPhotoTaken) {
+              return;
             }
+
+            await openCameraRoll(context, type: configuration.cameraRollType);
           },
         ),
       );

@@ -17,7 +17,7 @@ class CameraConfiguration extends Equatable {
       initialLensDirection: CameraLensDirection.back,
       allowLensDirectionChange: true,
       showCameraRoll: true,
-      cameraRollType: CameraRollType.multiple,
+      cameraRollType: CameraRollMode.multiple,
       openCameraRollOnPhotoTaken: false,
       openCameraRollWhenFull: true,
     );
@@ -34,7 +34,7 @@ class CameraConfiguration extends Equatable {
       initialLensDirection: CameraLensDirection.front,
       allowLensDirectionChange: false,
       showCameraRoll: false,
-      cameraRollType: CameraRollType.single,
+      cameraRollType: CameraRollMode.single,
       openCameraRollOnPhotoTaken: true,
       openCameraRollWhenFull: true,
     );
@@ -59,7 +59,7 @@ class CameraConfiguration extends Equatable {
     int? compressionQuality,
     int? maxPhotoItems,
     CameraLensDirection? initialLensDirection,
-    CameraRollType? cameraRollType,
+    CameraRollMode? cameraRollType,
     bool? allowLensDirectionChange,
     bool? showCameraRoll,
     bool? openCameraRollOnPhotoTaken,
@@ -103,11 +103,11 @@ class CameraConfiguration extends Equatable {
 
   /// The type of camera roll.
   ///
-  /// * [CameraRollType.single] - The camera roll is used to display a single
+  /// * [CameraRollMode.single] - The camera roll is used to display a single
   /// camera item.
-  /// * [CameraRollType.multiple] - The camera roll is used to display multiple
+  /// * [CameraRollMode.multiple] - The camera roll is used to display multiple
   /// camera items.
-  final CameraRollType cameraRollType;
+  final CameraRollMode cameraRollType;
 
   /// Whether the lens direction can be changed.
   final bool allowLensDirectionChange;

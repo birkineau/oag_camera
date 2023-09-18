@@ -104,8 +104,10 @@ class CameraLivePreviewState extends State<CameraLivePreview>
             (state.status == CameraStatus.ready ||
                 state.status == CameraStatus.takingPhoto);
 
+        final cameraOverlayBloc = context.read<CameraOverlayBloc>();
+
         if (!isControllerInitialized) {
-          return context.read<CameraOverlayBloc>().state.placeholder ??
+          return cameraOverlayBloc.state.placeholder ??
               const ColoredBox(color: Colors.black);
         }
 
@@ -139,7 +141,7 @@ class CameraLivePreviewState extends State<CameraLivePreview>
         );
 
         return RepaintBoundary(
-          key: context.read<CameraOverlayBloc>().repaintBoundaryKey,
+          key: cameraOverlayBloc.repaintBoundaryKey,
           child: Align(child: preview),
         );
       },
