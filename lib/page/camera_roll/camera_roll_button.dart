@@ -91,6 +91,10 @@ Future<void> openCameraRoll(
   const duration = Duration(milliseconds: 500);
   HapticFeedback.lightImpact();
 
+  final cameraStateBloc = context.read<CameraStateBloc>();
+  final cameraRollBloc = context.read<CameraRollBloc>();
+  final cameraOverlayBloc = context.read<CameraOverlayBloc>();
+
   await Navigator.push(
     context,
     PageRouteBuilder(
@@ -99,9 +103,9 @@ Future<void> openCameraRoll(
       reverseTransitionDuration: duration,
       pageBuilder: (_, animation, ___) => MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: context.read<CameraStateBloc>()),
-          BlocProvider.value(value: context.read<CameraRollBloc>()),
-          BlocProvider.value(value: context.read<CameraOverlayBloc>())
+          BlocProvider.value(value: cameraStateBloc),
+          BlocProvider.value(value: cameraRollBloc),
+          BlocProvider.value(value: cameraOverlayBloc),
         ],
         child: type == CameraRollMode.multiple
             ? const CameraRollPage()
