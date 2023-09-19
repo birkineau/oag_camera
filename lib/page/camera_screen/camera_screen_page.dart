@@ -62,7 +62,9 @@ class CameraScreenPage extends StatelessWidget {
           child: CameraScreenPage(configuration: configuration),
         );
       },
-      routes: [CameraRollPage.route()],
+      routes: [
+        CameraRollPage.route(),
+      ],
     );
   }
 
@@ -161,7 +163,7 @@ class CameraScreenPage extends StatelessWidget {
                   child: IgnorePointer(
                     child: Hero(
                       tag: CameraScreenPage.heroCameraRollControls,
-                      child: configuration.cameraRollType ==
+                      child: configuration.cameraRollMode ==
                               CameraRollMode.single
                           ? const CameraRollSingleItemControls()
                           : const CameraRollControls(enableListeners: false),

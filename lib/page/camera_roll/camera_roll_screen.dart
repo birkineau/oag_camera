@@ -180,7 +180,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
     }
 
     final configuration = GetIt.I<CameraConfiguration>();
-    if (configuration.cameraRollType == CameraRollMode.single) {
+    if (configuration.cameraRollMode == CameraRollMode.single) {
       context.read<CameraRollBloc>().add(const DeleteSelectedItemEvent());
     }
 

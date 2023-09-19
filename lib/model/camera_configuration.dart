@@ -17,7 +17,7 @@ class CameraConfiguration extends Equatable {
       initialLensDirection: CameraLensDirection.back,
       allowLensDirectionChange: true,
       showCameraRoll: true,
-      cameraRollType: CameraRollMode.multiple,
+      cameraRollMode: CameraRollMode.multiple,
       openCameraRollOnPhotoTaken: false,
       openCameraRollWhenFull: true,
       showCameraRollOnStartup: false,
@@ -35,7 +35,7 @@ class CameraConfiguration extends Equatable {
       initialLensDirection: CameraLensDirection.front,
       allowLensDirectionChange: false,
       showCameraRoll: false,
-      cameraRollType: CameraRollMode.single,
+      cameraRollMode: CameraRollMode.single,
       openCameraRollOnPhotoTaken: true,
       openCameraRollWhenFull: true,
       showCameraRollOnStartup: true,
@@ -51,7 +51,7 @@ class CameraConfiguration extends Equatable {
     required this.allowLensDirectionChange,
     required this.showCameraRoll,
     required this.openCameraRollOnPhotoTaken,
-    required this.cameraRollType,
+    required this.cameraRollMode,
     required this.openCameraRollWhenFull,
     required this.showCameraRollOnStartup,
   });
@@ -75,7 +75,7 @@ class CameraConfiguration extends Equatable {
       compressionQuality: compressionQuality ?? this.compressionQuality,
       maxPhotoItems: maxPhotoItems ?? this.maxPhotoItems,
       initialLensDirection: initialLensDirection ?? this.initialLensDirection,
-      cameraRollType: cameraRollType ?? this.cameraRollType,
+      cameraRollMode: cameraRollType ?? cameraRollMode,
       allowLensDirectionChange:
           allowLensDirectionChange ?? this.allowLensDirectionChange,
       showCameraRoll: showCameraRoll ?? this.showCameraRoll,
@@ -113,7 +113,7 @@ class CameraConfiguration extends Equatable {
   /// camera item.
   /// * [CameraRollMode.multiple] - The camera roll is used to display multiple
   /// camera items.
-  final CameraRollMode cameraRollType;
+  final CameraRollMode cameraRollMode;
 
   /// Whether the lens direction can be changed.
   final bool allowLensDirectionChange;
@@ -139,7 +139,7 @@ class CameraConfiguration extends Equatable {
         maxPhotoItems,
         initialLensDirection,
         allowLensDirectionChange,
-        cameraRollType,
+        cameraRollMode,
         showCameraRoll,
         openCameraRollOnPhotoTaken,
         openCameraRollWhenFull,

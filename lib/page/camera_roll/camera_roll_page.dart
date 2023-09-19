@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../controller/controller.dart';
+import '../../model/model.dart';
 import '../camera_screen/camera_screen_page.dart';
 import 'camera_roll_button.dart';
 import 'camera_roll_controls.dart';
@@ -12,37 +14,16 @@ import 'camera_roll_single_item_page.dart';
 class CameraRollPage extends StatelessWidget {
   static const routeName = "camera_roll";
 
-  static void go(
-    BuildContext context, {
-    required CameraRollMode mode,
-    required CameraStateBloc cameraStateBloc,
-    required CameraRollBloc cameraRollBloc,
-    required CameraOverlayBloc cameraOverlayBloc,
-  }) {
-    context.go(
-      "${CameraScreenPage.routeName}/$routeName",
-      extra: [
-        mode,
-        cameraStateBloc,
-        cameraRollBloc,
-        cameraOverlayBloc,
-      ],
-    );
+  static void go(BuildContext context) {
+    context.go("${CameraScreenPage.routeName}/$routeName");
   }
 
   static GoRoute route() {
     return GoRoute(
       path: routeName,
       pageBuilder: (context, state) {
-        final args = state.extra as List<Object>;
-
-        assert(args.length == 4);
-        assert(args[0] is CameraRollMode);
-        assert(args[1] is CameraStateBloc);
-        assert(args[2] is CameraRollBloc);
-        assert(args[3] is CameraOverlayBloc);
-
         const duration = Duration(milliseconds: 400);
+        final cameraRollMode = GetIt.I<CameraConfiguration>().cameraRollMode;
 
         return CustomTransitionPage(
           key: state.pageKey,
@@ -53,13 +34,13 @@ class CameraRollPage extends StatelessWidget {
           },
           child: MultiBlocProvider(
             providers: [
-              BlocProvider.value(value: args[1] as CameraStateBloc),
-              BlocProvider.value(value: args[2] as CameraRollBloc),
-              BlocProvider.value(value: args[3] as CameraOverlayBloc),
+              BlocProvider.value(value: GetIt.I<CameraStateBloc>()),
+              BlocProvider.value(value: GetIt.I<CameraRollBloc>()),
+              BlocProvider.value(value: GetIt.I<CameraOverlayBloc>()),
             ],
-            child: (args[0] as CameraRollMode) == CameraRollMode.multiple
-                ? const CameraRollPage()
-                : const CameraRollSingleItemPage(),
+            child: cameraRollMode == CameraRollMode.single
+                ? const CameraRollSingleItemPage()
+                : const CameraRollPage(),
           ),
         );
       },

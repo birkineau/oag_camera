@@ -88,17 +88,6 @@ Future<void> openCameraRoll(
   BuildContext context, {
   CameraRollMode mode = CameraRollMode.multiple,
 }) async {
-  final cameraStateBloc = context.read<CameraStateBloc>();
-  final cameraRollBloc = context.read<CameraRollBloc>();
-  final cameraOverlayBloc = context.read<CameraOverlayBloc>();
-
-  CameraRollPage.go(
-    context,
-    mode: mode,
-    cameraStateBloc: cameraStateBloc,
-    cameraRollBloc: cameraRollBloc,
-    cameraOverlayBloc: cameraOverlayBloc,
-  );
-
+  CameraRollPage.go(context);
   HapticFeedback.lightImpact();
 }
