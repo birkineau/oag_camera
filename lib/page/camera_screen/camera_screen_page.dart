@@ -45,7 +45,7 @@ Future<void> showOverlay(
   await state.showAtOffset(offset, child: child, duration: duration);
 }
 
-class CameraScreenPage extends StatefulWidget {
+class CameraScreenPage extends StatelessWidget {
   static const heroCameraRollItem = "hero_camera_roll_item";
   static const heroCameraRollControls = "hero_camera_roll_controls";
 
@@ -76,46 +76,17 @@ class CameraScreenPage extends StatefulWidget {
   final List<CameraItem>? initialItems;
 
   @override
-  State<CameraScreenPage> createState() => CameraScreenPageState();
-}
-
-class CameraScreenPageState extends State<CameraScreenPage> {
-  final _cameraStateBloc = CameraStateBloc();
-  final _cameraOverlayBloc = CameraOverlayBloc();
-  final _cameraZoomBloc = CameraZoomBloc();
-  final _cameraSettingsBloc = CameraSettingsBloc();
-
-  @override
-  void initState() {
-    super.initState();
-
-    GetIt.I.registerSingleton<CameraConfiguration>(widget.configuration);
-  }
-
-  @override
-  void dispose() {
-    _cameraSettingsBloc.close();
-    _cameraZoomBloc.close();
-    _cameraOverlayBloc.close();
-    _cameraStateBloc.close();
-    GetIt.I.unregister<CameraConfiguration>();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final viewPadding = mediaQuery.viewPadding;
-    const threshold = 1.5;
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: _cameraStateBloc),
-        BlocProvider.value(value: _cameraOverlayBloc),
-        BlocProvider.value(value: _cameraZoomBloc),
-        BlocProvider.value(value: _cameraSettingsBloc),
         BlocProvider.value(value: GetIt.I<CameraRollBloc>()),
+        BlocProvider.value(value: GetIt.I<CameraStateBloc>()),
+        BlocProvider.value(value: GetIt.I<CameraOverlayBloc>()),
+        BlocProvider.value(value: GetIt.I<CameraZoomBloc>()),
+        BlocProvider.value(value: GetIt.I<CameraSettingsBloc>()),
       ],
       child: DoubleTapDetector(
         onDoubleTap: _handleLivePreviewDoubleTap,
@@ -135,9 +106,9 @@ class CameraScreenPageState extends State<CameraScreenPage> {
                 top: mediaQuery.viewPadding.top,
                 left: 8.0,
                 child: CameraBackButton(
-                  onPressed: () => _cameraOverlayBloc.add(
+                  onPressed: () => GetIt.I<CameraOverlayBloc>().add(
                     ShowFramePlaceholder(
-                      callback: widget.configuration.onBackButtonPressed,
+                      callback: configuration.onBackButtonPressed,
                     ),
                   ),
                 ),
@@ -190,7 +161,7 @@ class CameraScreenPageState extends State<CameraScreenPage> {
                   child: IgnorePointer(
                     child: Hero(
                       tag: CameraScreenPage.heroCameraRollControls,
-                      child: widget.configuration.cameraRollType ==
+                      child: configuration.cameraRollType ==
                               CameraRollMode.single
                           ? const CameraRollSingleItemControls()
                           : const CameraRollControls(enableListeners: false),
@@ -206,23 +177,27 @@ class CameraScreenPageState extends State<CameraScreenPage> {
   }
 
   Future<void> _handleLivePreviewDoubleTap() async {
+    final cameraSettingsBloc = GetIt.I<CameraSettingsBloc>();
+
     /// Close the camera settings on double tap if they're visible.
-    if (_cameraSettingsBloc.state.visible) {
-      return _cameraSettingsBloc.add(
+    if (cameraSettingsBloc.state.visible) {
+      return cameraSettingsBloc.add(
         const CameraSettingsSetVisible(visible: false),
       );
     }
 
+    final cameraZoomBloc = GetIt.I<CameraZoomBloc>();
+
     /// Reset zoom on double tap, if the zoom is not already at the
     /// minimum zoom and if the settings are closed.
-    if (_cameraZoomBloc.state.current != _cameraZoomBloc.state.min) {
-      return _cameraZoomBloc.add(const ResetCameraZoom());
+    if (cameraZoomBloc.state.current != cameraZoomBloc.state.min) {
+      return cameraZoomBloc.add(const ResetCameraZoom());
     }
 
-    if (widget.configuration.allowLensDirectionChange) {
+    if (configuration.allowLensDirectionChange) {
       return _toggleLensDirection(
-        cameraStateBloc: _cameraStateBloc,
-        cameraOverlayBloc: _cameraOverlayBloc,
+        cameraStateBloc: GetIt.I<CameraStateBloc>(),
+        cameraOverlayBloc: GetIt.I<CameraOverlayBloc>(),
       );
     }
   }

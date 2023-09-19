@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,9 +30,13 @@ class CameraState extends State<Camera> {
   }
 
   late final CameraRollBloc _cameraRollBloc;
-  late final GoRouter _routerConfiguration;
+  final _cameraStateBloc = CameraStateBloc();
+  final _cameraOverlayBloc = CameraOverlayBloc();
+  final _cameraZoomBloc = CameraZoomBloc();
+  final _cameraSettingsBloc = CameraSettingsBloc();
 
   final _navigatorKey = GlobalKey<NavigatorState>();
+  late final GoRouter _routerConfiguration;
 
   @override
   void initState() {
@@ -42,21 +47,36 @@ class CameraState extends State<Camera> {
       initialItems: widget.initialItems,
     );
 
-    if (!GetIt.I.isRegistered<CameraRollBloc>()) {
-      GetIt.I.registerSingleton<CameraRollBloc>(_cameraRollBloc);
-    }
-
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
       widget.configuration,
     );
+
+    void close<T>(BlocBase<T> bloc) {
+      if (!bloc.isClosed) bloc.close();
+    }
+
+    GetIt.I
+      ..registerSingleton(widget.configuration)
+      ..registerSingleton(_cameraRollBloc, dispose: close)
+      ..registerSingleton(_cameraStateBloc, dispose: close)
+      ..registerSingleton(_cameraOverlayBloc, dispose: close)
+      ..registerSingleton(_cameraZoomBloc, dispose: close)
+      ..registerSingleton(_cameraSettingsBloc, dispose: close);
   }
 
   @override
   void dispose() {
+    GetIt.I
+      ..unregister<CameraSettingsBloc>()
+      ..unregister<CameraZoomBloc>()
+      ..unregister<CameraOverlayBloc>()
+      ..unregister<CameraStateBloc>()
+      ..unregister<CameraRollBloc>()
+      ..unregister<CameraConfiguration>();
+
     _routerConfiguration.dispose();
-    _cameraRollBloc.close();
-    GetIt.I.unregister<CameraRollBloc>();
+
     super.dispose();
   }
 
