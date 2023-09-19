@@ -20,6 +20,7 @@ class CameraConfiguration extends Equatable {
       cameraRollType: CameraRollMode.multiple,
       openCameraRollOnPhotoTaken: false,
       openCameraRollWhenFull: true,
+      showCameraRollOnStartup: false,
     );
   }
 
@@ -37,6 +38,7 @@ class CameraConfiguration extends Equatable {
       cameraRollType: CameraRollMode.single,
       openCameraRollOnPhotoTaken: true,
       openCameraRollWhenFull: true,
+      showCameraRollOnStartup: true,
     );
   }
 
@@ -51,6 +53,7 @@ class CameraConfiguration extends Equatable {
     required this.openCameraRollOnPhotoTaken,
     required this.cameraRollType,
     required this.openCameraRollWhenFull,
+    required this.showCameraRollOnStartup,
   });
 
   CameraConfiguration copyWith({
@@ -64,6 +67,7 @@ class CameraConfiguration extends Equatable {
     bool? showCameraRoll,
     bool? openCameraRollOnPhotoTaken,
     bool? openCameraRollWhenFull,
+    bool? showCameraRollOnStartup,
   }) {
     return CameraConfiguration(
       onBackButtonPressed: onBackButtonPressed ?? this.onBackButtonPressed,
@@ -79,6 +83,8 @@ class CameraConfiguration extends Equatable {
           openCameraRollOnPhotoTaken ?? this.openCameraRollOnPhotoTaken,
       openCameraRollWhenFull:
           openCameraRollWhenFull ?? this.openCameraRollWhenFull,
+      showCameraRollOnStartup:
+          showCameraRollOnStartup ?? this.showCameraRollOnStartup,
     );
   }
 
@@ -122,6 +128,9 @@ class CameraConfiguration extends Equatable {
   /// attemps to take a photo/video.
   final bool openCameraRollWhenFull;
 
+  /// Whether to show the camera roll on startup.
+  final bool showCameraRollOnStartup;
+
   @override
   List<Object?> get props => [
         onBackButtonPressed,
@@ -130,9 +139,10 @@ class CameraConfiguration extends Equatable {
         maxPhotoItems,
         initialLensDirection,
         allowLensDirectionChange,
+        cameraRollType,
         showCameraRoll,
         openCameraRollOnPhotoTaken,
-        cameraRollType,
         openCameraRollWhenFull,
+        showCameraRollOnStartup
       ];
 }
