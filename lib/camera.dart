@@ -47,11 +47,6 @@ class CameraState extends State<Camera> {
       initialItems: widget.initialItems,
     );
 
-    _routerConfiguration = createRouterConfiguration(
-      _navigatorKey,
-      widget.configuration,
-    );
-
     void close<T>(BlocBase<T> bloc) {
       if (!bloc.isClosed) bloc.close();
     }
@@ -63,6 +58,11 @@ class CameraState extends State<Camera> {
       ..registerSingleton(_cameraOverlayBloc, dispose: close)
       ..registerSingleton(_cameraZoomBloc, dispose: close)
       ..registerSingleton(_cameraSettingsBloc, dispose: close);
+
+    _routerConfiguration = createRouterConfiguration(
+      _navigatorKey,
+      widget.configuration,
+    );
   }
 
   @override
