@@ -114,7 +114,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
     if (cameraRoll.state.isFull) {
       if (configuration.openCameraRollWhenFull) {
-        return openCameraRoll(context, type: configuration.cameraRollType);
+        return openCameraRoll(context, mode: configuration.cameraRollType);
       }
 
       final topPadding = math.max(8.0, MediaQuery.of(context).viewPadding.top);
@@ -182,7 +182,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
               return;
             }
 
-            await openCameraRoll(context, type: configuration.cameraRollType);
+            await openCameraRoll(context, mode: configuration.cameraRollType);
           },
         ),
       );

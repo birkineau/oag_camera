@@ -56,22 +56,25 @@ class _CameraSettingsFlashModeState extends State<CameraSettingsFlashMode>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: const Text(
-              "FLASH MODE",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 12.0,
+          Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: const Text(
+                "FLASH MODE",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12.0,
+                ),
               ),
             ),
           ),
           const Divider(height: .0),
           SizedBox(
             height: 48.0,
-            child: CameraSettingsSelector<FlashMode>(
+            child: CameraSettingsSelector(
               selector: (state) => state.flashMode,
               builder: (context, currentFlashMode) => Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

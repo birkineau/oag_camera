@@ -86,7 +86,7 @@ enum CameraRollMode {
 
 Future<void> openCameraRoll(
   BuildContext context, {
-  CameraRollMode type = CameraRollMode.multiple,
+  CameraRollMode mode = CameraRollMode.multiple,
 }) async {
   HapticFeedback.lightImpact();
 
@@ -96,27 +96,9 @@ Future<void> openCameraRoll(
 
   CameraRollPage.go(
     context,
+    mode: mode,
     cameraStateBloc: cameraStateBloc,
     cameraRollBloc: cameraRollBloc,
     cameraOverlayBloc: cameraOverlayBloc,
   );
-
-  // await context.go(
-  //   context,
-  //   PageRouteBuilder(
-  //     fullscreenDialog: true,
-  //     transitionDuration: duration,
-  //     reverseTransitionDuration: duration,
-  //     pageBuilder: (_, animation, ___) => MultiBlocProvider(
-  //       providers: [
-  //         BlocProvider.value(value: cameraStateBloc),
-  //         BlocProvider.value(value: cameraRollBloc),
-  //         BlocProvider.value(value: cameraOverlayBloc),
-  //       ],
-  //       child: type == CameraRollMode.multiple
-  //           ? const CameraRollPage()
-  //           : const CameraRollSingleItemPage(),
-  //     ),
-  //   ),
-  // );
 }
