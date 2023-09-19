@@ -8,16 +8,12 @@ import 'page/camera_screen/camera_screen_page.dart';
 GoRouter createRouterConfiguration(
   GlobalKey<NavigatorState> navigatorKey,
   CameraConfiguration configuration,
-  List<CameraItem>? initialItems,
 ) {
   return GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: CameraScreenPage.routeName,
     routes: [
-      CameraScreenPage.route(
-        configuration: configuration,
-        initialItems: initialItems,
-      ),
+      CameraScreenPage.route(configuration: configuration),
     ],
   );
 }

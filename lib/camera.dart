@@ -49,7 +49,6 @@ class CameraState extends State<Camera> {
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
       widget.configuration,
-      widget.initialItems,
     );
   }
 
