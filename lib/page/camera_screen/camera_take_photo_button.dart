@@ -1,20 +1,17 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:oag_camera/controller/camera_overlay_bloc.dart';
 import 'package:oag_camera/model/camera_configuration.dart';
 
 import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
-import '../camera_application.dart';
 import '../camera_roll/camera_roll_button.dart';
+import 'camera_screen_page.dart';
 
 class CameraTakePhotoButton extends StatefulWidget {
   const CameraTakePhotoButton({super.key});

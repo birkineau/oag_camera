@@ -8,8 +8,8 @@ import '../../model/camera_roll_state.dart';
 import '../../model/model.dart';
 import '../../utility/curved_rect_tween.dart';
 import '../../utility/double_tap_detector.dart';
-import '../camera_application.dart';
 import '../camera_screen/camera_orientation_builder.dart';
+import '../camera_screen/camera_screen_page.dart';
 import 'camera_item_preview.dart';
 import 'camera_roll_button.dart';
 
@@ -122,7 +122,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
 
                 if (isSelected) {
                   return Hero(
-                    tag: "${CameraApplication.heroCameraRollItem}_"
+                    tag: "${CameraScreenPage.heroCameraRollItem}_"
                         "${state.selectedIndex}",
                     createRectTween: _createRectTween,
                     flightShuttleBuilder: _flightShuttleBuilder,

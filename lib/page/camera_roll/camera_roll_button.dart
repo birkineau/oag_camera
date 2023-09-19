@@ -1,13 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/camera_roll_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
 import '../../controller/controller.dart';
 import '../../model/camera_roll_state.dart';
-import '../camera_application.dart';
 import '../camera_screen/camera_orientation_rotator.dart';
+import '../camera_screen/camera_screen_page.dart';
 import 'camera_item_preview.dart';
 import 'camera_roll_page.dart';
 import 'camera_roll_single_item_page.dart';
@@ -43,7 +43,7 @@ class CameraRollButton extends StatelessWidget {
         }
 
         return Hero(
-          tag: "${CameraApplication.heroCameraRollItem}_${state.selectedIndex}",
+          tag: "${CameraScreenPage.heroCameraRollItem}_${state.selectedIndex}",
           child: GestureDetector(
             onTap: hasItemSelected ? () => openCameraRoll(context) : null,
             child: Container(
@@ -88,29 +88,35 @@ Future<void> openCameraRoll(
   BuildContext context, {
   CameraRollMode type = CameraRollMode.multiple,
 }) async {
-  const duration = Duration(milliseconds: 500);
   HapticFeedback.lightImpact();
 
   final cameraStateBloc = context.read<CameraStateBloc>();
   final cameraRollBloc = context.read<CameraRollBloc>();
   final cameraOverlayBloc = context.read<CameraOverlayBloc>();
 
-  await Navigator.push(
+  CameraRollPage.go(
     context,
-    PageRouteBuilder(
-      fullscreenDialog: true,
-      transitionDuration: duration,
-      reverseTransitionDuration: duration,
-      pageBuilder: (_, animation, ___) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: cameraStateBloc),
-          BlocProvider.value(value: cameraRollBloc),
-          BlocProvider.value(value: cameraOverlayBloc),
-        ],
-        child: type == CameraRollMode.multiple
-            ? const CameraRollPage()
-            : const CameraRollSingleItemPage(),
-      ),
-    ),
+    cameraStateBloc: cameraStateBloc,
+    cameraRollBloc: cameraRollBloc,
+    cameraOverlayBloc: cameraOverlayBloc,
   );
+
+  // await context.go(
+  //   context,
+  //   PageRouteBuilder(
+  //     fullscreenDialog: true,
+  //     transitionDuration: duration,
+  //     reverseTransitionDuration: duration,
+  //     pageBuilder: (_, animation, ___) => MultiBlocProvider(
+  //       providers: [
+  //         BlocProvider.value(value: cameraStateBloc),
+  //         BlocProvider.value(value: cameraRollBloc),
+  //         BlocProvider.value(value: cameraOverlayBloc),
+  //       ],
+  //       child: type == CameraRollMode.multiple
+  //           ? const CameraRollPage()
+  //           : const CameraRollSingleItemPage(),
+  //     ),
+  //   ),
+  // );
 }

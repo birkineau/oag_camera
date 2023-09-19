@@ -2,27 +2,29 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:oag_camera/page/camera_roll/camera_roll_single_item_page.dart';
 import 'package:oag_snack_bar/oag_snack_bar.dart';
 
-import '../controller/camera_overlay_bloc.dart';
-import '../controller/camera_roll_bloc.dart';
-import '../controller/camera_settings_bloc.dart';
-import '../controller/camera_state_bloc.dart';
-import '../controller/camera_zoom_bloc.dart';
-import '../model/camera_configuration.dart';
-import '../model/camera_item.dart';
-import '../model/camera_status.dart';
-import '../utility/double_tap_detector.dart';
-import 'camera_roll/camera_roll_button.dart';
-import 'camera_roll/camera_roll_controls.dart';
-import 'camera_screen/camera_back_button.dart';
-import 'camera_screen/camera_screen.dart';
-import 'camera_screen/camera_screen_controls.dart';
-import 'camera_screen/camera_settings_exposure.dart';
-import 'camera_screen/camera_settings_flash_mode.dart';
-import 'camera_screen/camera_toggle_settings_button.dart';
-import 'camera_screen/deleted_camera_item_animation.dart';
+import '../../controller/camera_overlay_bloc.dart';
+import '../../controller/camera_roll_bloc.dart';
+import '../../controller/camera_settings_bloc.dart';
+import '../../controller/camera_state_bloc.dart';
+import '../../controller/camera_zoom_bloc.dart';
+import '../../model/camera_configuration.dart';
+import '../../model/camera_item.dart';
+import '../../model/camera_status.dart';
+import '../../utility/double_tap_detector.dart';
+import '../camera_roll/camera_roll_button.dart';
+import '../camera_roll/camera_roll_controls.dart';
+import '../camera_roll/camera_roll_page.dart';
+import 'camera_back_button.dart';
+import 'camera_screen.dart';
+import 'camera_screen_controls.dart';
+import 'camera_settings_exposure.dart';
+import 'camera_settings_flash_mode.dart';
+import 'camera_toggle_settings_button.dart';
+import 'deleted_camera_item_animation.dart';
 
 final _overlayKey = GlobalKey<OagOverlayState>();
 
@@ -43,11 +45,34 @@ Future<void> showOverlay(
   await state.showAtOffset(offset, child: child, duration: duration);
 }
 
-class CameraApplication extends StatefulWidget {
+class CameraScreenPage extends StatefulWidget {
   static const heroCameraRollItem = "hero_camera_roll_item";
   static const heroCameraRollControls = "hero_camera_roll_controls";
 
-  const CameraApplication({
+  static const routeName = "/camera_application";
+
+  static void go(BuildContext context) => context.go(routeName);
+
+  static GoRoute route({
+    required CameraConfiguration configuration,
+    List<CameraItem>? initialItems,
+  }) {
+    return GoRoute(
+      path: routeName,
+      pageBuilder: (context, state) {
+        return NoTransitionPage(
+          key: state.pageKey,
+          child: CameraScreenPage(
+            configuration: configuration,
+            initialItems: initialItems,
+          ),
+        );
+      },
+      routes: [CameraRollPage.route()],
+    );
+  }
+
+  const CameraScreenPage({
     super.key,
     required this.configuration,
     this.initialItems,
@@ -57,10 +82,10 @@ class CameraApplication extends StatefulWidget {
   final List<CameraItem>? initialItems;
 
   @override
-  State<CameraApplication> createState() => CameraApplicationState();
+  State<CameraScreenPage> createState() => CameraScreenPageState();
 }
 
-class CameraApplicationState extends State<CameraApplication> {
+class CameraScreenPageState extends State<CameraScreenPage> {
   List<CameraItem> getItems() => _cameraRollBloc.state.items;
 
   final _cameraStateBloc = CameraStateBloc();
@@ -173,13 +198,13 @@ class CameraApplicationState extends State<CameraApplication> {
               /// Camera roll controls placeholder; the [CameraRollControls] is
               /// wrapped by a [Hero] widget, so it needs to be placed in
               /// the widget tree before the [Hero] widget is used during the
-              /// route transition.
+              /// route transition to avoid overlap.
               Positioned.fill(
                 child: Opacity(
                   opacity: .0,
                   child: IgnorePointer(
                     child: Hero(
-                      tag: CameraApplication.heroCameraRollControls,
+                      tag: CameraScreenPage.heroCameraRollControls,
                       child: widget.configuration.cameraRollType ==
                               CameraRollMode.single
                           ? const CameraRollSingleItemControls()

@@ -32,7 +32,10 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
       emit(
         CameraOverlayState(
           blur: .0,
-          placeholder: RawImage(image: image),
+          placeholder: RawImage(
+            image: image,
+            filterQuality: event.filterQuality,
+          ),
           showOverlay: true,
         ),
       );
@@ -97,7 +100,12 @@ abstract class CameraOverlayEvent {
 }
 
 class ShowFramePlaceholder extends CameraOverlayEvent {
-  const ShowFramePlaceholder({super.callback});
+  const ShowFramePlaceholder({
+    this.filterQuality = FilterQuality.medium,
+    super.callback,
+  });
+
+  final FilterQuality filterQuality;
 }
 
 class BlurScreenshotEvent extends CameraOverlayEvent {

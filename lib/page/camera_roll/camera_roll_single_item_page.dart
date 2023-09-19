@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../controller/controller.dart';
 import '../../model/model.dart';
-import '../camera_application.dart';
+import '../camera_screen/camera_screen_page.dart';
 import 'camera_control_button.dart';
 import 'camera_roll_button.dart';
 import 'camera_roll_delete_selected_item_button.dart';
@@ -23,7 +23,7 @@ class CameraRollSingleItemPage extends StatelessWidget {
         children: [
           CameraRollScreen(backgroundColor: Colors.transparent),
           Hero(
-            tag: CameraApplication.heroCameraRollControls,
+            tag: CameraScreenPage.heroCameraRollControls,
             flightShuttleBuilder: cameraRollControlsFlightShuttleBuilder,
             child: CameraRollSingleItemControls(),
           ),
