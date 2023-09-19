@@ -53,20 +53,13 @@ class CameraScreenPage extends StatefulWidget {
 
   static void go(BuildContext context) => context.go(routeName);
 
-  static GoRoute route({
-    required CameraConfiguration configuration,
-    List<CameraItem>? initialItems,
-  }) {
+  static GoRoute route({required CameraConfiguration configuration}) {
     return GoRoute(
       path: routeName,
       pageBuilder: (context, state) {
         return NoTransitionPage(
           key: state.pageKey,
-          child: CameraScreenPage(
-            key: GetIt.I<GlobalKey<CameraScreenPageState>>(),
-            configuration: configuration,
-            initialItems: initialItems,
-          ),
+          child: CameraScreenPage(configuration: configuration),
         );
       },
       routes: [CameraRollPage.route()],
@@ -87,11 +80,8 @@ class CameraScreenPage extends StatefulWidget {
 }
 
 class CameraScreenPageState extends State<CameraScreenPage> {
-  List<CameraItem> getItems() => _cameraRollBloc.state.items;
-
   final _cameraStateBloc = CameraStateBloc();
   final _cameraOverlayBloc = CameraOverlayBloc();
-  late final CameraRollBloc _cameraRollBloc;
   final _cameraZoomBloc = CameraZoomBloc();
   final _cameraSettingsBloc = CameraSettingsBloc();
 
@@ -100,17 +90,11 @@ class CameraScreenPageState extends State<CameraScreenPage> {
     super.initState();
 
     GetIt.I.registerSingleton<CameraConfiguration>(widget.configuration);
-
-    _cameraRollBloc = CameraRollBloc(
-      maxItems: widget.configuration.maxPhotoItems,
-      initialItems: widget.initialItems,
-    );
   }
 
   @override
   void dispose() {
     _cameraSettingsBloc.close();
-    _cameraRollBloc.close();
     _cameraZoomBloc.close();
     _cameraOverlayBloc.close();
     _cameraStateBloc.close();
@@ -131,7 +115,7 @@ class CameraScreenPageState extends State<CameraScreenPage> {
         BlocProvider.value(value: _cameraOverlayBloc),
         BlocProvider.value(value: _cameraZoomBloc),
         BlocProvider.value(value: _cameraSettingsBloc),
-        BlocProvider.value(value: _cameraRollBloc),
+        BlocProvider.value(value: GetIt.I<CameraRollBloc>()),
       ],
       child: DoubleTapDetector(
         onDoubleTap: _handleLivePreviewDoubleTap,
@@ -236,7 +220,7 @@ class CameraScreenPageState extends State<CameraScreenPage> {
     }
 
     if (widget.configuration.allowLensDirectionChange) {
-      return toggleLensDirection(
+      return _toggleLensDirection(
         cameraStateBloc: _cameraStateBloc,
         cameraOverlayBloc: _cameraOverlayBloc,
       );
@@ -244,7 +228,7 @@ class CameraScreenPageState extends State<CameraScreenPage> {
   }
 }
 
-Future<void> toggleLensDirection({
+Future<void> _toggleLensDirection({
   required CameraStateBloc cameraStateBloc,
   required CameraOverlayBloc cameraOverlayBloc,
 }) async {

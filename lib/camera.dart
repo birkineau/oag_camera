@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import 'controller/controller.dart';
 import 'oag_camera.dart';
-import 'page/camera_screen/camera_screen_page.dart';
 import 'router_configuration.dart';
 
 class Camera extends StatefulWidget {
@@ -21,23 +23,28 @@ class Camera extends StatefulWidget {
 }
 
 class CameraState extends State<Camera> {
-  List<CameraItem> get items {
-    final state = _cameraScreenPageKey.currentState;
-    if (state == null) return [];
-    return state.getItems();
+  List<CameraItem>? get items {
+    if (_cameraRollBloc.state.items.isEmpty) return null;
+    return _cameraRollBloc.state.items;
   }
 
-  final _cameraScreenPageKey = GlobalKey<CameraScreenPageState>();
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  late final CameraRollBloc _cameraRollBloc;
   late final GoRouter _routerConfiguration;
+
+  final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
 
-    if (!GetIt.I.isRegistered<GlobalKey<CameraScreenPageState>>()) {
-      GetIt.I.registerSingleton(_cameraScreenPageKey);
+    if (!GetIt.I.isRegistered<CameraRollBloc>()) {
+      GetIt.I.registerSingleton<CameraRollBloc>(_cameraRollBloc);
     }
+
+    _cameraRollBloc = CameraRollBloc(
+      maxItems: widget.configuration.maxPhotoItems,
+      initialItems: widget.initialItems,
+    );
 
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
@@ -49,6 +56,8 @@ class CameraState extends State<Camera> {
   @override
   void dispose() {
     _routerConfiguration.dispose();
+    _cameraRollBloc.close();
+    GetIt.I.unregister<CameraRollBloc>();
     super.dispose();
   }
 
