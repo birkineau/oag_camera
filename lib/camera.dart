@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import 'oag_camera.dart';
+import 'page/camera_screen/camera_screen_page.dart';
 import 'router_configuration.dart';
 
 class Camera extends StatefulWidget {
@@ -16,16 +17,27 @@ class Camera extends StatefulWidget {
   final List<CameraItem>? initialItems;
 
   @override
-  State<Camera> createState() => _CameraState();
+  State<Camera> createState() => CameraState();
 }
 
-class _CameraState extends State<Camera> {
+class CameraState extends State<Camera> {
+  List<CameraItem> get items {
+    final state = _cameraScreenPageKey.currentState;
+    if (state == null) return [];
+    return state.getItems();
+  }
+
+  final _cameraScreenPageKey = GlobalKey<CameraScreenPageState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
   late final GoRouter _routerConfiguration;
 
   @override
   void initState() {
     super.initState();
+
+    if (!GetIt.I.isRegistered<GlobalKey<CameraScreenPageState>>()) {
+      GetIt.I.registerSingleton(_cameraScreenPageKey);
+    }
 
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,

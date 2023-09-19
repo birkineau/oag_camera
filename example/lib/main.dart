@@ -24,7 +24,7 @@ class CameraExample extends StatefulWidget {
 }
 
 class _CameraExampleState extends State<CameraExample> {
-  final _cameraApplicationKey = GlobalKey<CameraScreenPageState>();
+  final _cameraApplicationKey = GlobalKey<CameraState>();
 
   @override
   Widget build(BuildContext context) {

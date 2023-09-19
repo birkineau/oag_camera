@@ -63,6 +63,7 @@ class CameraScreenPage extends StatefulWidget {
         return NoTransitionPage(
           key: state.pageKey,
           child: CameraScreenPage(
+            key: GetIt.I<GlobalKey<CameraScreenPageState>>(),
             configuration: configuration,
             initialItems: initialItems,
           ),
