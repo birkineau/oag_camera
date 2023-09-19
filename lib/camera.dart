@@ -37,14 +37,14 @@ class CameraState extends State<Camera> {
   void initState() {
     super.initState();
 
-    if (!GetIt.I.isRegistered<CameraRollBloc>()) {
-      GetIt.I.registerSingleton<CameraRollBloc>(_cameraRollBloc);
-    }
-
     _cameraRollBloc = CameraRollBloc(
       maxItems: widget.configuration.maxPhotoItems,
       initialItems: widget.initialItems,
     );
+
+    if (!GetIt.I.isRegistered<CameraRollBloc>()) {
+      GetIt.I.registerSingleton<CameraRollBloc>(_cameraRollBloc);
+    }
 
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
