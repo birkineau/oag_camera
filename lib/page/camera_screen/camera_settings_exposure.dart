@@ -329,7 +329,9 @@ class _CameraExposureIndicatorState extends State<_CameraExposureIndicator>
             child: Text(
               value.toString(),
               maxLines: 1,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white,
+                  ),
             ),
           );
         },
