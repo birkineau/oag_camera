@@ -222,6 +222,7 @@ class _SetExposureButtonState extends State<_SetExposureButton> {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.all(.0),
         shape: const CircleBorder(),
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         tapTargetSize: MaterialTapTargetSize.padded,
       ),
@@ -328,7 +329,7 @@ class _CameraExposureIndicatorState extends State<_CameraExposureIndicator>
             child: Text(
               value.toString(),
               maxLines: 1,
-              style: const TextStyle(color: Colors.white),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           );
         },
