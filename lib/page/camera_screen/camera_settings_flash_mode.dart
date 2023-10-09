@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/camera_settings_bloc.dart';
+import '../../controller/controller.dart';
 import '../../model/camera_settings_state.dart';
+import '../../model/camera_state.dart';
 import 'camera_settings_visibility.dart';
 
 typedef CameraSettingsSelector<T>
@@ -20,11 +22,6 @@ class CameraSettingsFlashMode extends StatefulWidget {
 class _CameraSettingsFlashModeState extends State<CameraSettingsFlashMode>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
-
-  final _flashModes = [
-    for (final flashMode in FlashMode.values)
-      if (flashMode != FlashMode.torch) flashMode,
-  ];
 
   @override
   void initState() {
@@ -74,35 +71,49 @@ class _CameraSettingsFlashModeState extends State<CameraSettingsFlashMode>
           const Divider(height: .0),
           SizedBox(
             height: 48.0,
-            child: CameraSettingsSelector(
-              selector: (state) => state.flashMode,
-              builder: (context, currentFlashMode) => Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final flashMode in _flashModes)
-                    Expanded(
-                      child: TextButton(
-                        onPressed: flashMode == currentFlashMode
-                            ? null
-                            : () => _setFlashMode(flashMode),
-                        style: buttonStyle,
-                        child: Text(
-                          flashMode.name,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: flashMode == currentFlashMode
-                                ? Colors.amber
-                                : Colors.grey.shade300,
-                            fontWeight: flashMode == currentFlashMode
-                                ? FontWeight.w500
-                                : FontWeight.w300,
+            child: BlocBuilder<CameraStateBloc, CameraState>(
+                buildWhen: (previous, current) {
+              return previous.controller != null &&
+                  current.controller != null &&
+                  previous.controller!.value.description.lensDirection !=
+                      current.controller!.value.description.lensDirection;
+            }, builder: (context, state) {
+              final isFrontLens =
+                  state.controller!.value.description.lensDirection ==
+                      CameraLensDirection.front;
+
+              return CameraSettingsSelector(
+                selector: (state) => state.flashMode,
+                builder: (context, currentFlashMode) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final flashMode in FlashMode.values)
+                      if (!isFrontLens ||
+                          (isFrontLens && flashMode != FlashMode.torch))
+                        Expanded(
+                          child: TextButton(
+                            onPressed: flashMode == currentFlashMode
+                                ? null
+                                : () => _setFlashMode(flashMode),
+                            style: buttonStyle,
+                            child: Text(
+                              flashMode.name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: flashMode == currentFlashMode
+                                    ? Colors.amber
+                                    : Colors.grey.shade300,
+                                fontWeight: flashMode == currentFlashMode
+                                    ? FontWeight.w500
+                                    : FontWeight.w300,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              );
+            }),
           ),
         ],
       ),

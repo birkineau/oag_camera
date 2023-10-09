@@ -31,12 +31,12 @@ class _CameraExampleState extends State<CameraExample> {
     return Scaffold(
       body: Camera(
         key: _cameraApplicationKey,
-        // configuration: CameraConfiguration.defaultCameraConfiguration(
-        //   onBackButtonPressed: () => log("Back button pressed."),
-        // ),
-        configuration: CameraConfiguration.defaultSinglePortraitCamera(
+        configuration: CameraConfiguration.defaultCameraConfiguration(
           onBackButtonPressed: () => log("Back button pressed."),
         ),
+        // configuration: CameraConfiguration.defaultSinglePortraitCamera(
+        //   onBackButtonPressed: () => log("Back button pressed."),
+        // ),
       ),
     );
   }

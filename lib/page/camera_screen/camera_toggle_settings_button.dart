@@ -48,6 +48,8 @@ class CameraToggleSettingsButton extends StatelessWidget {
         return Icons.flash_on;
       case FlashMode.off:
         return Icons.flash_off;
+      case FlashMode.torch:
+        return Icons.flashlight_on;
       default:
         throw ArgumentError.value(flashMode);
     }
