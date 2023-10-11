@@ -90,7 +90,7 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
       "The render object has not yet gone through the paint phase.",
     );
 
-    return render!.toImage();
+    return render?.toImage();
   }
 }
 
