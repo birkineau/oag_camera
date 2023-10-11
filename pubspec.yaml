@@ -1,7 +1,8 @@
 name: oag_camera
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 #signal9966
 environment:
   sdk: '>=3.1.0 <4.0.0'
