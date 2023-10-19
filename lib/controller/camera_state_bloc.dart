@@ -45,7 +45,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
 
   @override
   Future<void> close() {
-    state.controller?.dispose();
+    CameraStateBloc.dispose(this);
     return super.close();
   }
 
@@ -226,8 +226,8 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     DisposeCameraEvent event,
     Emitter<CameraState> emit,
   ) async {
-    state.dispose();
     emit(_notReadyState);
+    CameraStateBloc.dispose(this);
   }
 
   /// Updates the list of device cameras.
@@ -280,6 +280,15 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
   }
 
   void _orientationListener() => add(const UpdateOrientationEvent());
+
+  static void dispose(CameraStateBloc bloc) {
+    final controller = bloc.state.controller;
+    if (controller == null) return;
+
+    controller
+      ..removeListener(bloc._orientationListener)
+      ..dispose();
+  }
 }
 
 abstract class CameraEvent {

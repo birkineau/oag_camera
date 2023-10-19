@@ -25,10 +25,6 @@ class CameraState with _$CameraState, EquatableMixin {
   bool get isInitialized =>
       controller != null && controller!.value.isInitialized;
 
-  void dispose() {
-    if (isInitialized) controller!.dispose();
-  }
-
   @override
   List<Object?> get props => [controller, status, orientation];
 }

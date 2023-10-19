@@ -61,8 +61,7 @@ class CameraLivePreviewState extends State<CameraLivePreview>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final cameraStateBloc = context.read<CameraStateBloc>();
-    final cameraState = cameraStateBloc.state;
-    final controller = cameraState.controller;
+    final controller = cameraStateBloc.state.controller;
     if (controller == null || !controller.value.isInitialized) return;
 
     final initializer = InitializeCameraEvent.fromController(
@@ -71,18 +70,22 @@ class CameraLivePreviewState extends State<CameraLivePreview>
       /// When the application resumes, wait until the camera is reinitialized
       /// before unblurring the camera preview overlay.
       onInitialized: () => context.read<CameraOverlayBloc>().add(
-            UnblurScreenshotEvent(callback: cameraState.dispose),
+            UnblurScreenshotEvent(
+              callback: () => CameraStateBloc.dispose(cameraStateBloc),
+            ),
           ),
     );
 
     if (state == AppLifecycleState.inactive) {
       return context.read<CameraOverlayBloc>().add(
-            BlurScreenshotEvent(callback: cameraState.dispose),
+            BlurScreenshotEvent(
+              callback: () => CameraStateBloc.dispose(cameraStateBloc),
+            ),
           );
     }
 
     if (state == AppLifecycleState.resumed) {
-      return context.read<CameraStateBloc>().add(initializer);
+      return cameraStateBloc.add(initializer);
     }
   }
 
