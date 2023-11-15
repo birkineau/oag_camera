@@ -13,6 +13,7 @@ import '../../controller/camera_state_bloc.dart';
 import '../../controller/camera_zoom_bloc.dart';
 import '../../model/camera_configuration.dart';
 import '../../model/camera_item.dart';
+import '../../model/camera_state.dart';
 import '../../model/camera_status.dart';
 import '../../utility/double_tap_detector.dart';
 import '../camera_roll/camera_roll_button.dart';
@@ -107,12 +108,17 @@ class CameraScreenPage extends StatelessWidget {
                 height: CameraRollButton.kButtonSize,
                 top: mediaQuery.viewPadding.top,
                 left: 8.0,
-                child: CameraBackButton(
-                  onPressed: () => GetIt.I<CameraOverlayBloc>().add(
-                    ShowFramePlaceholder(
-                      callback: configuration.onBackButtonPressed,
-                    ),
-                  ),
+                child: BlocSelector<CameraStateBloc, CameraState, bool>(
+                  selector: (state) => state.status == CameraStatus.ready,
+                  builder: (context, isReady) {
+                    return CameraBackButton(
+                      onPressed: () => GetIt.I<CameraOverlayBloc>().add(
+                        ShowFramePlaceholder(
+                          callback: configuration.onBackButtonPressed,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
 
