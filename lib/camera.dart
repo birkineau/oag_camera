@@ -50,8 +50,11 @@ class CameraState extends State<Camera> {
       if (!bloc.isClosed) bloc.close();
     }
 
+    if (!GetIt.I.isRegistered<CameraConfiguration>()) {
+      GetIt.I.registerSingleton(widget.configuration);
+    }
+
     GetIt.I
-      ..registerSingleton(widget.configuration)
       ..registerSingleton(_cameraRollBloc, dispose: close)
       ..registerSingleton(_cameraStateBloc, dispose: close)
       ..registerSingleton(_cameraOverlayBloc, dispose: close)
