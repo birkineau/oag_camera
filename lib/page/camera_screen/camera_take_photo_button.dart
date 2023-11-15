@@ -95,11 +95,13 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
   Future<void> _press(TapDownDetails details) async {
     await _animationController.forward();
+    if (!mounted) return;
     setState(() {});
   }
 
   Future<void> _depress() async {
     await _animationController.reverse();
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -167,6 +169,8 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
           duration: const Duration(milliseconds: 2250),
         );
       }
+
+      if (!mounted || cameraRoll.isClosed || cameraController.isClosed) return;
 
       /// This closure will access the [mounted] property of the widget.
       ///
