@@ -100,6 +100,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
   }
 
   Future<void> _depress() async {
+    if (!mounted) return;
     await _animationController.reverse();
     if (!mounted) return;
     setState(() {});
@@ -193,7 +194,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
     } catch (e) {
       rethrow;
     } finally {
-      await _depress();
+      if (mounted) await _depress();
     }
   }
 }
