@@ -112,11 +112,13 @@ class CameraScreenPage extends StatelessWidget {
                   selector: (state) => state.status == CameraStatus.ready,
                   builder: (context, isReady) {
                     return CameraBackButton(
-                      onPressed: () => GetIt.I<CameraOverlayBloc>().add(
-                        ShowFramePlaceholder(
-                          callback: configuration.onBackButtonPressed,
-                        ),
-                      ),
+                      onPressed: isReady
+                          ? () => GetIt.I<CameraOverlayBloc>().add(
+                                ShowFramePlaceholder(
+                                  callback: configuration.onBackButtonPressed,
+                                ),
+                              )
+                          : null,
                     );
                   },
                 ),
