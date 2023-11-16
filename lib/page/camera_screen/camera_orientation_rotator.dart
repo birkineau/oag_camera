@@ -91,7 +91,7 @@ class _CameraOrientationRotatorState extends State<CameraOrientationRotator>
 double _getAngleForOrientation(DeviceOrientation orientation) {
   return switch (orientation) {
     DeviceOrientation.portraitUp || DeviceOrientation.portraitDown => .0,
-    DeviceOrientation.landscapeLeft => -math.pi / 2.0,
-    DeviceOrientation.landscapeRight => math.pi / 2.0,
+    DeviceOrientation.landscapeLeft => math.pi / 2.0,
+    DeviceOrientation.landscapeRight => -math.pi / 2.0,
   };
 }
