@@ -86,7 +86,7 @@ class CameraLivePreviewState extends State<CameraLivePreview>
       );
     }
 
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed && !cameraStateBloc.isClosed) {
       return cameraStateBloc.add(initializer);
     }
   }
