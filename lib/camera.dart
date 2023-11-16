@@ -9,7 +9,6 @@ import 'controller/controller.dart';
 import 'oag_camera.dart';
 import 'router_configuration.dart';
 
-/// TODO: Delete XFile after reading bytes.
 class Camera extends StatefulWidget {
   const Camera({
     super.key,
