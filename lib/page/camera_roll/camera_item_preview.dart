@@ -35,7 +35,7 @@ class _CameraItemPreviewState extends State<CameraItemPreview>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late final CurvedAnimation _curvedAnimation;
-  late final Tween<double> _scaleTween;
+  final Tween<double> _scaleTween = Tween(begin: .0, end: .0);
   late final Tween<double> _rotationTween;
 
   late double _rotation;
@@ -76,7 +76,8 @@ class _CameraItemPreviewState extends State<CameraItemPreview>
         orientation,
       );
 
-      _scaleTween = Tween(begin: scale, end: scale);
+      _scaleTween.begin = scale;
+      _scaleTween.end = scale;
 
       _listener = (context, state) {
         final scale = scaleForItemWithOrientation(
