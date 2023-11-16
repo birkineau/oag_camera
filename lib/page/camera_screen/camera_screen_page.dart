@@ -27,14 +27,12 @@ import 'camera_settings_flash_mode.dart';
 import 'camera_toggle_settings_button.dart';
 import 'deleted_camera_item_animation.dart';
 
-final _overlayKey = GlobalKey<OagOverlayState>();
-
 Future<void> showOverlay(
   Offset offset, {
   required Widget child,
   Duration? duration,
 }) async {
-  final state = _overlayKey.currentState;
+  final state = GetIt.I<GlobalKey<OagOverlayState>>().currentState;
   if (state == null) return;
   if (state.visible) {
     state
@@ -46,7 +44,7 @@ Future<void> showOverlay(
   await state.showAtOffset(offset, child: child, duration: duration);
 }
 
-class CameraScreenPage extends StatelessWidget {
+class CameraScreenPage extends StatefulWidget {
   static const heroCameraRollItem = "hero_camera_roll_item";
   static const heroCameraRollControls = "hero_camera_roll_controls";
 
@@ -77,6 +75,25 @@ class CameraScreenPage extends StatelessWidget {
 
   final CameraConfiguration configuration;
   final List<CameraItem>? initialItems;
+
+  @override
+  State<CameraScreenPage> createState() => _CameraScreenPageState();
+}
+
+class _CameraScreenPageState extends State<CameraScreenPage> {
+  final _overlayKey = GlobalKey<OagOverlayState>();
+
+  @override
+  void initState() {
+    super.initState();
+    GetIt.I.registerSingleton(_overlayKey);
+  }
+
+  @override
+  void dispose() {
+    GetIt.I.unregister<GlobalKey<OagOverlayState>>();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +134,8 @@ class CameraScreenPage extends StatelessWidget {
                           onPressed: isReady
                               ? () => GetIt.I<CameraOverlayBloc>().add(
                                     ShowFramePlaceholder(
-                                      callback:
-                                          configuration.onBackButtonPressed,
+                                      callback: widget
+                                          .configuration.onBackButtonPressed,
                                     ),
                                   )
                               : null,
@@ -174,7 +191,7 @@ class CameraScreenPage extends StatelessWidget {
                       child: IgnorePointer(
                         child: Hero(
                           tag: CameraScreenPage.heroCameraRollControls,
-                          child: configuration.cameraRollMode ==
+                          child: widget.configuration.cameraRollMode ==
                                   CameraRollMode.single
                               ? const CameraRollSingleItemControls()
                               : const CameraRollControls(
@@ -212,7 +229,7 @@ class CameraScreenPage extends StatelessWidget {
       return cameraZoomBloc.add(const ResetCameraZoom());
     }
 
-    if (configuration.allowLensDirectionChange) {
+    if (widget.configuration.allowLensDirectionChange) {
       return _toggleLensDirection(
         cameraStateBloc: GetIt.I<CameraStateBloc>(),
         cameraOverlayBloc: GetIt.I<CameraOverlayBloc>(),

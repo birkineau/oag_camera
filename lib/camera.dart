@@ -52,12 +52,12 @@ class CameraState extends State<Camera> {
       if (!bloc.isClosed) await bloc.close();
     }
 
-    registerDi(widget.configuration);
-    registerDi(_cameraRollBloc, dispose: closeBloc);
-    registerDi(_cameraStateBloc, dispose: closeBloc);
-    registerDi(_cameraOverlayBloc, dispose: closeBloc);
-    registerDi(_cameraZoomBloc, dispose: closeBloc);
-    registerDi(_cameraSettingsBloc, dispose: closeBloc);
+    _registerDi(widget.configuration);
+    _registerDi(_cameraRollBloc, dispose: closeBloc);
+    _registerDi(_cameraStateBloc, dispose: closeBloc);
+    _registerDi(_cameraOverlayBloc, dispose: closeBloc);
+    _registerDi(_cameraZoomBloc, dispose: closeBloc);
+    _registerDi(_cameraSettingsBloc, dispose: closeBloc);
 
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
@@ -67,12 +67,12 @@ class CameraState extends State<Camera> {
 
   @override
   void dispose() {
-    unregisterDi<CameraSettingsBloc>();
-    unregisterDi<CameraZoomBloc>();
-    unregisterDi<CameraOverlayBloc>();
-    unregisterDi<CameraStateBloc>();
-    unregisterDi<CameraRollBloc>();
-    unregisterDi<CameraConfiguration>();
+    _unregisterDi<CameraSettingsBloc>();
+    _unregisterDi<CameraZoomBloc>();
+    _unregisterDi<CameraOverlayBloc>();
+    _unregisterDi<CameraStateBloc>();
+    _unregisterDi<CameraRollBloc>();
+    _unregisterDi<CameraConfiguration>();
 
     _routerConfiguration.dispose();
 
@@ -89,7 +89,7 @@ class CameraState extends State<Camera> {
   }
 }
 
-void registerDi<T extends Object>(
+void _registerDi<T extends Object>(
   T instance, {
   FutureOr<dynamic> Function(T)? dispose,
 }) {
@@ -97,7 +97,7 @@ void registerDi<T extends Object>(
   GetIt.I.registerSingleton<T>(instance, dispose: dispose);
 }
 
-void unregisterDi<T extends Object>() {
+void _unregisterDi<T extends Object>() {
   if (!GetIt.I.isRegistered<T>()) return;
   GetIt.I.unregister<T>();
 }
