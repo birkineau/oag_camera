@@ -1,9 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/controller.dart';
 import '../../model/camera_item.dart';
 import 'camera_item_preview.dart';
 
