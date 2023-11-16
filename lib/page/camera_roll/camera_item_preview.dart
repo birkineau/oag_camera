@@ -180,15 +180,15 @@ double rotationForItemWithOrientation(
     return switch (deviceOrientation) {
       DeviceOrientation.portraitUp => .0,
       DeviceOrientation.portraitDown => math.pi,
-      DeviceOrientation.landscapeLeft => math.pi / 2.0,
-      DeviceOrientation.landscapeRight => -math.pi / 2.0,
+      DeviceOrientation.landscapeLeft => -math.pi / 2.0,
+      DeviceOrientation.landscapeRight => math.pi / 2.0,
     };
   } else if (item.orientation == DeviceOrientation.portraitDown) {
     return switch (deviceOrientation) {
       DeviceOrientation.portraitUp => math.pi,
       DeviceOrientation.portraitDown => .0,
-      DeviceOrientation.landscapeLeft => -math.pi / 2.0,
-      DeviceOrientation.landscapeRight => math.pi / 2.0,
+      DeviceOrientation.landscapeLeft => math.pi / 2.0,
+      DeviceOrientation.landscapeRight => -math.pi / 2.0,
     };
   } else if (item.orientation == DeviceOrientation.landscapeLeft) {
     final isFront = item.lensDirection == CameraLensDirection.front;
@@ -196,8 +196,8 @@ double rotationForItemWithOrientation(
     return switch (deviceOrientation) {
       DeviceOrientation.portraitUp => isFront ? -halfPi : halfPi,
       DeviceOrientation.portraitDown => isFront ? halfPi : -halfPi,
-      DeviceOrientation.landscapeLeft => isFront ? .0 : math.pi,
-      DeviceOrientation.landscapeRight => isFront ? math.pi : .0,
+      DeviceOrientation.landscapeLeft => isFront ? math.pi : .0,
+      DeviceOrientation.landscapeRight => isFront ? .0 : math.pi,
     };
   }
   // DeviceOrientation.landscapeRight
@@ -207,8 +207,8 @@ double rotationForItemWithOrientation(
     return switch (deviceOrientation) {
       DeviceOrientation.portraitUp => isFront ? halfPi : -halfPi,
       DeviceOrientation.portraitDown => isFront ? -halfPi : halfPi,
-      DeviceOrientation.landscapeLeft => isFront ? math.pi : .0,
-      DeviceOrientation.landscapeRight => isFront ? .0 : math.pi,
+      DeviceOrientation.landscapeLeft => isFront ? .0 : math.pi,
+      DeviceOrientation.landscapeRight => isFront ? math.pi : .0,
     };
   }
 }
