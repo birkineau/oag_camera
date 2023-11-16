@@ -181,10 +181,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
     Emitter<CameraState> emit,
   ) async {
     final controller = state.controller;
-
-    if (controller == null) {
-      return Future.value();
-    }
+    if (controller == null) return Future.value();
 
     final lensDirection =
         event.lensDirection ?? controller.description.lensDirection;

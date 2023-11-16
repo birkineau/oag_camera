@@ -80,17 +80,8 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
     final render = repaintBoundaryKey.currentContext?.findRenderObject()
         as RenderRepaintBoundary?;
 
-    assert(
-      render != null,
-      "$RenderRepaintBoundary object not found in key context.",
-    );
-
-    assert(
-      !render!.debugNeedsPaint,
-      "The render object has not yet gone through the paint phase.",
-    );
-
-    return render?.toImage();
+    if (render == null) return null;
+    return render.toImage();
   }
 }
 
