@@ -86,12 +86,16 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
   @override
   void initState() {
     super.initState();
-    GetIt.I.registerSingleton(_overlayKey);
+    if (!GetIt.I.isRegistered<GlobalKey<OagOverlayState>>()) {
+      GetIt.I.registerSingleton(_overlayKey);
+    }
   }
 
   @override
   void dispose() {
-    GetIt.I.unregister<GlobalKey<OagOverlayState>>();
+    if (GetIt.I.isRegistered<GlobalKey<OagOverlayState>>()) {
+      GetIt.I.unregister<GlobalKey<OagOverlayState>>();
+    }
     super.dispose();
   }
 
