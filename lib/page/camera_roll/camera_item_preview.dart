@@ -194,8 +194,8 @@ double rotationForItemWithOrientation(
     final isFront = item.lensDirection == CameraLensDirection.front;
 
     return switch (deviceOrientation) {
-      DeviceOrientation.portraitUp => isFront ? -halfPi : halfPi,
-      DeviceOrientation.portraitDown => isFront ? halfPi : -halfPi,
+      DeviceOrientation.portraitUp => isFront ? halfPi : -halfPi,
+      DeviceOrientation.portraitDown => isFront ? -halfPi : halfPi,
       DeviceOrientation.landscapeLeft => isFront ? math.pi : .0,
       DeviceOrientation.landscapeRight => isFront ? .0 : math.pi,
     };
@@ -205,8 +205,8 @@ double rotationForItemWithOrientation(
     final isFront = item.lensDirection == CameraLensDirection.front;
 
     return switch (deviceOrientation) {
-      DeviceOrientation.portraitUp => isFront ? halfPi : -halfPi,
-      DeviceOrientation.portraitDown => isFront ? -halfPi : halfPi,
+      DeviceOrientation.portraitUp => isFront ? -halfPi : halfPi,
+      DeviceOrientation.portraitDown => isFront ? halfPi : -halfPi,
       DeviceOrientation.landscapeLeft => isFront ? .0 : math.pi,
       DeviceOrientation.landscapeRight => isFront ? math.pi : .0,
     };
