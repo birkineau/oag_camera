@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -50,16 +52,12 @@ class CameraState extends State<Camera> {
       if (!bloc.isClosed) bloc.close();
     }
 
-    if (!GetIt.I.isRegistered<CameraConfiguration>()) {
-      GetIt.I.registerSingleton(widget.configuration);
-    }
-
-    GetIt.I
-      ..registerSingleton(_cameraRollBloc, dispose: close)
-      ..registerSingleton(_cameraStateBloc, dispose: close)
-      ..registerSingleton(_cameraOverlayBloc, dispose: close)
-      ..registerSingleton(_cameraZoomBloc, dispose: close)
-      ..registerSingleton(_cameraSettingsBloc, dispose: close);
+    _register(widget.configuration);
+    _register(_cameraRollBloc, dispose: close);
+    _register(_cameraStateBloc, dispose: close);
+    _register(_cameraOverlayBloc, dispose: close);
+    _register(_cameraZoomBloc, dispose: close);
+    _register(_cameraSettingsBloc, dispose: close);
 
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
@@ -69,13 +67,12 @@ class CameraState extends State<Camera> {
 
   @override
   void dispose() {
-    GetIt.I
-      ..unregister<CameraSettingsBloc>()
-      ..unregister<CameraZoomBloc>()
-      ..unregister<CameraOverlayBloc>()
-      ..unregister<CameraStateBloc>()
-      ..unregister<CameraRollBloc>()
-      ..unregister<CameraConfiguration>();
+    _unregister<CameraSettingsBloc>();
+    _unregister<CameraZoomBloc>();
+    _unregister<CameraOverlayBloc>();
+    _unregister<CameraStateBloc>();
+    _unregister<CameraRollBloc>();
+    _unregister<CameraConfiguration>();
 
     _routerConfiguration.dispose();
 
@@ -90,4 +87,17 @@ class CameraState extends State<Camera> {
       routerConfig: _routerConfiguration,
     );
   }
+}
+
+void _register<T extends Object>(
+  T instance, {
+  FutureOr<dynamic> Function(T)? dispose,
+}) {
+  if (GetIt.I.isRegistered<T>()) return;
+  GetIt.I.registerSingleton<T>(instance, dispose: dispose);
+}
+
+void _unregister<T extends Object>() {
+  if (!GetIt.I.isRegistered<T>()) return;
+  GetIt.I.unregister<T>();
 }
