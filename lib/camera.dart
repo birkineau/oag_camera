@@ -48,16 +48,16 @@ class CameraState extends State<Camera> {
       initialItems: widget.initialItems,
     );
 
-    void close<T>(BlocBase<T> bloc) {
-      if (!bloc.isClosed) bloc.close();
+    Future<void> closeBloc<T>(BlocBase<T> bloc) async {
+      if (!bloc.isClosed) await bloc.close();
     }
 
-    _register(widget.configuration);
-    _register(_cameraRollBloc, dispose: close);
-    _register(_cameraStateBloc, dispose: close);
-    _register(_cameraOverlayBloc, dispose: close);
-    _register(_cameraZoomBloc, dispose: close);
-    _register(_cameraSettingsBloc, dispose: close);
+    registerDi(widget.configuration);
+    registerDi(_cameraRollBloc, dispose: closeBloc);
+    registerDi(_cameraStateBloc, dispose: closeBloc);
+    registerDi(_cameraOverlayBloc, dispose: closeBloc);
+    registerDi(_cameraZoomBloc, dispose: closeBloc);
+    registerDi(_cameraSettingsBloc, dispose: closeBloc);
 
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
@@ -67,12 +67,12 @@ class CameraState extends State<Camera> {
 
   @override
   void dispose() {
-    _unregister<CameraSettingsBloc>();
-    _unregister<CameraZoomBloc>();
-    _unregister<CameraOverlayBloc>();
-    _unregister<CameraStateBloc>();
-    _unregister<CameraRollBloc>();
-    _unregister<CameraConfiguration>();
+    unregisterDi<CameraSettingsBloc>();
+    unregisterDi<CameraZoomBloc>();
+    unregisterDi<CameraOverlayBloc>();
+    unregisterDi<CameraStateBloc>();
+    unregisterDi<CameraRollBloc>();
+    unregisterDi<CameraConfiguration>();
 
     _routerConfiguration.dispose();
 
@@ -89,7 +89,7 @@ class CameraState extends State<Camera> {
   }
 }
 
-void _register<T extends Object>(
+void registerDi<T extends Object>(
   T instance, {
   FutureOr<dynamic> Function(T)? dispose,
 }) {
@@ -97,7 +97,7 @@ void _register<T extends Object>(
   GetIt.I.registerSingleton<T>(instance, dispose: dispose);
 }
 
-void _unregister<T extends Object>() {
+void unregisterDi<T extends Object>() {
   if (!GetIt.I.isRegistered<T>()) return;
   GetIt.I.unregister<T>();
 }
