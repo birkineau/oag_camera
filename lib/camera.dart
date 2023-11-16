@@ -73,7 +73,7 @@ class CameraState extends State<Camera> {
     _unregisterDi<CameraRollBloc>();
     _unregisterDi<CameraConfiguration>();
 
-    // _routerConfiguration.dispose();
+    _routerConfiguration.dispose();
 
     super.dispose();
   }
