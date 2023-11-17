@@ -17,7 +17,11 @@ class CameraZoomIndicator extends StatelessWidget {
         );
 
     const icon = WidgetSpan(
-      child: Icon(Icons.close, color: Colors.white, size: 12.0),
+      child: SizedBox(
+        width: 12.0,
+        height: 12.0,
+        child: Icon(Icons.close, color: Colors.white, size: 12.0),
+      ),
     );
 
     final button = GestureDetector(
