@@ -26,26 +26,22 @@ class CameraZoomIndicator extends StatelessWidget {
         margin: const EdgeInsets.all(6.0),
         decoration: decoration.copyWith(color: Colors.black54),
         alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            BlocBuilder<CameraZoomBloc, CameraZoom>(
-              builder: (context, zoom) {
-                final zoomFactor = ((zoom.current - .5) * 10.0).round() / 10.0;
+        child: BlocBuilder<CameraZoomBloc, CameraZoom>(
+          builder: (context, zoom) {
+            final zoomFactor = ((zoom.current - .5) * 10.0).round() / 10.0;
 
-                return AutoSizeText.rich(
+            return AutoSizeText.rich(
+              TextSpan(
+                children: [
                   TextSpan(
-                    children: [
-                      TextSpan(
-                        text: zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
-                      ),
-                      icon,
-                    ],
+                    text: zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
                   ),
-                );
-              },
-            ),
-          ],
+                  icon,
+                ],
+                style: textStyle,
+              ),
+            );
+          },
         ),
       ),
     );
