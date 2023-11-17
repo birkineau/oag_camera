@@ -16,6 +16,10 @@ class CameraZoomIndicator extends StatelessWidget {
           color: Colors.white,
         );
 
+    const icon = WidgetSpan(
+      child: Icon(Icons.close, color: Colors.white, size: 12.0),
+    );
+
     final button = GestureDetector(
       onTap: () => context.read<CameraZoomBloc>().add(const ResetCameraZoom()),
       child: Container(
@@ -29,17 +33,17 @@ class CameraZoomIndicator extends StatelessWidget {
               builder: (context, zoom) {
                 final zoomFactor = ((zoom.current - .5) * 10.0).round() / 10.0;
 
-                return AutoSizeText(
-                  zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
-                  maxLines: 1,
-                  style: textStyle,
+                return AutoSizeText.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
+                      ),
+                      icon,
+                    ],
+                  ),
                 );
               },
-            ),
-            const Icon(
-              Icons.close,
-              color: Colors.white,
-              size: 12.0,
             ),
           ],
         ),
