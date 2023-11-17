@@ -28,6 +28,7 @@ class CameraZoomIndicator extends StatelessWidget {
             final zoomFactor = ((zoom.current - .5) * 10.0).round() / 10.0;
 
             return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   child: AutoSizeText(
