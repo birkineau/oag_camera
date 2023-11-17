@@ -69,11 +69,11 @@ class CameraState extends State<Camera> {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: _cameraRollBloc),
-          BlocProvider.value(value: _cameraStateBloc),
-          BlocProvider.value(value: _cameraOverlayBloc),
-          BlocProvider.value(value: _cameraZoomBloc),
-          BlocProvider.value(value: _cameraSettingsBloc),
+          BlocProvider(create: (_) => _cameraRollBloc),
+          BlocProvider(create: (_) => _cameraStateBloc),
+          BlocProvider(create: (_) => _cameraOverlayBloc),
+          BlocProvider(create: (_) => _cameraZoomBloc),
+          BlocProvider(create: (_) => _cameraSettingsBloc),
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
