@@ -31,8 +31,8 @@ class CameraScreenControls extends StatelessWidget {
       children: [
         /// Zoom toggle/indicator.
         const SizedBox(
-          width: CameraRollButton.kButtonSize,
-          height: CameraRollButton.kButtonSize,
+          width: CameraRollButton.kButtonSize + 6.0,
+          height: CameraRollButton.kButtonSize + 6.0,
           child: CameraZoomIndicator(),
         ),
         Row(
