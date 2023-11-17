@@ -34,16 +34,16 @@ class CameraZoomIndicator extends StatelessWidget {
           builder: (context, zoom) {
             final zoomFactor = ((zoom.current - .5) * 10.0).round() / 10.0;
 
-            return AutoSizeText.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
+            return Row(
+              children: [
+                Expanded(
+                  child: AutoSizeText(
+                    zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
+                    style: textStyle,
                   ),
-                  icon,
-                ],
-                style: textStyle,
-              ),
+                ),
+                const Icon(Icons.close, color: Colors.white, size: 12.0),
+              ],
             );
           },
         ),
