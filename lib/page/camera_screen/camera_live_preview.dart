@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
 import '../../controller/camera_overlay_bloc.dart';
 import '../../controller/camera_settings_bloc.dart';
@@ -48,7 +47,7 @@ class CameraLivePreviewState extends State<CameraLivePreview>
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.addObserver(this);
 
-    final configuration = GetIt.I<CameraConfiguration>();
+    final configuration = context.read<CameraConfiguration>();
 
     context.read<CameraStateBloc>().add(
           InitializeCameraEvent(

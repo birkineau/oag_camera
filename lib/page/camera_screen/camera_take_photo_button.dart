@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:oag_camera/model/camera_configuration.dart';
 
 import '../../controller/camera_roll_bloc.dart';
@@ -113,7 +112,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
   Future<void> _takePhoto(TapUpDetails details) async {
     final cameraRoll = context.read<CameraRollBloc>();
-    final configuration = GetIt.I<CameraConfiguration>();
+    final configuration = context.read<CameraConfiguration>();
 
     if (cameraRoll.state.isFull) {
       if (configuration.openCameraRollWhenFull) {
@@ -124,6 +123,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
       const duration = Duration(milliseconds: 2250);
 
       showOverlay(
+        context,
         Offset(.0, topPadding),
         child: CameraSnackBar.error(
           key: UniqueKey(),
@@ -156,6 +156,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
         );
 
         return showOverlay(
+          context,
           Offset(.0, topPadding),
           child: CameraSnackBar.error(
             key: UniqueKey(),

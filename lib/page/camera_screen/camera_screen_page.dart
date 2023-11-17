@@ -1,13 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oag_camera/page/camera_roll/camera_roll_single_item_page.dart';
 import 'package:oag_snack_bar/oag_snack_bar.dart';
 
 import '../../controller/camera_overlay_bloc.dart';
-import '../../controller/camera_roll_bloc.dart';
 import '../../controller/camera_settings_bloc.dart';
 import '../../controller/camera_state_bloc.dart';
 import '../../controller/camera_zoom_bloc.dart';
@@ -28,11 +26,12 @@ import 'camera_toggle_settings_button.dart';
 import 'deleted_camera_item_animation.dart';
 
 Future<void> showOverlay(
+  BuildContext context,
   Offset offset, {
   required Widget child,
   Duration? duration,
 }) async {
-  final state = GetIt.I<GlobalKey<OagOverlayState>>().currentState;
+  final state = context.read<GlobalKey<OagOverlayState>>().currentState;
   if (state == null) return;
   if (state.visible) {
     state
@@ -81,134 +80,101 @@ class CameraScreenPage extends StatefulWidget {
 }
 
 class _CameraScreenPageState extends State<CameraScreenPage> {
-  final _overlayKey = GlobalKey<OagOverlayState>();
-
-  @override
-  void initState() {
-    super.initState();
-    if (!GetIt.I.isRegistered<GlobalKey<OagOverlayState>>()) {
-      GetIt.I.registerSingleton(_overlayKey);
-    }
-  }
-
-  @override
-  void dispose() {
-    if (GetIt.I.isRegistered<GlobalKey<OagOverlayState>>()) {
-      GetIt.I.unregister<GlobalKey<OagOverlayState>>();
-    }
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final viewPadding = mediaQuery.viewPadding;
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: GetIt.I<CameraRollBloc>()),
-        BlocProvider.value(value: GetIt.I<CameraStateBloc>()),
-        BlocProvider.value(value: GetIt.I<CameraOverlayBloc>()),
-        BlocProvider.value(value: GetIt.I<CameraZoomBloc>()),
-        BlocProvider.value(value: GetIt.I<CameraSettingsBloc>()),
-      ],
-      child: Builder(
-        builder: (context) {
-          return DoubleTapDetector(
-            onDoubleTap: () => _handleLivePreviewDoubleTap(context),
-            child: OagOverlay(
-              key: _overlayKey,
-              duration: const Duration(milliseconds: 500),
-              tapToDismiss: true,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Positioned.fill(child: CameraScreen()),
+    return DoubleTapDetector(
+      onDoubleTap: () => _handleLivePreviewDoubleTap(context),
+      child: OagOverlay(
+        key: context.read<GlobalKey<OagOverlayState>>(),
+        duration: const Duration(milliseconds: 500),
+        tapToDismiss: true,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Positioned.fill(child: CameraScreen()),
 
-                  /// Back button.
-                  Positioned(
-                    width: CameraRollButton.kButtonSize,
-                    height: CameraRollButton.kButtonSize,
-                    top: mediaQuery.viewPadding.top,
-                    left: 8.0,
-                    child: BlocSelector<CameraStateBloc, CameraState, bool>(
-                      selector: (state) => state.status == CameraStatus.ready,
-                      builder: (context, isReady) {
-                        return CameraBackButton(
-                          onPressed: isReady
-                              ? () => GetIt.I<CameraOverlayBloc>().add(
-                                    ShowFramePlaceholder(
-                                      callback: widget
-                                          .configuration.onBackButtonPressed,
-                                    ),
-                                  )
-                              : null,
-                        );
-                      },
-                    ),
-                  ),
-
-                  /// Settings visibility toglee button.
-                  Positioned(
-                    width: CameraRollButton.kButtonSize,
-                    height: CameraRollButton.kButtonSize,
-                    top: viewPadding.top,
-                    right: 8.0,
-                    child: const CameraToggleSettingsButton(),
-                  ),
-
-                  const Positioned(
-                    top: .0,
-                    left: .0,
-                    right: .0,
-                    child: CameraSettingsFlashMode(),
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: SizedBox(
-                      height: (mediaQuery.size.height -
-                              mediaQuery.padding.vertical) *
-                          .6,
-                      child: const CameraSettingsExposure(),
-                    ),
-                  ),
-
-                  /// Open camera roll, take photo, and toggle lens direction buttons.
-                  Positioned(
-                    bottom: viewPadding.bottom + 8.0,
-                    left: viewPadding.left + 8.0,
-                    right: viewPadding.right + 8.0,
-                    child: const CameraScreenControls(),
-                  ),
-
-                  /// Animates the deletion of the last item  in the camera roll.
-                  const Positioned.fill(child: DeletedCameraItemAnimation()),
-
-                  /// Camera roll controls placeholder; the [CameraRollControls] is
-                  /// wrapped by a [Hero] widget, so it needs to be placed in
-                  /// the widget tree before the [Hero] widget is used during the
-                  /// route transition to avoid overlap.
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: .0,
-                      child: IgnorePointer(
-                        child: Hero(
-                          tag: CameraScreenPage.heroCameraRollControls,
-                          child: widget.configuration.cameraRollMode ==
-                                  CameraRollMode.single
-                              ? const CameraRollSingleItemControls()
-                              : const CameraRollControls(
-                                  enableListeners: false),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+            /// Back button.
+            Positioned(
+              width: CameraRollButton.kButtonSize,
+              height: CameraRollButton.kButtonSize,
+              top: mediaQuery.viewPadding.top,
+              left: 8.0,
+              child: BlocSelector<CameraStateBloc, CameraState, bool>(
+                selector: (state) => state.status == CameraStatus.ready,
+                builder: (context, isReady) => CameraBackButton(
+                  onPressed: isReady
+                      ? () => context.read<CameraOverlayBloc>().add(
+                            ShowFramePlaceholder(
+                              callback:
+                                  widget.configuration.onBackButtonPressed,
+                            ),
+                          )
+                      : null,
+                ),
               ),
             ),
-          );
-        },
+
+            /// Settings visibility toglee button.
+            Positioned(
+              width: CameraRollButton.kButtonSize,
+              height: CameraRollButton.kButtonSize,
+              top: viewPadding.top,
+              right: 8.0,
+              child: const CameraToggleSettingsButton(),
+            ),
+
+            const Positioned(
+              top: .0,
+              left: .0,
+              right: .0,
+              child: CameraSettingsFlashMode(),
+            ),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: SizedBox(
+                height:
+                    (mediaQuery.size.height - mediaQuery.padding.vertical) * .6,
+                child: const CameraSettingsExposure(),
+              ),
+            ),
+
+            /// Open camera roll, take photo, and toggle lens direction buttons.
+            Positioned(
+              bottom: viewPadding.bottom + 8.0,
+              left: viewPadding.left + 8.0,
+              right: viewPadding.right + 8.0,
+              child: const CameraScreenControls(),
+            ),
+
+            /// Animates the deletion of the last item  in the camera roll.
+            const Positioned.fill(child: DeletedCameraItemAnimation()),
+
+            /// Camera roll controls placeholder; the [CameraRollControls] is
+            /// wrapped by a [Hero] widget, so it needs to be placed in
+            /// the widget tree before the [Hero] widget is used during the
+            /// route transition to avoid overlap.
+            Positioned.fill(
+              child: Opacity(
+                opacity: .0,
+                child: IgnorePointer(
+                  child: Hero(
+                    tag: CameraScreenPage.heroCameraRollControls,
+                    child: widget.configuration.cameraRollMode ==
+                            CameraRollMode.single
+                        ? const CameraRollSingleItemControls()
+                        : const CameraRollControls(
+                            enableListeners: false,
+                          ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -225,7 +191,7 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
       );
     }
 
-    final cameraZoomBloc = GetIt.I<CameraZoomBloc>();
+    final cameraZoomBloc = context.read<CameraZoomBloc>();
 
     /// Reset zoom on double tap, if the zoom is not already at the
     /// minimum zoom and if the settings are closed.
@@ -235,8 +201,8 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
 
     if (widget.configuration.allowLensDirectionChange) {
       return _toggleLensDirection(
-        cameraStateBloc: GetIt.I<CameraStateBloc>(),
-        cameraOverlayBloc: GetIt.I<CameraOverlayBloc>(),
+        cameraStateBloc: context.read<CameraStateBloc>(),
+        cameraOverlayBloc: context.read<CameraOverlayBloc>(),
       );
     }
   }

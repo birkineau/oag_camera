@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
 import '../../controller/controller.dart';
 import '../../model/camera_roll_state.dart';
@@ -179,7 +178,7 @@ class _CameraRollScreenState extends State<CameraRollScreen>
       return;
     }
 
-    final configuration = GetIt.I<CameraConfiguration>();
+    final configuration = context.read<CameraConfiguration>();
     if (configuration.cameraRollMode == CameraRollMode.single) {
       context.read<CameraRollBloc>().add(const DeleteSelectedItemEvent());
     }

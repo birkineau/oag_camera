@@ -1,7 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
 import '../../controller/camera_state_bloc.dart';
 import '../../model/camera_configuration.dart';
@@ -26,7 +25,7 @@ class CameraScreenControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final configuration = GetIt.I<CameraConfiguration>();
+    final configuration = context.read<CameraConfiguration>();
 
     return Column(
       children: [

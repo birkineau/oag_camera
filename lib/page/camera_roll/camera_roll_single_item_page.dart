@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/model.dart';
 import '../camera_screen/camera_screen_page.dart';
@@ -48,7 +48,7 @@ class CameraRollSingleItemControls extends StatelessWidget {
           top: viewPadding.top,
           left: 8.0,
           child: CameraControlButton(
-            onPressed: GetIt.I<CameraConfiguration>().onBackButtonPressed,
+            onPressed: context.read<CameraConfiguration>().onBackButtonPressed,
             child: Icon(
               Icons.done_rounded,
               size: 32.0,

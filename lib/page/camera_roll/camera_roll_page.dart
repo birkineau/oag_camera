@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../controller/controller.dart';
@@ -23,7 +22,8 @@ class CameraRollPage extends StatelessWidget {
       path: routeName,
       pageBuilder: (context, state) {
         const duration = Duration(milliseconds: 400);
-        final cameraRollMode = GetIt.I<CameraConfiguration>().cameraRollMode;
+        final cameraRollMode =
+            context.read<CameraConfiguration>().cameraRollMode;
 
         return CustomTransitionPage(
           key: state.pageKey,
@@ -32,16 +32,9 @@ class CameraRollPage extends StatelessWidget {
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return child;
           },
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: GetIt.I<CameraStateBloc>()),
-              BlocProvider.value(value: GetIt.I<CameraRollBloc>()),
-              BlocProvider.value(value: GetIt.I<CameraOverlayBloc>()),
-            ],
-            child: cameraRollMode == CameraRollMode.single
-                ? const CameraRollSingleItemPage()
-                : const CameraRollPage(),
-          ),
+          child: cameraRollMode == CameraRollMode.single
+              ? const CameraRollSingleItemPage()
+              : const CameraRollPage(),
         );
       },
     );

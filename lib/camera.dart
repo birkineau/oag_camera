@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oag_snack_bar/oag_snack_bar.dart';
 
 import 'controller/controller.dart';
 import 'oag_camera.dart';
@@ -29,6 +27,8 @@ class CameraState extends State<Camera> {
     return _cameraRollBloc.state.items;
   }
 
+  final _overlayKey = GlobalKey<OagOverlayState>();
+
   late final CameraRollBloc _cameraRollBloc;
   final _cameraStateBloc = CameraStateBloc();
   final _cameraOverlayBloc = CameraOverlayBloc();
@@ -47,56 +47,40 @@ class CameraState extends State<Camera> {
       initialItems: widget.initialItems,
     );
 
-    Future<void> closeBloc<T>(BlocBase<T> bloc) async {
-      if (!bloc.isClosed) await bloc.close();
-    }
-
-    _registerDi(widget.configuration);
-    _registerDi(_cameraRollBloc, dispose: closeBloc);
-    _registerDi(_cameraStateBloc, dispose: closeBloc);
-    _registerDi(_cameraOverlayBloc, dispose: closeBloc);
-    _registerDi(_cameraZoomBloc, dispose: closeBloc);
-    _registerDi(_cameraSettingsBloc, dispose: closeBloc);
-
     _routerConfiguration = createRouterConfiguration(
       _navigatorKey,
       widget.configuration,
+      _cameraRollBloc,
     );
   }
 
   @override
   void dispose() {
-    _unregisterDi<CameraSettingsBloc>();
-    _unregisterDi<CameraZoomBloc>();
-    _unregisterDi<CameraOverlayBloc>();
-    _unregisterDi<CameraStateBloc>();
-    _unregisterDi<CameraRollBloc>();
-    _unregisterDi<CameraConfiguration>();
-
     _routerConfiguration.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: Theme.of(context),
-      routerConfig: _routerConfiguration,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: widget.configuration),
+        RepositoryProvider.value(value: _overlayKey),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: _cameraRollBloc),
+          BlocProvider.value(value: _cameraStateBloc),
+          BlocProvider.value(value: _cameraOverlayBloc),
+          BlocProvider.value(value: _cameraZoomBloc),
+          BlocProvider.value(value: _cameraSettingsBloc),
+        ],
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          theme: Theme.of(context),
+          routerConfig: _routerConfiguration,
+        ),
+      ),
     );
   }
-}
-
-void _registerDi<T extends Object>(
-  T instance, {
-  FutureOr<dynamic> Function(T)? dispose,
-}) {
-  if (GetIt.I.isRegistered<T>()) return;
-  GetIt.I.registerSingleton<T>(instance, dispose: dispose);
-}
-
-void _unregisterDi<T extends Object>() {
-  if (!GetIt.I.isRegistered<T>()) return;
-  GetIt.I.unregister<T>();
 }
