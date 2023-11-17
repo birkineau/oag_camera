@@ -33,6 +33,7 @@ class CameraZoomIndicator extends StatelessWidget {
                 Expanded(
                   child: AutoSizeText(
                     zoomFactor == 1.0 ? "1" : zoomFactor.toString(),
+                    textAlign: TextAlign.center,
                     style: textStyle,
                   ),
                 ),
