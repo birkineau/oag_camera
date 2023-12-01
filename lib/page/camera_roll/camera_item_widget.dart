@@ -13,11 +13,15 @@ import 'camera_item_preview.dart';
 class CameraItemWidget extends StatelessWidget {
   const CameraItemWidget({
     super.key,
+    this.width,
+    this.height,
     this.fit = BoxFit.cover,
     this.filterQuality = FilterQuality.medium,
     required this.item,
   });
 
+  final double? width;
+  final double? height;
   final BoxFit fit;
   final FilterQuality filterQuality;
   final CameraItem item;
@@ -39,6 +43,8 @@ class CameraItemWidget extends StatelessWidget {
       flipY: flipY,
       child: Image.memory(
         item.bytes,
+        width: width,
+        height: height,
         frameBuilder: _frameBuilder,
         fit: fit,
         filterQuality: filterQuality,
