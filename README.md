@@ -28,8 +28,14 @@ IMPORTANT: To close the live preview settings; double tap the live preview.
 
 ## Additional information
 
+NOTE: This project utilizes an older project file structure; new projects should
+be separated into feature folders and be completely self-contained on a per
+feature basis.
+
 This camera project was necessary to implement forms that required photos in a
 larger project; it needed support for 
 
 In the larger project, images require compression for storage, and must be able
 to be built from the bytes of the image.
+
+
