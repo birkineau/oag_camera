@@ -1,5 +1,5 @@
 name: example
-description: A new Flutter project.
+description: Camera application example.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
@@ -22,8 +22,3 @@ dev_dependencies:
 flutter:
   generate: false
   uses-material-design: true
-
-  assets:
-    - assets/images/permission_camera.png
-    - assets/images/permission_location.png
-    - assets/images/permission_microphone.png

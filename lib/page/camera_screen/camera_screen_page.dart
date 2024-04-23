@@ -64,6 +64,7 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final viewPadding = mediaQuery.viewPadding;
+    final topPadding = mediaQuery.viewPadding.top == .0 ? 8.0 : viewPadding.top;
 
     return DoubleTapDetector(
       onDoubleTap: () => _handleLivePreviewDoubleTap(context),
@@ -83,7 +84,7 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
             Positioned(
               width: CameraRollButton.kButtonSize,
               height: CameraRollButton.kButtonSize,
-              top: mediaQuery.viewPadding.top,
+              top: topPadding,
               left: 8.0,
               child: BlocSelector<CameraStateBloc, CameraState, bool>(
                 selector: (state) => state.status == CameraStatus.ready,
@@ -104,7 +105,7 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
             Positioned(
               width: CameraRollButton.kButtonSize,
               height: CameraRollButton.kButtonSize,
-              top: viewPadding.top,
+              top: topPadding,
               right: 8.0,
               child: const CameraToggleSettingsButton(),
             ),

@@ -17,6 +17,7 @@ class CameraRollControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewPadding = MediaQuery.of(context).viewPadding;
+    final topPadding = viewPadding.top == .0 ? 8.0 : viewPadding.top;
     const iconSize = CameraRollButton.kButtonSize / 2.0;
     final selectorBottomPadding = viewPadding.bottom + bottomSpacing;
     const indicatorHeight = 36.0;
@@ -28,7 +29,7 @@ class CameraRollControls extends StatelessWidget {
         Positioned(
           width: CameraRollButton.kButtonSize,
           height: CameraRollButton.kButtonSize,
-          top: viewPadding.top,
+          top: topPadding,
           left: 8.0,
           child: CameraControlButton(
             onPressed: () => Navigator.pop(context),
@@ -44,7 +45,7 @@ class CameraRollControls extends StatelessWidget {
         Positioned(
           width: CameraRollButton.kButtonSize,
           height: CameraRollButton.kButtonSize,
-          top: viewPadding.top,
+          top: topPadding,
           right: 8.0,
           child: const CameraRollDeleteSelectedItemButton(),
         ),
