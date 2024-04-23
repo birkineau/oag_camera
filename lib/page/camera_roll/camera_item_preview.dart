@@ -1,14 +1,11 @@
 import 'dart:math' as math;
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_state_bloc.dart';
-import '../../model/camera_item.dart';
-import '../../model/camera_state.dart';
-import 'camera_item_widget.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 /// Displays a preview of the [CameraItem] that automatically adjusts its
 /// orientation and scale to fit to the screen.

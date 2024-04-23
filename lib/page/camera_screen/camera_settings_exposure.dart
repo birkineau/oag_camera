@@ -3,14 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_settings_bloc.dart';
-import '../../model/camera_settings_state.dart';
-import '../../utility/axis_fade.dart';
-import '../../utility/center_item_selector_list_view.dart';
-import '../../utility/snap_scroll_page_physics.dart';
-import 'camera_orientation_rotator.dart';
-import 'camera_settings_visibility.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
+import 'package:oag_camera/utility/utility.dart';
 
 typedef _ExposureBuilder
     = BlocConsumer<CameraSettingsBloc, CameraSettingsState>;

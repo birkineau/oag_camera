@@ -78,6 +78,7 @@ class CameraSettingsBloc
     emit(state.copyWith(flashMode: event.flashMode));
   }
 
+  /// TODO: implement this when Flutter supports logical cameras; will likely need to do it myself through PlatformChannel.
   void _setFocus(
     CameraSetFocusOffsetEvent event,
     Emitter<CameraSettingsState> emit,

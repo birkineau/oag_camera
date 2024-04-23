@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_roll_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
-import '../../model/camera_item.dart';
-import '../../model/camera_roll_state.dart';
-import '../camera_roll/camera_item_widget.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class DeletedCameraItemAnimation extends StatefulWidget {
   const DeletedCameraItemAnimation({super.key});

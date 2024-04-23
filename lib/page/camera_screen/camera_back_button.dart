@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_settings_bloc.dart';
-import '../../model/camera_settings_state.dart';
-import '../camera_roll/camera_control_button.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 /// Allows applications that embed this a way to navigate back to the previous
 /// route through the [onPressed] callback.

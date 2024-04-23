@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oag_camera/oag_camera.dart';
 
+/// Generic styled button for camera controls.
 class CameraControlButton extends StatelessWidget {
   const CameraControlButton({
     super.key,

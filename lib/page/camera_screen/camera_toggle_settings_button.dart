@@ -1,11 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_settings_bloc.dart';
-import '../../model/camera_settings_state.dart';
-import '../camera_roll/camera_control_button.dart';
-import 'camera_settings_flash_mode.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 typedef CameraSettingsFlashSelector
     = BlocSelector<CameraSettingsBloc, CameraSettingsState, FlashMode>;

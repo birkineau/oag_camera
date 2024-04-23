@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/controller.dart';
-import 'camera_control_button.dart';
-import 'camera_roll_button.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraRollDeleteSelectedItemButton extends StatelessWidget {
   const CameraRollDeleteSelectedItemButton({super.key});

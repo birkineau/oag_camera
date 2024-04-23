@@ -1,16 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/controller.dart';
-import '../../model/camera_roll_state.dart';
-import '../camera_screen/camera_orientation_rotator.dart';
-import '../camera_screen/camera_screen_page.dart';
-import 'camera_item_preview.dart';
-import 'camera_roll_page.dart';
-import 'camera_roll_single_item_page.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraRollButton extends StatelessWidget {
   static const kButtonSize = 56.0;

@@ -1,9 +1,6 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../model/camera_item.dart';
-import 'camera_item_preview.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 /// Displays the image from the [CameraItem].
 ///

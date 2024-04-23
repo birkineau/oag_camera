@@ -197,7 +197,6 @@ Future<void> _toggleLensDirection({
   if (cameraStateBloc.state.status != CameraStatus.ready) return;
   cameraOverlayBloc.add(const BlurScreenshotEvent());
 
-  /// If, for some reason, the controller is null, unblur and return.
   final controller = cameraStateBloc.state.controller;
   if (controller == null) {
     throw StateError(

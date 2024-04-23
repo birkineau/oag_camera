@@ -1,14 +1,9 @@
-import 'dart:async';
-import 'dart:developer';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_overlay_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
-import '../../model/camera_state.dart';
-import '../../model/camera_status.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
 
 class CameraScreenOverlay extends StatefulWidget {
   const CameraScreenOverlay({super.key});

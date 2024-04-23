@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_state_bloc.dart';
-import '../../model/camera_state.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
 
 class CameraOrientationBuilder extends StatelessWidget {
   const CameraOrientationBuilder({

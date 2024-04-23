@@ -2,9 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../utility/converter/camera_controller_converter.dart';
-import 'camera_status.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/utility/utility.dart';
 
 part 'camera_state.freezed.dart';
 part 'camera_state.g.dart';

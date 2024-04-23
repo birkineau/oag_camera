@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
-
-import '../page/camera_roll/camera_roll_button.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 /// Configures camera settings such as resolution, compression quality, and
 /// initial lens direction, among other settings.

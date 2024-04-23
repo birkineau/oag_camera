@@ -1,13 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_roll_bloc.dart';
-import '../../model/camera_roll_state.dart';
-import '../../utility/center_item_selector_list_view.dart';
-import 'camera_item_preview.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
+import 'package:oag_camera/utility/utility.dart';
 
 typedef CameraRollConsumer = BlocConsumer<CameraRollBloc, CameraRollState>;
 

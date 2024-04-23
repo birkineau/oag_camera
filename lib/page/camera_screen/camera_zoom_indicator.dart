@@ -1,10 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_zoom_bloc.dart';
-import '../../model/camera_zoom.dart';
-import 'camera_orientation_rotator.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraZoomIndicator extends StatelessWidget {
   const CameraZoomIndicator({super.key});

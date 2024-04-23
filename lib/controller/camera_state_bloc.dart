@@ -140,6 +140,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
 
       /// Dispose of any previous camera controller; removes listeners.
       if (state.controller != null) {
+        await state.controller!.setExposureOffset(.0);
         state.controller!.removeListener(_orientationListener);
         await state.controller!.dispose();
       }

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-import 'camera_item.dart';
+import 'package:oag_camera/model/model.dart';
 
 class CameraRollState extends Equatable {
   const CameraRollState({

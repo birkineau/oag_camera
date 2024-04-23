@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_roll_bloc.dart';
-import '../../model/camera_roll_state.dart';
-import 'camera_roll_button.dart';
-import 'camera_control_button.dart';
-import 'camera_roll_delete_selected_item_button.dart';
-import 'camera_roll_item_count_indicator.dart';
-import 'camera_roll_item_selector.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraRollControls extends StatelessWidget {
   static const bottomSpacing = 32.0;
