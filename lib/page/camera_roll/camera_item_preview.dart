@@ -177,15 +177,15 @@ double rotationForItemWithOrientation(
     return switch (deviceOrientation) {
       DeviceOrientation.portraitUp => .0,
       DeviceOrientation.portraitDown => math.pi,
-      DeviceOrientation.landscapeLeft => -math.pi / 2.0,
-      DeviceOrientation.landscapeRight => math.pi / 2.0,
+      DeviceOrientation.landscapeLeft => math.pi / 2.0,
+      DeviceOrientation.landscapeRight => -math.pi / 2.0,
     };
   } else if (item.orientation == DeviceOrientation.portraitDown) {
     return switch (deviceOrientation) {
       DeviceOrientation.portraitUp => math.pi,
       DeviceOrientation.portraitDown => .0,
-      DeviceOrientation.landscapeLeft => math.pi / 2.0,
-      DeviceOrientation.landscapeRight => -math.pi / 2.0,
+      DeviceOrientation.landscapeLeft => -math.pi / 2.0,
+      DeviceOrientation.landscapeRight => math.pi / 2.0,
     };
   } else if (item.orientation == DeviceOrientation.landscapeLeft) {
     final isFront = item.lensDirection == CameraLensDirection.front;
