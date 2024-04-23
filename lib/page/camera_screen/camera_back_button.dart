@@ -5,8 +5,13 @@ import '../../controller/camera_settings_bloc.dart';
 import '../../model/camera_settings_state.dart';
 import '../camera_roll/camera_control_button.dart';
 
+/// Allows applications that embed this a way to navigate back to the previous
+/// route through the [onPressed] callback.
 class CameraBackButton extends StatelessWidget {
-  const CameraBackButton({super.key, this.onPressed});
+  const CameraBackButton({
+    super.key,
+    this.onPressed,
+  });
 
   final VoidCallback? onPressed;
 

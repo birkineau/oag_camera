@@ -5,14 +5,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../utility/converter/uint8_list_converter.dart';
-import '../utility/converter/utc_date_time_converter.dart';
-import 'camera_item_type.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/utility/utility.dart';
 
 part 'camera_item.freezed.dart';
 part 'camera_item.g.dart';
 
+/// A [CameraItem] represents a single image or video captured by the camera.
 @freezed
 class CameraItem with _$CameraItem, EquatableMixin {
   const CameraItem._();
@@ -48,6 +47,9 @@ class CameraItem with _$CameraItem, EquatableMixin {
       ];
 }
 
+/// Compresses the [CameraItem] to reduce the file size.
+///
+/// Useful for storage purposes.
 Future<CameraItem> compressCameraItem(
   CameraItem item, {
   required int quality,
@@ -63,6 +65,10 @@ Future<CameraItem> compressCameraItem(
   return item.copyWith(bytes: compressedBytes);
 }
 
+/// Moves the file from [source] to [newPath].
+///
+/// Useful for moving files from the temporary directory to the application
+/// directory.
 Future<File> moveFile({
   required File source,
   required String newPath,

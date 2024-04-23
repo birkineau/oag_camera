@@ -2,14 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/camera_overlay_bloc.dart';
-import '../../controller/camera_settings_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
-import '../../controller/camera_zoom_bloc.dart';
-import '../../model/camera_state.dart';
-import '../../model/camera_status.dart';
-import '../../model/model.dart';
+import 'package:oag_camera/app/app.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
 
 /// Displays a live preview of the camera.
 ///
@@ -47,7 +42,7 @@ class CameraLivePreviewState extends State<CameraLivePreview>
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.addObserver(this);
 
-    final configuration = context.read<CameraConfiguration>();
+    final configuration = di<CameraConfiguration>();
 
     context.read<CameraStateBloc>().add(
           InitializeCameraEvent(

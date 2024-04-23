@@ -12,7 +12,7 @@ part of 'camera_item.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 CameraItem _$CameraItemFromJson(Map<String, dynamic> json) {
   return _CameraItem.fromJson(json);
@@ -128,11 +128,11 @@ class _$CameraItemCopyWithImpl<$Res, $Val extends CameraItem>
 }
 
 /// @nodoc
-abstract class _$$_CameraItemCopyWith<$Res>
+abstract class _$$CameraItemImplCopyWith<$Res>
     implements $CameraItemCopyWith<$Res> {
-  factory _$$_CameraItemCopyWith(
-          _$_CameraItem value, $Res Function(_$_CameraItem) then) =
-      __$$_CameraItemCopyWithImpl<$Res>;
+  factory _$$CameraItemImplCopyWith(
+          _$CameraItemImpl value, $Res Function(_$CameraItemImpl) then) =
+      __$$CameraItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -149,11 +149,11 @@ abstract class _$$_CameraItemCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_CameraItemCopyWithImpl<$Res>
-    extends _$CameraItemCopyWithImpl<$Res, _$_CameraItem>
-    implements _$$_CameraItemCopyWith<$Res> {
-  __$$_CameraItemCopyWithImpl(
-      _$_CameraItem _value, $Res Function(_$_CameraItem) _then)
+class __$$CameraItemImplCopyWithImpl<$Res>
+    extends _$CameraItemCopyWithImpl<$Res, _$CameraItemImpl>
+    implements _$$CameraItemImplCopyWith<$Res> {
+  __$$CameraItemImplCopyWithImpl(
+      _$CameraItemImpl _value, $Res Function(_$CameraItemImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -170,7 +170,7 @@ class __$$_CameraItemCopyWithImpl<$Res>
     Object? longitude = null,
     Object? timeStamp = null,
   }) {
-    return _then(_$_CameraItem(
+    return _then(_$CameraItemImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -217,8 +217,8 @@ class __$$_CameraItemCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CameraItem extends _CameraItem {
-  const _$_CameraItem(
+class _$CameraItemImpl extends _CameraItem {
+  const _$CameraItemImpl(
       {required this.name,
       @Uint8ListConverter() required this.bytes,
       required this.width,
@@ -231,8 +231,8 @@ class _$_CameraItem extends _CameraItem {
       @UtcDateTimeJsonConverter() required this.timeStamp})
       : super._();
 
-  factory _$_CameraItem.fromJson(Map<String, dynamic> json) =>
-      _$$_CameraItemFromJson(json);
+  factory _$CameraItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CameraItemImplFromJson(json);
 
   @override
   final String name;
@@ -260,12 +260,12 @@ class _$_CameraItem extends _CameraItem {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CameraItemCopyWith<_$_CameraItem> get copyWith =>
-      __$$_CameraItemCopyWithImpl<_$_CameraItem>(this, _$identity);
+  _$$CameraItemImplCopyWith<_$CameraItemImpl> get copyWith =>
+      __$$CameraItemImplCopyWithImpl<_$CameraItemImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CameraItemToJson(
+    return _$$CameraItemImplToJson(
       this,
     );
   }
@@ -283,11 +283,11 @@ abstract class _CameraItem extends CameraItem {
           required final double latitude,
           required final double longitude,
           @UtcDateTimeJsonConverter() required final DateTime timeStamp}) =
-      _$_CameraItem;
+      _$CameraItemImpl;
   const _CameraItem._() : super._();
 
   factory _CameraItem.fromJson(Map<String, dynamic> json) =
-      _$_CameraItem.fromJson;
+      _$CameraItemImpl.fromJson;
 
   @override
   String get name;
@@ -313,6 +313,6 @@ abstract class _CameraItem extends CameraItem {
   DateTime get timeStamp;
   @override
   @JsonKey(ignore: true)
-  _$$_CameraItemCopyWith<_$_CameraItem> get copyWith =>
+  _$$CameraItemImplCopyWith<_$CameraItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

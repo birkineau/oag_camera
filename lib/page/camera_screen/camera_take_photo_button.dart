@@ -3,14 +3,10 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:oag_camera/model/camera_configuration.dart';
-
-import '../../controller/camera_roll_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
-import '../../model/camera_state.dart';
-import '../../model/camera_status.dart';
-import '../camera_roll/camera_roll_button.dart';
-import 'camera_screen_page.dart';
+import 'package:oag_camera/app/app.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraTakePhotoButton extends StatefulWidget {
   const CameraTakePhotoButton({super.key});
@@ -112,7 +108,7 @@ class _CameraTakePhotoButtonState extends State<CameraTakePhotoButton>
 
   Future<void> _takePhoto(TapUpDetails details) async {
     final cameraRoll = context.read<CameraRollBloc>();
-    final configuration = context.read<CameraConfiguration>();
+    final configuration = di<CameraConfiguration>();
 
     if (cameraRoll.state.isFull) {
       if (configuration.openCameraRollWhenFull) {

@@ -6,8 +6,8 @@ part of 'camera_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_CameraState _$$_CameraStateFromJson(Map<String, dynamic> json) =>
-    _$_CameraState(
+_$CameraStateImpl _$$CameraStateImplFromJson(Map<String, dynamic> json) =>
+    _$CameraStateImpl(
       controller:
           _$JsonConverterFromJson<Map<String, dynamic>, CameraController>(
               json['controller'], const CameraControllerConverter().fromJson),
@@ -15,7 +15,7 @@ _$_CameraState _$$_CameraStateFromJson(Map<String, dynamic> json) =>
       orientation: $enumDecode(_$DeviceOrientationEnumMap, json['orientation']),
     );
 
-Map<String, dynamic> _$$_CameraStateToJson(_$_CameraState instance) =>
+Map<String, dynamic> _$$CameraStateImplToJson(_$CameraStateImpl instance) =>
     <String, dynamic>{
       'controller':
           _$JsonConverterToJson<Map<String, dynamic>, CameraController>(

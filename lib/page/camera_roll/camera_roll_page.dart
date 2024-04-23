@@ -1,45 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../controller/controller.dart';
-import '../../model/model.dart';
-import '../camera_screen/camera_screen_page.dart';
-import 'camera_roll_button.dart';
-import 'camera_roll_controls.dart';
-import 'camera_roll_screen.dart';
-import 'camera_roll_single_item_page.dart';
+import 'package:oag_camera/app/app.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraRollPage extends StatelessWidget {
-  static const routeName = "camera_roll";
-
-  static void go(BuildContext context) {
-    context.go("${CameraScreenPage.routeName}/$routeName");
-  }
-
-  static GoRoute route() {
-    return GoRoute(
-      path: routeName,
-      pageBuilder: (context, state) {
-        const duration = Duration(milliseconds: 400);
-        final cameraRollMode =
-            context.read<CameraConfiguration>().cameraRollMode;
-
-        return CustomTransitionPage(
-          key: state.pageKey,
-          transitionDuration: duration,
-          reverseTransitionDuration: duration,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return child;
-          },
-          child: cameraRollMode == CameraRollMode.single
-              ? const CameraRollSingleItemPage()
-              : const CameraRollPage(),
-        );
-      },
-    );
-  }
-
   const CameraRollPage({super.key});
 
   @override
@@ -57,6 +23,32 @@ class CameraRollPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// The path for the [CameraRollPage].
+  ///
+  /// The [CameraRollPage] is nested under the [CameraScreenPage].
+  static const path = "${CameraScreenPage.path}/camera_roll";
+
+  static void go(BuildContext context) {
+    context.go(path);
+  }
+
+  static Page<void> pageBuilder(BuildContext context, GoRouterState state) {
+    const duration = Duration(milliseconds: 400);
+    final cameraRollMode = di<CameraConfiguration>().cameraRollMode;
+
+    return CustomTransitionPage(
+      key: state.pageKey,
+      transitionDuration: duration,
+      reverseTransitionDuration: duration,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+      child: cameraRollMode == CameraRollMode.single
+          ? const CameraRollSingleItemPage()
+          : const CameraRollPage(),
     );
   }
 }

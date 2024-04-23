@@ -27,9 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Test camera</string>
+	<string>The camera is needed to take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Test when in use usage</string>
+	<string>Allow locating your photos</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Test microphone</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

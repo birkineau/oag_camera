@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
@@ -105,7 +104,7 @@ class CameraStateBloc extends Bloc<CameraEvent, CameraState> {
         type: CameraItemType.photo,
         lensDirection: controller.description.lensDirection,
         orientation: controller.value.deviceOrientation,
-        timeStamp: position.timestamp ?? DateTime.now(),
+        timeStamp: position.timestamp,
         latitude: position.latitude,
         longitude: position.longitude,
       );

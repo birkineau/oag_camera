@@ -4,8 +4,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../model/camera_settings_state.dart';
+import 'package:oag_camera/model/model.dart';
 
 class CameraSettingsBloc
     extends Bloc<CameraSettingsEvent, CameraSettingsState> {

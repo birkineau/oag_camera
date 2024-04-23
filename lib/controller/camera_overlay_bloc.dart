@@ -4,12 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oag_camera/oag_camera.dart';
 
-import '../page/camera_screen/camera_live_preview.dart';
-import '../page/camera_screen/camera_screen.dart';
-import '../page/camera_screen/camera_screen_overlay.dart';
-
-/// Controls the blur effect on the [CameraScreen].
+/// Controls the blurred lens toggle transition effect of the [CameraPreviewWithOverlay].
 class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
   CameraOverlayBloc() : super(const CameraOverlayState.unblurred()) {
     on<ShowFramePlaceholder>(_showFramePlaceholder);
@@ -27,7 +24,10 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
   ) async {
     try {
       final image = await _takeScreenshot();
-      if (image == null) return;
+
+      if (image == null) {
+        return;
+      }
 
       emit(
         CameraOverlayState(
@@ -47,6 +47,9 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
     }
   }
 
+  /// Grabs a screenshot of the live camera preview and blurs it. This allows
+  /// a placeholder image of the last frame to be displayed, without having
+  /// to take a real picture or listen to the camera stream.
   Future<void> _blurScreenshot(
     BlurScreenshotEvent event,
     Emitter<CameraOverlayState> emit,
@@ -80,7 +83,11 @@ class CameraOverlayBloc extends Bloc<CameraOverlayEvent, CameraOverlayState> {
     final render = repaintBoundaryKey.currentContext?.findRenderObject()
         as RenderRepaintBoundary?;
 
-    if (render == null) return null;
+    /// TODO: Add error handling when unable to take a screenshot.
+    if (render == null) {
+      return null;
+    }
+
     return render.toImage();
   }
 }
@@ -115,8 +122,9 @@ class CameraOverlayState extends Equatable {
     this.showOverlay = false,
   });
 
-  bool get isActive =>
-      (blur == .0 && showOverlay) || (blur != .0 && showOverlay);
+  bool get isActive {
+    return (blur == .0 && showOverlay) || (blur != .0 && showOverlay);
+  }
 
   const CameraOverlayState.unblurred()
       : blur = .0,

@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../model/model.dart';
-import '../camera_screen/camera_screen_page.dart';
-import 'camera_control_button.dart';
-import 'camera_roll_button.dart';
-import 'camera_roll_delete_selected_item_button.dart';
-import 'camera_roll_page.dart';
-import 'camera_roll_screen.dart';
+import 'package:oag_camera/app/app.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraRollSingleItemPage extends StatelessWidget {
   const CameraRollSingleItemPage({super.key});
@@ -48,7 +41,7 @@ class CameraRollSingleItemControls extends StatelessWidget {
           top: viewPadding.top,
           left: 8.0,
           child: CameraControlButton(
-            onPressed: context.read<CameraConfiguration>().onBackButtonPressed,
+            onPressed: di<CameraConfiguration>().onBackButtonPressed,
             child: Icon(
               Icons.done_rounded,
               size: 32.0,

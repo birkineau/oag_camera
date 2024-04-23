@@ -2,8 +2,7 @@ import 'dart:developer';
 
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../model/camera_zoom.dart';
+import 'package:oag_camera/model/model.dart';
 
 class CameraZoomBloc extends Bloc<CameraZoomEvent, CameraZoom> {
   CameraZoomBloc() : super(CameraZoom.clamped) {

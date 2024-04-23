@@ -5,7 +5,15 @@ import 'package:equatable/equatable.dart';
 
 import '../page/camera_roll/camera_roll_button.dart';
 
+/// Configures camera settings such as resolution, compression quality, and
+/// initial lens direction, among other settings.
+///
+/// See:
+/// * [CameraConfiguration.defaultCameraConfiguration]
+/// * [CameraConfiguration.defaultSinglePortraitCamera]
 class CameraConfiguration extends Equatable {
+  /// A default camera configuration for a multi-purpose camera with the
+  /// ability to change the lens direction.
   static CameraConfiguration defaultCameraConfiguration({
     required VoidCallback onBackButtonPressed,
   }) {
@@ -24,6 +32,10 @@ class CameraConfiguration extends Equatable {
     );
   }
 
+  /// A default camera configuration for a single portrait camera.
+  ///
+  /// Prevents the user from changing the lens direction, and only allows a
+  /// single photo to be taken.
   static CameraConfiguration defaultSinglePortraitCamera({
     required VoidCallback onBackButtonPressed,
   }) {

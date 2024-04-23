@@ -3,9 +3,8 @@ description: A new Flutter package project.
 version: 0.0.1
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-#signal9966
 environment:
-  sdk: '>=3.1.0 <4.0.0'
+  sdk: '>=3.3.4 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
@@ -22,21 +21,20 @@ dependencies:
   json_annotation: ^4.6.0
 
   # State management
-  flutter_bloc: ^8.1.3
+  flutter_bloc: ^8.1.5
 
   # Utility
   auto_size_text: ^3.0.0
-  collection: ^1.17.2
+  collection: ^1.18.0
   equatable: ^2.0.5
   oag_snack_bar:
     git:
       url: https://github.com/birkineau/oag_snack_bar
-  path: ^1.8.3
-  path_provider: ^2.0.14
-  geolocator: ^10.0.1
-  go_router: ^13.0.1
-
-dependency_overrides:
+  path: ^1.9.0
+  path_provider: ^2.1.3
+  geolocator: ^11.0.0
+  go_router: ^13.2.4
+  get_it: ^7.7.0
 
 dev_dependencies:
   flutter_test:

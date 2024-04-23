@@ -38,8 +38,8 @@ class SnapScrollPhysics extends ScrollPhysics {
     ScrollMetrics position,
     double velocity,
   ) {
-    // If we're out of range and not headed back in range, defer to the parent
-    // ballistics, which should put us back in range at a page boundary.
+    /// If we're out of range and not headed back in range, defer to the parent
+    /// ballistics, which should put us back in range at a page boundary.
     if ((velocity <= .0 && position.pixels <= position.minScrollExtent) ||
         (velocity >= .0 && position.pixels >= position.maxScrollExtent)) {
       return super.createBallisticSimulation(position, velocity);
@@ -77,11 +77,11 @@ class SnapScrollPhysics extends ScrollPhysics {
     Tolerance tolerance,
     double velocity,
   ) {
-    // Calculate the minimum and maximum pages that the view can scroll to.
+    /// Calculate the minimum and maximum pages that the view can scroll to.
     final minPage = position.minScrollExtent / snapSize;
     final maxPage = position.maxScrollExtent / snapSize;
 
-    // Add additional pages based on the velocity, but stay within thebounds.
+    /// Add additional pages based on the velocity, but stay within thebounds.
     final velocityFactor = (velocity.abs() / configuration.velocityDivisor)
         .clamp(configuration.minPages, configuration.maxPages);
 

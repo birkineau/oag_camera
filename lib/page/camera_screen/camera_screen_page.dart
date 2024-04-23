@@ -1,29 +1,12 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:oag_camera/page/camera_roll/camera_roll_single_item_page.dart';
+import 'package:oag_camera/app/app.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
+import 'package:oag_camera/utility/utility.dart';
 import 'package:oag_snack_bar/oag_snack_bar.dart';
-
-import '../../controller/camera_overlay_bloc.dart';
-import '../../controller/camera_settings_bloc.dart';
-import '../../controller/camera_state_bloc.dart';
-import '../../controller/camera_zoom_bloc.dart';
-import '../../model/camera_configuration.dart';
-import '../../model/camera_item.dart';
-import '../../model/camera_state.dart';
-import '../../model/camera_status.dart';
-import '../../utility/double_tap_detector.dart';
-import '../camera_roll/camera_roll_button.dart';
-import '../camera_roll/camera_roll_controls.dart';
-import '../camera_roll/camera_roll_page.dart';
-import 'camera_back_button.dart';
-import 'camera_screen.dart';
-import 'camera_screen_controls.dart';
-import 'camera_settings_exposure.dart';
-import 'camera_settings_flash_mode.dart';
-import 'camera_toggle_settings_button.dart';
-import 'deleted_camera_item_animation.dart';
 
 Future<void> showOverlay(
   BuildContext context,
@@ -47,25 +30,6 @@ class CameraScreenPage extends StatefulWidget {
   static const heroCameraRollItem = "hero_camera_roll_item";
   static const heroCameraRollControls = "hero_camera_roll_controls";
 
-  static const routeName = "/camera_application";
-
-  static void go(BuildContext context) => context.go(routeName);
-
-  static GoRoute route({required CameraConfiguration configuration}) {
-    return GoRoute(
-      path: routeName,
-      pageBuilder: (context, state) {
-        return NoTransitionPage(
-          key: state.pageKey,
-          child: CameraScreenPage(configuration: configuration),
-        );
-      },
-      routes: [
-        CameraRollPage.route(),
-      ],
-    );
-  }
-
   const CameraScreenPage({
     super.key,
     required this.configuration,
@@ -77,6 +41,22 @@ class CameraScreenPage extends StatefulWidget {
 
   @override
   State<CameraScreenPage> createState() => _CameraScreenPageState();
+
+  static const path = "/camera";
+
+  static void go(BuildContext context, CameraConfiguration configuration) {
+    navigationContext.go(path, extra: di<CameraConfiguration>());
+  }
+
+  static Page<void> pageBuilder(BuildContext context, GoRouterState state) {
+    final configuration = di<CameraConfiguration>();
+
+    /// Transition animations are handled manually.
+    return NoTransitionPage(
+      key: state.pageKey,
+      child: CameraScreenPage(configuration: configuration),
+    );
+  }
 }
 
 class _CameraScreenPageState extends State<CameraScreenPage> {
@@ -94,7 +74,10 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Positioned.fill(child: CameraScreen()),
+            /// Camera live preview.
+            const Positioned.fill(
+              child: CameraPreviewWithOverlay(),
+            ),
 
             /// Back button.
             Positioned(
@@ -166,9 +149,7 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
                     child: widget.configuration.cameraRollMode ==
                             CameraRollMode.single
                         ? const CameraRollSingleItemControls()
-                        : const CameraRollControls(
-                            enableListeners: false,
-                          ),
+                        : const CameraRollControls(enableListeners: false),
                   ),
                 ),
               ),

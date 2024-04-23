@@ -12,7 +12,7 @@ part of 'camera_zoom.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 CameraZoom _$CameraZoomFromJson(Map<String, dynamic> json) {
   return _CameraZoom.fromJson(json);
@@ -80,22 +80,22 @@ class _$CameraZoomCopyWithImpl<$Res, $Val extends CameraZoom>
 }
 
 /// @nodoc
-abstract class _$$_CameraZoomCopyWith<$Res>
+abstract class _$$CameraZoomImplCopyWith<$Res>
     implements $CameraZoomCopyWith<$Res> {
-  factory _$$_CameraZoomCopyWith(
-          _$_CameraZoom value, $Res Function(_$_CameraZoom) then) =
-      __$$_CameraZoomCopyWithImpl<$Res>;
+  factory _$$CameraZoomImplCopyWith(
+          _$CameraZoomImpl value, $Res Function(_$CameraZoomImpl) then) =
+      __$$CameraZoomImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({double min, double max, double previous, double current});
 }
 
 /// @nodoc
-class __$$_CameraZoomCopyWithImpl<$Res>
-    extends _$CameraZoomCopyWithImpl<$Res, _$_CameraZoom>
-    implements _$$_CameraZoomCopyWith<$Res> {
-  __$$_CameraZoomCopyWithImpl(
-      _$_CameraZoom _value, $Res Function(_$_CameraZoom) _then)
+class __$$CameraZoomImplCopyWithImpl<$Res>
+    extends _$CameraZoomCopyWithImpl<$Res, _$CameraZoomImpl>
+    implements _$$CameraZoomImplCopyWith<$Res> {
+  __$$CameraZoomImplCopyWithImpl(
+      _$CameraZoomImpl _value, $Res Function(_$CameraZoomImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -106,7 +106,7 @@ class __$$_CameraZoomCopyWithImpl<$Res>
     Object? previous = null,
     Object? current = null,
   }) {
-    return _then(_$_CameraZoom(
+    return _then(_$CameraZoomImpl(
       min: null == min
           ? _value.min
           : min // ignore: cast_nullable_to_non_nullable
@@ -129,15 +129,15 @@ class __$$_CameraZoomCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CameraZoom implements _CameraZoom {
-  const _$_CameraZoom(
+class _$CameraZoomImpl implements _CameraZoom {
+  const _$CameraZoomImpl(
       {required this.min,
       required this.max,
       required this.previous,
       required this.current});
 
-  factory _$_CameraZoom.fromJson(Map<String, dynamic> json) =>
-      _$$_CameraZoomFromJson(json);
+  factory _$CameraZoomImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CameraZoomImplFromJson(json);
 
   @override
   final double min;
@@ -154,10 +154,10 @@ class _$_CameraZoom implements _CameraZoom {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_CameraZoom &&
+            other is _$CameraZoomImpl &&
             (identical(other.min, min) || other.min == min) &&
             (identical(other.max, max) || other.max == max) &&
             (identical(other.previous, previous) ||
@@ -172,12 +172,12 @@ class _$_CameraZoom implements _CameraZoom {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CameraZoomCopyWith<_$_CameraZoom> get copyWith =>
-      __$$_CameraZoomCopyWithImpl<_$_CameraZoom>(this, _$identity);
+  _$$CameraZoomImplCopyWith<_$CameraZoomImpl> get copyWith =>
+      __$$CameraZoomImplCopyWithImpl<_$CameraZoomImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CameraZoomToJson(
+    return _$$CameraZoomImplToJson(
       this,
     );
   }
@@ -188,10 +188,10 @@ abstract class _CameraZoom implements CameraZoom {
       {required final double min,
       required final double max,
       required final double previous,
-      required final double current}) = _$_CameraZoom;
+      required final double current}) = _$CameraZoomImpl;
 
   factory _CameraZoom.fromJson(Map<String, dynamic> json) =
-      _$_CameraZoom.fromJson;
+      _$CameraZoomImpl.fromJson;
 
   @override
   double get min;
@@ -203,6 +203,6 @@ abstract class _CameraZoom implements CameraZoom {
   double get current;
   @override
   @JsonKey(ignore: true)
-  _$$_CameraZoomCopyWith<_$_CameraZoom> get copyWith =>
+  _$$CameraZoomImplCopyWith<_$CameraZoomImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

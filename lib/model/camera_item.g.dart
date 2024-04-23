@@ -6,8 +6,8 @@ part of 'camera_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_CameraItem _$$_CameraItemFromJson(Map<String, dynamic> json) =>
-    _$_CameraItem(
+_$CameraItemImpl _$$CameraItemImplFromJson(Map<String, dynamic> json) =>
+    _$CameraItemImpl(
       name: json['name'] as String,
       bytes: const Uint8ListConverter().fromJson(json['bytes'] as List<int>),
       width: json['width'] as int,
@@ -22,7 +22,7 @@ _$_CameraItem _$$_CameraItemFromJson(Map<String, dynamic> json) =>
           .fromJson(json['timeStamp'] as String),
     );
 
-Map<String, dynamic> _$$_CameraItemToJson(_$_CameraItem instance) =>
+Map<String, dynamic> _$$CameraItemImplToJson(_$CameraItemImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'bytes': const Uint8ListConverter().toJson(instance.bytes),

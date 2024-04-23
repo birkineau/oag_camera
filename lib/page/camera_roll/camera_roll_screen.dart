@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../controller/controller.dart';
-import '../../model/camera_roll_state.dart';
-import '../../model/model.dart';
-import '../../utility/curved_rect_tween.dart';
-import '../../utility/double_tap_detector.dart';
-import '../camera_screen/camera_orientation_builder.dart';
-import '../camera_screen/camera_screen_page.dart';
-import 'camera_item_preview.dart';
-import 'camera_roll_button.dart';
+import 'package:oag_camera/app/app.dart';
+import 'package:oag_camera/controller/controller.dart';
+import 'package:oag_camera/model/model.dart';
+import 'package:oag_camera/oag_camera.dart';
+import 'package:oag_camera/utility/utility.dart';
 
 class CameraRollScreen extends StatefulWidget {
   const CameraRollScreen({
@@ -36,7 +31,6 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   late PageController _pageController;
   final _transformationController = TransformationController();
 
-  DateTime? _lastTap;
   var _scale = _minScale;
   var _listenForPageChange = true;
 
@@ -123,8 +117,8 @@ class _CameraRollScreenState extends State<CameraRollScreen>
                   return Hero(
                     tag: "${CameraScreenPage.heroCameraRollItem}_"
                         "${state.selectedIndex}",
-                    createRectTween: _createRectTween,
-                    flightShuttleBuilder: _flightShuttleBuilder,
+                    createRectTween: _deceleratedRectTween,
+                    flightShuttleBuilder: _itemPreviewScaleOutShuttleBuilder,
                     child: child,
                   );
                 }
@@ -172,17 +166,22 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   }
 
   Future<void> _handleItemPreviewDoubleTap(bool isZoomedIn) async {
+    /// Reset the scale if the image is zoomed in.
     if (isZoomedIn) {
       await _resetScale();
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
       return;
     }
 
-    final configuration = context.read<CameraConfiguration>();
+    /// Close the camera roll if the image is not zoomed in.
+    final configuration = di<CameraConfiguration>();
     if (configuration.cameraRollMode == CameraRollMode.single) {
       context.read<CameraRollBloc>().add(const DeleteSelectedItemEvent());
     }
 
+    /// Unblur the screenshot view if
     if (context.read<CameraOverlayBloc>().state.isActive) {
       context.read<CameraOverlayBloc>().add(const UnblurScreenshotEvent());
     }
@@ -196,13 +195,13 @@ class _CameraRollScreenState extends State<CameraRollScreen>
   }
 
   void _updateScale(ScaleEndDetails details) {
-    setState(
-      () => _scale = _transformationController.value.getMaxScaleOnAxis(),
-    );
+    setState(() {
+      _scale = _transformationController.value.getMaxScaleOnAxis();
+    });
   }
 }
 
-Tween<Rect?> _createRectTween(begin, end) {
+Tween<Rect?> _deceleratedRectTween(begin, end) {
   return CurvedRectTween(
     curve: Curves.decelerate,
     begin: begin,
@@ -211,7 +210,7 @@ Tween<Rect?> _createRectTween(begin, end) {
 }
 
 /// start from the scaled in, and scale out the image during the transition.
-Widget _flightShuttleBuilder(
+Widget _itemPreviewScaleOutShuttleBuilder(
   BuildContext flightContext,
   Animation<double> animation,
   HeroFlightDirection flightDirection,

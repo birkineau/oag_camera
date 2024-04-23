@@ -2,9 +2,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../model/camera_item.dart';
-import '../model/camera_roll_state.dart';
+import 'package:oag_camera/model/model.dart';
 
 /// Provides add and remove operations for a list of [CameraItem] instances.
 class CameraRollBloc extends Bloc<CameraRollEvent, CameraRollState> {

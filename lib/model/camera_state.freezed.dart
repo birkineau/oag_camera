@@ -12,7 +12,7 @@ part of 'camera_state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 CameraState _$CameraStateFromJson(Map<String, dynamic> json) {
   return _CameraState.fromJson(json);
@@ -78,11 +78,11 @@ class _$CameraStateCopyWithImpl<$Res, $Val extends CameraState>
 }
 
 /// @nodoc
-abstract class _$$_CameraStateCopyWith<$Res>
+abstract class _$$CameraStateImplCopyWith<$Res>
     implements $CameraStateCopyWith<$Res> {
-  factory _$$_CameraStateCopyWith(
-          _$_CameraState value, $Res Function(_$_CameraState) then) =
-      __$$_CameraStateCopyWithImpl<$Res>;
+  factory _$$CameraStateImplCopyWith(
+          _$CameraStateImpl value, $Res Function(_$CameraStateImpl) then) =
+      __$$CameraStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -92,11 +92,11 @@ abstract class _$$_CameraStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_CameraStateCopyWithImpl<$Res>
-    extends _$CameraStateCopyWithImpl<$Res, _$_CameraState>
-    implements _$$_CameraStateCopyWith<$Res> {
-  __$$_CameraStateCopyWithImpl(
-      _$_CameraState _value, $Res Function(_$_CameraState) _then)
+class __$$CameraStateImplCopyWithImpl<$Res>
+    extends _$CameraStateCopyWithImpl<$Res, _$CameraStateImpl>
+    implements _$$CameraStateImplCopyWith<$Res> {
+  __$$CameraStateImplCopyWithImpl(
+      _$CameraStateImpl _value, $Res Function(_$CameraStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -106,7 +106,7 @@ class __$$_CameraStateCopyWithImpl<$Res>
     Object? status = null,
     Object? orientation = null,
   }) {
-    return _then(_$_CameraState(
+    return _then(_$CameraStateImpl(
       controller: freezed == controller
           ? _value.controller
           : controller // ignore: cast_nullable_to_non_nullable
@@ -125,15 +125,15 @@ class __$$_CameraStateCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CameraState extends _CameraState {
-  const _$_CameraState(
+class _$CameraStateImpl extends _CameraState {
+  const _$CameraStateImpl(
       {@CameraControllerConverter() required this.controller,
       required this.status,
       required this.orientation})
       : super._();
 
-  factory _$_CameraState.fromJson(Map<String, dynamic> json) =>
-      _$$_CameraStateFromJson(json);
+  factory _$CameraStateImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CameraStateImplFromJson(json);
 
   @override
   @CameraControllerConverter()
@@ -146,12 +146,12 @@ class _$_CameraState extends _CameraState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CameraStateCopyWith<_$_CameraState> get copyWith =>
-      __$$_CameraStateCopyWithImpl<_$_CameraState>(this, _$identity);
+  _$$CameraStateImplCopyWith<_$CameraStateImpl> get copyWith =>
+      __$$CameraStateImplCopyWithImpl<_$CameraStateImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CameraStateToJson(
+    return _$$CameraStateImplToJson(
       this,
     );
   }
@@ -161,11 +161,11 @@ abstract class _CameraState extends CameraState {
   const factory _CameraState(
       {@CameraControllerConverter() required final CameraController? controller,
       required final CameraStatus status,
-      required final DeviceOrientation orientation}) = _$_CameraState;
+      required final DeviceOrientation orientation}) = _$CameraStateImpl;
   const _CameraState._() : super._();
 
   factory _CameraState.fromJson(Map<String, dynamic> json) =
-      _$_CameraState.fromJson;
+      _$CameraStateImpl.fromJson;
 
   @override
   @CameraControllerConverter()
@@ -176,6 +176,6 @@ abstract class _CameraState extends CameraState {
   DeviceOrientation get orientation;
   @override
   @JsonKey(ignore: true)
-  _$$_CameraStateCopyWith<_$_CameraState> get copyWith =>
+  _$$CameraStateImplCopyWith<_$CameraStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

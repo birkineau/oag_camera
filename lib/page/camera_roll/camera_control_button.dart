@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../camera_screen/camera_orientation_rotator.dart';
+import 'package:oag_camera/oag_camera.dart';
 
 class CameraControlButton extends StatelessWidget {
   const CameraControlButton({
