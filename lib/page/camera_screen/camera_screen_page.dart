@@ -45,7 +45,7 @@ class CameraScreenPage extends StatefulWidget {
   static const path = "/camera";
 
   static void go(BuildContext context, CameraConfiguration configuration) {
-    navigationContext.go(path, extra: di<CameraConfiguration>());
+    navigatorContext.go(path, extra: di<CameraConfiguration>());
   }
 
   static Page<void> pageBuilder(BuildContext context, GoRouterState state) {

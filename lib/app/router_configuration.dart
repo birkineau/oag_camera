@@ -49,7 +49,7 @@ GoRouter createRouterConfiguration(CameraRollBloc cameraRollBloc) {
 }
 
 /// Returns the navigator context from the dependency injector.
-BuildContext get navigationContext {
+BuildContext get navigatorContext {
   assert(
     di.isRegistered<_NavigatorKey>(instanceName: navigatorInstanceKey),
     "GlobalKey<NavigatorState> instance is not registered with the dependency "
