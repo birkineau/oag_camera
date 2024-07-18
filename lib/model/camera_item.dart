@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+// import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:oag_camera/model/model.dart';
 import 'package:oag_camera/utility/utility.dart';
@@ -53,16 +53,17 @@ class CameraItem with _$CameraItem, EquatableMixin {
 Future<CameraItem> compressCameraItem(
   CameraItem item, {
   required int quality,
-  CompressFormat format = CompressFormat.jpeg,
+  // CompressFormat format = CompressFormat.jpeg,
 }) async {
-  final compressedBytes = await FlutterImageCompress.compressWithList(
-    item.bytes,
-    quality: quality,
-    format: format,
-    autoCorrectionAngle: false,
-  );
+  return item;
+  // final compressedBytes = await FlutterImageCompress.compressWithList(
+  //   item.bytes,
+  //   quality: quality,
+  //   format: format,
+  //   autoCorrectionAngle: false,
+  // );
 
-  return item.copyWith(bytes: compressedBytes);
+  // return item.copyWith(bytes: compressedBytes);
 }
 
 /// Moves the file from [source] to [newPath].
